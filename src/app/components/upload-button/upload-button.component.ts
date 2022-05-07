@@ -19,6 +19,18 @@ export class UploadButtonComponent {
         e.stopPropagation();
     }
 
+    hoverStart(e: MouseEvent) {
+        this.prevent(e);
+        const target = (e.target as HTMLElement);
+        target.classList.add('mouse-hover');
+    }
+
+    hoverEnd(e: MouseEvent) {
+        this.prevent(e);
+        const target = (e.target as HTMLElement);
+        target.classList.remove('mouse-hover');
+    }
+
     handleFileInput(event: Event) {
         const target = event.target as HTMLInputElement;
         const files = target.files as FileList;

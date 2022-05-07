@@ -1,10 +1,12 @@
 <div fxLayout="column" fxLayoutAlign="start center">
     {{buttonText}}
-    <div class="interactive-square" fxLayout="row" fxLayoutAlign="center center">
-    <input type="file"
-           id="file"
-           (change)="handleFileInput($event)">
-    <mat-icon class="larger-icon">
+    <input type="file" class="file-input"
+         (change)="handleFileInput($event)" #fileUpload>
+    <div class="interactive-square" fxLayout="row" fxLayoutAlign="center center"
+         (click)="fileUpload.click()"
+         (mouseenter)="hoverStart($event)"
+         (mouseleave)="hoverEnd($event)">
+        <mat-icon class="larger-icon">
             {{buttonIcon}}
         </mat-icon>
     </div>
