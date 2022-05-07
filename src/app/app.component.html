@@ -8,7 +8,10 @@
 
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <upload-button buttonText="Datei importieren" buttonIcon="file_upload"></upload-button>
+        <upload-button
+            buttonText="Datei importieren"
+            buttonIcon="file_upload"
+            (newFileUploadedEvent)="updateTextarea($event)"></upload-button>
         <mat-form-field appearance="outline"
                         class="textarea">
             <mat-label>Source file</mat-label>

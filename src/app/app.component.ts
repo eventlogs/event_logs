@@ -33,4 +33,8 @@ world`);
             this._displayService.display(result);
         }
     }
+
+    updateTextarea(fileContent: string) {
+        this.textareaFc.setValue(fileContent);
+    }
 }
