@@ -1,4 +1,9 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core';
 
 @Component({
     selector: 'upload-button',
@@ -34,12 +39,16 @@ export class UploadButtonComponent {
     handleFileInput(event: Event) {
         const target = event.target as HTMLInputElement;
         const files = target.files as FileList;
+        this.readAndEmitFile(files[0]);
+    }
+
+    readAndEmitFile(file: File) {
         let fileReader = new FileReader();
         fileReader.onload = () => {
             let fileContent = fileReader.result as string;
             this.newFileUploadedEvent.emit(fileContent);
         }
-        fileReader.readAsText(files[0]);
+        fileReader.readAsText(file);
     }
 
 }
