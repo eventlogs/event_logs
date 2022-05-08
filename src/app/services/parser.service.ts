@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Diagram} from '../classes/diagram/diagram';
-import {Element} from '../classes/diagram/element';
+import { EventLog } from '../classes/EventLog/eventlog';
+import { Event } from '../classes/EventLog/event';
+import { Trace } from '../classes/EventLog/trace';
 
 @Injectable({
     providedIn: 'root'
@@ -10,21 +11,20 @@ export class ParserService {
     constructor() {
     }
 
-    parse(text: string): Diagram | undefined {
-        const lines = text.split('\n');
+    parse(text: string): EventLog | undefined {
+        //DummyDaten bis der Parser funktioniert
+        const trace1 = new Trace([],
+        [new Event([], "Flug suchen"),
+         new Event([], "Flug buchen")],
+         1 );
 
-        const result = new Diagram();
+        const trace2 = new Trace([],
+        [new Event([], "Flug suchen"),
+         new Event([], "Flug buchen"),
+         new Event([], "Hotel suchen"),
+         new Event([], "Hotel buchen")],
+         1 );
 
-        lines.forEach(line => {
-            if (line.trimEnd().length > 0) {
-                result.addElement(this.parseElement(line));
-            }
-        });
-
-        return result;
-    }
-
-    private parseElement(line: string): Element {
-        return new Element();
+        return new  EventLog([],[],[],[trace1, trace2], []);
     }
 }
