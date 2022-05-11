@@ -18,12 +18,13 @@
                       cdkAutosizeMaxRows="20"
                       [formControl]="textareaFc"></textarea>
         </mat-form-field>
-        <export-button 
+        <export-button
             buttonText="Export .log"
             buttonIcon="file_download"
             [fileContent]="getTextareaValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.log"
+            [datePrefix]="true"
         ></export-button>
     </div>
 

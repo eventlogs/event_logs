@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { saveAs } from 'file-saver';
+import {Component, Input} from '@angular/core';
+import {saveAs} from 'file-saver';
 
 @Component({
     selector: 'export-button',
@@ -13,6 +13,7 @@ export class ExportButtonComponent {
     @Input() fileContent: string = "";
     @Input() fileType: string = "";
     @Input() fileName: string = "";
+    @Input() datePrefix: boolean = false;
 
     constructor() {
     }
@@ -35,7 +36,10 @@ export class ExportButtonComponent {
     }
 
     processMouseClick(e: MouseEvent) {
-        saveAs(new Blob([this.fileContent], { type: this.fileType }), this.fileName)
+        let fileName = this.fileName
+        if (this.datePrefix) {
+            fileName = new Date().toLocaleString() + "_" + fileName
+        }
+        saveAs(new Blob([this.fileContent], {type: this.fileType}), fileName)
     }
-
 }
