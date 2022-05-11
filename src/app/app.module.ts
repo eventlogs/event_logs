@@ -11,13 +11,15 @@ import {MatIconModule} from '@angular/material/icon';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
 import {TemplateButtonComponent} from './components/template-button/template-button.component';
+import { ExportButtonComponent } from './components/export-button/export-button.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         DisplayComponent,
         FooterComponent,
-        TemplateButtonComponent
+        TemplateButtonComponent,
+        ExportButtonComponent
     ],
     imports: [
         BrowserModule,
