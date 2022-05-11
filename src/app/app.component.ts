@@ -30,7 +30,7 @@ world`);
     private processSourceChange(newSource: string) {
         const result = this._parserService.parse(newSource);
         if (result !== undefined) {
-            this._displayService.display(result);
+            this._displayService.displayEventLog(result);
         }
     }
 
