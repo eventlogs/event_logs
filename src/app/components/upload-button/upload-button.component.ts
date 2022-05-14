@@ -39,8 +39,8 @@ export class UploadButtonComponent {
     handleFileInput(event: Event) {
         const target = event.target as HTMLInputElement;
         const files = target.files as FileList;
-        if (!files[0].name.endsWith(".txt")) {
-            alert("Nur .txt-Dateien vom Typ .log werden derzeit unterstützt");
+        if (!files[0].name.endsWith('.txt')) {
+            alert('Nur .txt-Dateien vom Typ .log werden derzeit unterstützt');
             return;
         }
         this.readAndEmitFile(files[0]);
