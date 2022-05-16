@@ -10,7 +10,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
-import {TemplateButtonComponent} from './components/template-button/template-button.component';
+import {UploadButtonComponent} from './components/upload-button/upload-button.component';
+import { DragDropFileUploadDirective } from './drag-drop-file-upload.directive';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 
 @NgModule({
@@ -18,7 +19,8 @@ import { ExportButtonComponent } from './components/export-button/export-button.
         AppComponent,
         DisplayComponent,
         FooterComponent,
-        TemplateButtonComponent,
+        UploadButtonComponent,
+        DragDropFileUploadDirective,
         ExportButtonComponent
     ],
     imports: [
