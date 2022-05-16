@@ -26,6 +26,14 @@
             fileName="event.log"
             [datePrefix]="true"
         ></export-button>
+        <export-button
+            buttonText="Export .xes"
+            buttonIcon="file_download"
+            [fileContent]="getXesValue()"
+            fileType="text/plain;charset=utf-8"
+            fileName="event.xes"
+            [datePrefix]="true"
+        ></export-button>
     </div>
 
     <!--  Footer  -->

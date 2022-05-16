@@ -36,7 +36,7 @@ export class ParserService {
      * @param text String im .type log Format, der geparst werden soll
      * @return interne Darstellung als {@link EventLog}
      */
-    public parse(text: string): EventLog | undefined {
+    public parse(text: string): EventLog {
         const lines: string[] = text.split('\n');
 
         const indexLog = ParserService.indexOfTokenIfExists(lines, this._typeLogElement)
