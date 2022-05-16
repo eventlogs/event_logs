@@ -12,7 +12,46 @@ export class SvgService {
         diagram.elements.forEach(el => {
             result.push(this.createSvgForElement(el))
         });
+
+        diagram.traces.forEach(
+            (trace) => {
+                trace.events.forEach((ev) => {
+                    if ( ev.svgElements.length)
+                    {
+                        const text = this.createSvgForText(  ev.svgElements[0], ev.activity );
+                        result.push( text );
+                        const rect = this.createRectForElement( ev.svgElements[1] );
+                        result.push( rect );
+                    }
+                })
+            }
+        )
         return result;
+    }
+
+    private createRectForElement(element: Element) : SVGElement {
+        const svg = this.createSvgElement('rect');
+
+        svg.setAttribute('x', `${element.x}`);
+        svg.setAttribute('y', `${element.y}`);
+        svg.setAttribute('width', '130');
+        svg.setAttribute('height', '30');
+        svg.setAttribute('fill',"none");
+        svg.setAttribute('stroke-width',"2");
+        svg.setAttribute('stroke',"black");
+        element.registerSvg(svg);
+
+        return svg;
+    }
+
+    private createSvgForText( element: Element, text: String ) : SVGElement {
+        const svg = this.createSvgElement('text');
+        svg.setAttribute('x', `${element.x}`);
+        svg.setAttribute('y', `${element.y}`);
+        svg.setAttribute('font', 'bold 30px sans-serif');
+        svg.textContent = text.toString()
+        element.registerSvg(svg);
+        return svg;
     }
 
     private createSvgForElement(element: Element): SVGElement {

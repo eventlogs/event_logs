@@ -23,8 +23,15 @@ export class ParserService {
          new Event([], "Flug buchen"),
          new Event([], "Hotel suchen"),
          new Event([], "Hotel buchen")],
-         1 );
+         2 );
 
-        return new  EventLog([],[],[],[trace1, trace2], []);
+        const trace3 = new Trace([],
+        [new Event([], "Flug suchen"),
+            new Event([], "Flug buchen"),
+            new Event([], "Hotel suchen"),
+            new Event([], "Hotel buchen")],
+            3 );
+
+        return new  EventLog([],[],[],[trace1, trace2, trace3], []);
     }
 }

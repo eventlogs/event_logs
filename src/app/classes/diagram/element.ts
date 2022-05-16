@@ -1,11 +1,25 @@
+export enum ElementType {
+    text,
+    rect,
+}
+
 export class Element {
     private _x: number;
     private _y: number;
     private _svgElement: SVGElement | undefined;
+    private _type: ElementType;
+
+    public get type(): ElementType {
+        return this._type;
+    }
+    public set type(value: ElementType) {
+        this._type = value;
+    }
 
     constructor() {
         this._x = 0;
         this._y = 0;
+        this._type = ElementType.text;
     }
 
     get x(): number {
