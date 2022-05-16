@@ -39,14 +39,16 @@ export class UploadButtonComponent {
     handleFileInput(event: Event) {
         const target = event.target as HTMLInputElement;
         const files = target.files as FileList;
-        if (!files[0].name.endsWith('.txt')) {
-            alert('Nur .txt-Dateien vom Typ .log werden derzeit unterstützt');
-            return;
-        }
         this.readAndEmitFile(files[0]);
     }
 
     readAndEmitFile(file: File) {
+        let permittedFileExtensions = ["txt", "log"];
+        let actualFileExtension = file.name.split(".").pop() as string;
+        if (permittedFileExtensions.indexOf(actualFileExtension.toLowerCase()) == -1) {
+            alert('Nur Textdateien vom Typ .log werden derzeit unterstützt');
+            return;
+        }
         let fileReader = new FileReader();
         fileReader.onload = () => {
             let fileContent = fileReader.result as string;
