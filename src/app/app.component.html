@@ -8,7 +8,10 @@
 
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <app-template-button buttonText="Left button" buttonIcon="lightbulb"></app-template-button>
+        <upload-button
+            buttonText="Datei importieren"
+            buttonIcon="file_upload"
+            (newFileUploadedEvent)="updateTextarea($event)"></upload-button>
         <mat-form-field appearance="outline"
                         class="textarea">
             <mat-label>Source file</mat-label>
@@ -18,7 +21,14 @@
                       cdkAutosizeMaxRows="20"
                       [formControl]="textareaFc"></textarea>
         </mat-form-field>
-        <app-template-button buttonText="Right button" buttonIcon="grade"></app-template-button>
+        <export-button
+            buttonText="Export .log"
+            buttonIcon="file_download"
+            [fileContent]="getTextareaValue()"
+            fileType="text/plain;charset=utf-8"
+            fileName="event.log"
+            [datePrefix]="true"
+        ></export-button>
     </div>
 
     <!--  Footer  -->

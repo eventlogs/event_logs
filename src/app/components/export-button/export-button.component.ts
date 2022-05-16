@@ -1,14 +1,19 @@
 import {Component, Input} from '@angular/core';
+import {saveAs} from 'file-saver';
 
 @Component({
-    selector: 'app-template-button',
-    templateUrl: './template-button.component.html',
-    styleUrls: ['./template-button.component.scss']
+    selector: 'export-button',
+    templateUrl: './export-button.component.html',
+    styleUrls: ['./export-button.component.scss']
 })
-export class TemplateButtonComponent {
+export class ExportButtonComponent {
 
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
+    @Input() fileContent: string = "";
+    @Input() fileType: string = "";
+    @Input() fileName: string = "";
+    @Input() datePrefix: boolean = false;
 
     constructor() {
     }
@@ -31,7 +36,10 @@ export class TemplateButtonComponent {
     }
 
     processMouseClick(e: MouseEvent) {
-        console.log(`Template button "${this.buttonText}" clicked`, e);
+        let fileName = this.fileName
+        if (this.datePrefix) {
+            fileName = new Date().toLocaleString() + "_" + fileName
+        }
+        saveAs(new Blob([this.fileContent], {type: this.fileType}), fileName)
     }
-
 }

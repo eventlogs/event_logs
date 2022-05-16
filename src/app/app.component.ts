@@ -19,8 +19,7 @@ export class AppComponent implements OnDestroy {
                 private _displayService: DisplayService) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges.pipe(debounceTime(400)).subscribe(val => this.processSourceChange(val));
-        this.textareaFc.setValue(`hello
-world`);
+        this.textareaFc.setValue(this.textareaExampleValue());
     }
 
     ngOnDestroy(): void {
@@ -32,5 +31,30 @@ world`);
         if (result !== undefined) {
             this._displayService.displayEventLog(result);
         }
+    }
+
+    updateTextarea(fileContent: string) {
+        this.textareaFc.setValue(fileContent);
+    }
+
+    getTextareaValue() {
+        return this.textareaFc.value
+    }
+
+    textareaExampleValue() {
+        return `.type log
+.attributes
+case-id
+activity
+booleanValue
+intValue
+floatValue
+dateValue
+stringValue
+.events
+1 Auto true 1 1.3 2020-01-31 basadf
+1 Schiff true 2 2.3 2020-01-31 dasf
+2 BusBus false 3 4.5 2020-01-31 adsf
+2 Bus false 4 6.7 2020-01-31 adfd`
     }
 }
