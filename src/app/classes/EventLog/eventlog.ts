@@ -60,6 +60,9 @@ export class EventLog {
                 result[index].push( trace );      // Trace zu den anderen hinzufügen die die gleichen Events haben
             }
         });
+        result.sort((a, b) => {
+            return b.length - a.length;
+        })
         return result;
     }
 

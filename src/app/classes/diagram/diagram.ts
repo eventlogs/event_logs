@@ -1,31 +1,5 @@
 import {Element} from './element';
-
-export class GraphEvent {
-    public get svgElements(): Array<Element> {
-        return this._svgElements;
-    }
-    public get activity(): String {
-        return this._activity;
-    }
-    constructor( 
-        private readonly _activity: String,
-        private readonly _svgElements: Array<Element>) {
-
-    }
-}
-
-export class GraphTrace {
-    public get events(): Array<GraphEvent> {
-        return this._events;
-    }
-
-    constructor(    
-        private readonly _events: Array<GraphEvent>,
-        private readonly _count: Number,
-        private readonly _caseIds: Array<Number>) {
-
-    }
-}
+import { GraphTrace } from './GraphTrace';
 
 export class Diagram {
     private readonly _elements: Array<Element>; // TODO entfernen?

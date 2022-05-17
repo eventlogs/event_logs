@@ -18,6 +18,9 @@ export class LayoutService {
         let y = 0;
 
         diagram.traces.forEach( (trace) => {
+            trace.svgElements[0].x = trace.svgElements[0].x + LayoutService.XOFFSET + x * LayoutService.XSTEP;
+            trace.svgElements[0].y = trace.svgElements[0].y + LayoutService.YOFFSET + y * LayoutService.YSTEP;
+            x++;
             trace.events.forEach( (el) => {
                 el.svgElements.forEach( (svg => {
                     if ( svg.type === ElementType.text ) {

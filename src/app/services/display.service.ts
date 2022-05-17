@@ -1,21 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Diagram, GraphEvent, GraphTrace } from '../classes/diagram/diagram';
+import { Diagram } from '../classes/diagram/diagram';
+import { GraphTrace } from "../classes/diagram/GraphTrace";
+import { GraphEvent } from "../classes/diagram/GraphEvent";
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Event } from '../classes/EventLog/event';
 import { Element, ElementType } from '../classes/diagram/element';
 import { Trace } from '../classes/EventLog/trace';
-
-// class ObjectSet extends Set{
-//     override add(elem: any){
-//       return super.add(typeof elem === 'object' ? JSON.stringify(elem) : elem);
-//     }
-//     override has(elem: any){
-//       return super.has(typeof elem === 'object' ? JSON.stringify(elem) : elem);
-//     }
-// }
-
-
 
 @Injectable({
     providedIn: 'root'
@@ -47,7 +38,7 @@ export class DisplayService implements OnDestroy {
     private getEventGraphics(trace: Trace) : GraphEvent[] {
         let graphEvents = new Array<GraphEvent>();
         trace.events.forEach( (ev) => {
-            //TODO SVG ELEMENT BAUEN
+            // Text und Rechteck für Events erstellen, Koordinaten kommen vom Layoutservice
             let el = new Element();
             el.x = 0;
             el.y = 0;
@@ -67,7 +58,11 @@ export class DisplayService implements OnDestroy {
             let caseIds = traces.map( (val) => {
                 return val.caseId;
             });
-            let gt = new GraphTrace( this.getEventGraphics(traces[0]), traces.length,caseIds ); // TODO Events in Grafiken Packen
+            let traceCount = new Element();
+            traceCount.x = 0;
+            traceCount.y = 0;
+            traceCount.type = ElementType.text;
+            let gt = new GraphTrace( this.getEventGraphics(traces[0]), traces.length,[traceCount],caseIds );
             graphTraces.push(gt);
         });
 
@@ -75,7 +70,6 @@ export class DisplayService implements OnDestroy {
     }
 
     public displayEventLog(log: EventLog) {
-        //TODO EventLog in Diagramtyp übersetzen und darstellen
         let net = this.convertEventLogToDiagram( log);
         this._diagram$.next(net);
     }

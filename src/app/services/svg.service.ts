@@ -7,14 +7,15 @@ import {Element} from '../classes/diagram/element';
 })
 export class SvgService {
 
+    /// Erstellt alle benötigten SVGElemente für ein gegebenes Diagram
+    /// Alle SVG's werden außerdem zurückgegeben
     public createSvgElements(diagram: Diagram): Array<SVGElement> {
         const result: Array<SVGElement> = [];
-        diagram.elements.forEach(el => {
-            result.push(this.createSvgForElement(el))
-        });
 
         diagram.traces.forEach(
             (trace) => {
+                const textNumber = this.createSvgForText( trace.svgElements[0], trace.count.toString());
+                result.push( textNumber );
                 trace.events.forEach((ev) => {
                     if ( ev.svgElements.length)
                     {
@@ -51,19 +52,6 @@ export class SvgService {
         svg.setAttribute('font', 'bold 30px sans-serif');
         svg.textContent = text.toString()
         element.registerSvg(svg);
-        return svg;
-    }
-
-    private createSvgForElement(element: Element): SVGElement {
-        const svg = this.createSvgElement('circle');
-
-        svg.setAttribute('cx', `${element.x}`);
-        svg.setAttribute('cy', `${element.y}`);
-        svg.setAttribute('r', '25');
-        svg.setAttribute('fill', 'black');
-
-        element.registerSvg(svg);
-
         return svg;
     }
 
