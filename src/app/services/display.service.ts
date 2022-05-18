@@ -42,11 +42,11 @@ export class DisplayService implements OnDestroy {
             let el = new Element();
             el.x = 0;
             el.y = 0;
-            let rect = new Element();
-            rect.x = 0;
-            rect.y = 0;
-            rect.type = ElementType.rect;
-            graphEvents.push(new GraphEvent(ev.activity, [el, rect])); 
+            let box = new Element();
+            box.x = 0;
+            box.y = 0;
+            box.type = ElementType.box;
+            graphEvents.push(new GraphEvent(ev.activity, [box, el])); 
         })
         return graphEvents;
     }

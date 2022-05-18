@@ -1,6 +1,6 @@
 export enum ElementType {
     text,
-    rect,
+    box,
 }
 
 export class Element {

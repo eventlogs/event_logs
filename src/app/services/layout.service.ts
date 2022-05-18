@@ -22,14 +22,9 @@ export class LayoutService {
             trace.svgElements[0].y = trace.svgElements[0].y + LayoutService.YOFFSET + y * LayoutService.YSTEP;
             x++;
             trace.events.forEach( (el) => {
-                el.svgElements.forEach( (svg => {
-                    if ( svg.type === ElementType.text ) {
-                        svg.x = svg.x + LayoutService.XOFFSET + x * LayoutService.XSTEP;
-                        svg.y = svg.y + LayoutService.YOFFSET + y * LayoutService.YSTEP;                                           
-                    } else if ( svg.type === ElementType.rect ) {
-                        svg.x = svg.x + LayoutService.XOFFSET + x * LayoutService.XSTEP;
-                        svg.y = svg.y + LayoutService.YOFFSET/2 + y * LayoutService.YSTEP;        
-                    }
+                el.svgElements.forEach( (svg => { 
+                        svg.x = svg.x + LayoutService.XOFFSET + (x -0.5) * LayoutService.XSTEP;
+                        svg.y = svg.y + LayoutService.YOFFSET + y * LayoutService.YSTEP;                                       
                 }))
 
                 x++;
