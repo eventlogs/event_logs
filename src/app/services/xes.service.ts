@@ -10,9 +10,6 @@ var format = require('xml-formatter');
 })
 export class XesService {
 
-    constructor() {
-    }
-
     /**
      * Wandelt die intern verwendete Repräsentation in ein XES formattierten String um
      *
@@ -20,52 +17,52 @@ export class XesService {
      * @return XES formattierter String
      */
     public generate(eventLog: EventLog): string {
-        let xesString = '<?xml version="1.0" encoding="UTF-8" ?>'
-        xesString += '<log xes.version="2.0">'
+        let xesString = '<?xml version="1.0" encoding="UTF-8" ?>';
+        xesString += '<log xes.version="2.0">';
         eventLog.traces.forEach(trace => {
-            xesString += this.getTraceRepresentation(trace)
+            xesString += this.getTraceRepresentation(trace);
         });
-        xesString += '</log>'
-        return format(xesString)
+        xesString += '</log>';
+        return format(xesString);
     }
 
     private getTraceRepresentation(trace: Trace): string {
-        let traceString = '<trace>'
-        traceString += '<string key="case-id" value="' + trace.caseId + '" />'
+        let traceString = '<trace>';
+        traceString += '<string key="case-id" value="' + trace.caseId + '" />';
         trace.events.forEach(event => {
-            traceString += this.getEventRepresentation(event)
+            traceString += this.getEventRepresentation(event);
         });
-        traceString += '</trace>'
-        return traceString
+        traceString += '</trace>';
+        return traceString;
     }
 
     private getEventRepresentation(event: Event): string {
-        let eventString = '<event>'
-        eventString += '<string key="activity" value="' + event.activity + '" />'
+        let eventString = '<event>';
+        eventString += '<string key="activity" value="' + event.activity + '" />';
         event.attributes.forEach(attribute => {
-            eventString += this.getAttributeRepresentation(attribute)
+            eventString += this.getAttributeRepresentation(attribute);
         });
-        eventString += '</event>'
-        return eventString
+        eventString += '</event>';
+        return eventString;
     }
 
     private getAttributeRepresentation(attribute: EventLogAttribute): string {
         if (attribute instanceof StringAttribute) {
-            return '<string key="' + attribute.key + '" value="' + attribute.value + '" />'
+            return '<string key="' + attribute.key + '" value="' + attribute.value + '" />';
         }
         if (attribute instanceof DateAttribute) {
-            return '<date key="' + attribute.key + '" value="' + attribute.value + '" />'
+            return '<date key="' + attribute.key + '" value="' + attribute.value + '" />';
         }
         if (attribute instanceof IntAttribute) {
-            return '<int key="' + attribute.key + '" value="' + attribute.value + '" />'
+            return '<int key="' + attribute.key + '" value="' + attribute.value + '" />';
         }
         if (attribute instanceof FloatAttribute) {
-            return '<float key="' + attribute.key + '" value="' + attribute.value + '" />'
+            return '<float key="' + attribute.key + '" value="' + attribute.value + '" />';
         }
         if (attribute instanceof BooleanAttribute) {
-            return '<boolean key="' + attribute.key + '" value="' + attribute.value + '" />'
+            return '<boolean key="' + attribute.key + '" value="' + attribute.value + '" />';
         }
-        console.error("unknown attribute type")
-        return ""
+        console.error('unknown attribute type');
+        return '';
     }
 }
