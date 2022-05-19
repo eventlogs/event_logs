@@ -51,7 +51,7 @@ export class XesService {
             return '<string key="' + attribute.key + '" value="' + attribute.value + '" />';
         }
         if (attribute instanceof DateAttribute) {
-            return '<date key="' + attribute.key + '" value="' + attribute.value + '" />';
+            return '<date key="' + attribute.key + '" value="' + attribute.value.toISOString() + '" />';
         }
         if (attribute instanceof IntAttribute) {
             return '<int key="' + attribute.key + '" value="' + attribute.value + '" />';
