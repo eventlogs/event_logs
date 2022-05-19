@@ -33,7 +33,7 @@ describe('XesService', () => {
                                 new BooleanAttribute(true, 'booleanValue'),
                                 new IntAttribute(1, 'intValue'),
                                 new FloatAttribute(1.3, 'floatValue'),
-                                new DateAttribute(new Date('2020-01-31 00:00:00'), 'dateValue'),
+                                new DateAttribute(new Date('2020-01-31T12:34:56Z'), 'dateValue'),
                                 new StringAttribute('basadf', 'stringValue'),
                             ],
                             'Auto',
@@ -54,7 +54,7 @@ describe('XesService', () => {
             '<boolean key="booleanValue" value="true" />' +
             '<int key="intValue" value="1" />' +
             '<float key="floatValue" value="1.3" />' +
-            '<date key="dateValue" value="2020-01-30T23:00:00.000Z" />' +
+            '<date key="dateValue" value="2020-01-31T12:34:56.000Z" />' +
             '<string key="stringValue" value="basadf" />' +
             '</event>' +
             '</trace>' +
