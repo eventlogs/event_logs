@@ -39,6 +39,10 @@ export class AppComponent implements OnDestroy {
         }
     }
 
+    updateTextarea(fileContent: string) {
+        this.textareaFc.setValue(fileContent);
+    }
+
     getTextareaValue() {
         return this.textareaFc.value
     }
