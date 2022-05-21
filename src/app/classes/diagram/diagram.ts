@@ -1,17 +1,15 @@
 import {Element} from './element';
+import { GraphTrace } from './GraphTrace';
 
 export class Diagram {
-    private readonly _elements: Array<Element>;
-
-    constructor() {
-        this._elements = [];
+    private readonly _traces: Array<GraphTrace>;
+    
+    public get traces(): Array<GraphTrace> {
+        return this._traces;
     }
 
-    get elements(): Array<Element> {
-        return this._elements;
+    constructor(traces: Array<GraphTrace>) {
+        this._traces = traces;
     }
 
-    public addElement(element: Element): void {
-        this._elements.push(element);
-    }
 }

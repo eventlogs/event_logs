@@ -44,6 +44,27 @@ export class EventLog {
         this._traces = value;
     }
 
+    public get sortedTraces(): Array<Array<Trace>>{
+        let result = new Array<Array<Trace>>();
+
+        this._traces.forEach((trace) => {
+            const index = result.findIndex( (val) => {
+                return JSON.stringify( val[0].events)  ===  JSON.stringify(trace.events);
+            });
+            if ( index == -1 ) {
+                let arr = new Array<Trace>();
+                arr.push(trace);
+                result.push(arr);
+            } else {
+                result[index].push( trace );      // Trace zu den anderen hinzufügen die die gleichen Events haben
+            }
+        });
+        result.sort((a, b) => {
+            return b.length - a.length;
+        })
+        return result;
+    }
+
 
     constructor( classifiers: Array<Classifier>,
         globalEventAttributes: Array<EventLogAttribute>,
