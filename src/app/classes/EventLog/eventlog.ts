@@ -48,7 +48,6 @@ export class EventLog {
         let result = new Array<Array<Trace>>();
 
         this._traces.forEach((trace) => {
-            JSON.stringify(trace.events)
             const index = result.findIndex( (val) => {
                 return JSON.stringify( val[0].events)  ===  JSON.stringify(trace.events);
             });

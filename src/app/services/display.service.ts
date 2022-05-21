@@ -39,13 +39,8 @@ export class DisplayService implements OnDestroy {
         let graphEvents = new Array<GraphEvent>();
         trace.events.forEach( (ev) => {
             // Text und Rechteck für Events erstellen, Koordinaten kommen vom Layoutservice
-            let el = new Element();
-            el.x = 0;
-            el.y = 0;
-            let box = new Element();
-            box.x = 0;
-            box.y = 0;
-            box.type = ElementType.box;
+            let el = new Element( ElementType.text);
+            let box = new Element(ElementType.box);
             graphEvents.push(new GraphEvent(ev.activity, [box, el])); 
         })
         return graphEvents;
@@ -58,10 +53,7 @@ export class DisplayService implements OnDestroy {
             let caseIds = traces.map( (val) => {
                 return val.caseId;
             });
-            let traceCount = new Element();
-            traceCount.x = 0;
-            traceCount.y = 0;
-            traceCount.type = ElementType.text;
+            let traceCount = new Element( ElementType.text);
             let gt = new GraphTrace( this.getEventGraphics(traces[0]), traces.length,[traceCount],caseIds );
             graphTraces.push(gt);
         });

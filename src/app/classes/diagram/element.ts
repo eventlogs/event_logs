@@ -16,10 +16,10 @@ export class Element {
         this._type = value;
     }
 
-    constructor() {
+    constructor( type: ElementType) {
         this._x = 0;
         this._y = 0;
-        this._type = ElementType.text;
+        this._type = type;
     }
 
     get x(): number {
@@ -48,18 +48,8 @@ export class Element {
         };
     }
 
-    private processMouseDown(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
-        this._svgElement.setAttribute('fill', 'red');
-    }
+    private processMouseDown(event: MouseEvent) {}
 
-    private processMouseUp(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
-        this._svgElement.setAttribute('fill', 'black');
-    }
+    private processMouseUp(event: MouseEvent) {}
 
 }
