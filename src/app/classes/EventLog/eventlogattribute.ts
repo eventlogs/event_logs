@@ -1,5 +1,6 @@
 export abstract class EventLogAttribute {
     key: String = '';
+    abstract value: any;
 }
 
 export class StringAttribute extends EventLogAttribute {
@@ -23,6 +24,7 @@ export class DateAttribute extends EventLogAttribute {
 }
 
 export class IntAttribute extends EventLogAttribute {
+
     value: number;
 
     constructor(value: number, key: String) {
@@ -33,6 +35,7 @@ export class IntAttribute extends EventLogAttribute {
 }
 
 export class FloatAttribute extends EventLogAttribute {
+
     value: number;
 
     constructor(value: number, key: String) {
@@ -43,6 +46,7 @@ export class FloatAttribute extends EventLogAttribute {
 }
 
 export class BooleanAttribute extends EventLogAttribute {
+
     value: Boolean;
 
     constructor(value: boolean, key: String) {
@@ -51,3 +55,4 @@ export class BooleanAttribute extends EventLogAttribute {
         this.key = key;
     }
 }
+
