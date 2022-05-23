@@ -51,7 +51,7 @@ export class XesParserService {
     public parse(xmlString: string): EventLog {
         const parser = new xml2js.Parser({strict: false, trim: true});
         let parsedXmlObj = undefined
-        parser.parseString(xmlString, (err, result) => {
+        parser.parseString(xmlString, (err: Error | null, result: any) => {
             if (err == null) {
                 parsedXmlObj = result
             } else {
