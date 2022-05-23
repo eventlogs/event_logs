@@ -1,11 +1,25 @@
+export enum ElementType {
+    text,
+    box,
+}
+
 export class Element {
     private _x: number;
     private _y: number;
     private _svgElement: SVGElement | undefined;
+    private _type: ElementType;
 
-    constructor() {
+    public get type(): ElementType {
+        return this._type;
+    }
+    public set type(value: ElementType) {
+        this._type = value;
+    }
+
+    constructor( type: ElementType) {
         this._x = 0;
         this._y = 0;
+        this._type = type;
     }
 
     get x(): number {
@@ -34,18 +48,8 @@ export class Element {
         };
     }
 
-    private processMouseDown(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
-        this._svgElement.setAttribute('fill', 'red');
-    }
+    private processMouseDown(event: MouseEvent) {}
 
-    private processMouseUp(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
-        this._svgElement.setAttribute('fill', 'black');
-    }
+    private processMouseUp(event: MouseEvent) {}
 
 }
