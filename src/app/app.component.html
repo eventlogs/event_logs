@@ -1,25 +1,26 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
     <!--  Header  -->
-    <a href="https://www.fernuni-hagen.de/ilovepetrinets/"><h1>I <span class="red">❤</span> Petri Nets</h1></a>
+    <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
+        ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+    >
     <h2>Subtitle</h2>
 
     <!--    Main content    -->
     <app-display class="padding full-size"></app-display>
-
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
         <upload-button
             buttonText="Datei importieren"
             buttonIcon="file_upload"
             (newFileUploadedEvent)="updateTextarea($event)"></upload-button>
-        <mat-form-field appearance="outline"
-                        class="textarea">
+        <mat-form-field appearance="outline" class="textarea">
             <mat-label>Source file</mat-label>
-            <textarea matInput
-                      cdkTextareaAutosize
-                      cdkAutosizeMinRows="10"
-                      cdkAutosizeMaxRows="20"
-                      [formControl]="textareaFc"></textarea>
+            <textarea
+                matInput
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="10"
+                cdkAutosizeMaxRows="20"
+                [formControl]="textareaFc"></textarea>
         </mat-form-field>
         <export-button
             buttonText="Export .log"
@@ -27,19 +28,17 @@
             [fileContent]="getTextareaValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.log"
-            [datePrefix]="true"
-        ></export-button>
+            [datePrefix]="true"></export-button>
         <export-button
             buttonText="Export .xes"
             buttonIcon="file_download"
             [fileContent]="getXesValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.xes"
-            [datePrefix]="true"
-        ></export-button>
+            [datePrefix]="true"></export-button>
     </div>
 
     <!--  Footer  -->
-    <hr>
+    <hr />
     <app-footer></app-footer>
 </div>

@@ -1,5 +1,5 @@
-import { EventLogAttribute } from "./eventlogattribute";
-import { Event } from "./event";
+import { EventLogAttribute } from './eventlogattribute';
+import { Event } from './event';
 
 export class Trace {
     private _attributes: Array<EventLogAttribute>;
@@ -27,7 +27,11 @@ export class Trace {
         this._caseId = value;
     }
 
-    constructor( attributes: Array<EventLogAttribute>, events: Array<Event>, caseId: Number) {
+    constructor(
+        attributes: Array<EventLogAttribute>,
+        events: Array<Event>,
+        caseId: Number
+    ) {
         this._attributes = attributes;
         this._events = events;
         this._caseId = caseId;

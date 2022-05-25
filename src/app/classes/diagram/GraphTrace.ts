@@ -1,7 +1,6 @@
 import { Element } from './element';
 import { GraphEvent } from './GraphEvent';
 
-
 export class GraphTrace {
     public get caseIds(): Array<Number> {
         return this._caseIds;
@@ -20,6 +19,6 @@ export class GraphTrace {
         private readonly _events: Array<GraphEvent>,
         private readonly _count: Number,
         private readonly _svgElements: Array<Element>,
-        private readonly _caseIds: Array<Number>) {
-    }
+        private readonly _caseIds: Array<Number>
+    ) {}
 }

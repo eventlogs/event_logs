@@ -16,7 +16,7 @@ export class Element {
         this._type = value;
     }
 
-    constructor( type: ElementType) {
+    constructor(type: ElementType) {
         this._x = 0;
         this._y = 0;
         this._type = type;
@@ -40,10 +40,10 @@ export class Element {
 
     public registerSvg(svg: SVGElement) {
         this._svgElement = svg;
-        this._svgElement.onmousedown = (event) => {
+        this._svgElement.onmousedown = event => {
             this.processMouseDown(event);
         };
-        this._svgElement.onmouseup = (event) => {
+        this._svgElement.onmouseup = event => {
             this.processMouseUp(event);
         };
     }
@@ -51,5 +51,4 @@ export class Element {
     private processMouseDown(event: MouseEvent) {}
 
     private processMouseUp(event: MouseEvent) {}
-
 }

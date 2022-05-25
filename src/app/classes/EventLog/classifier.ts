@@ -15,7 +15,7 @@ export class Classifier {
         this._keys = value;
     }
 
-    constructor( name: string, keys : Array<string>) {
+    constructor(name: string, keys: Array<string>) {
         this._name = name;
         this._keys = keys;
     }

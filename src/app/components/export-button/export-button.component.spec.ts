@@ -7,9 +7,8 @@ describe('ExportButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ExportButtonComponent]
-        })
-            .compileComponents();
+            declarations: [ExportButtonComponent],
+        }).compileComponents();
     });
 
     beforeEach(() => {

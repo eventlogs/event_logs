@@ -1,15 +1,21 @@
 <div fxLayout="column" fxLayoutAlign="start center">
-    {{buttonText}}
-    <input type="file" class="file-input"
-         (change)="handleFileInput($event)" #fileUpload>
-    <div class="interactive-square" fxLayout="row" fxLayoutAlign="center center"
-         appDragDropFileUpload
-         (fileDropped)="readAndEmitFile($event)"
-         (click)="fileUpload.click()"
-         (mouseenter)="hoverStart($event)"
-         (mouseleave)="hoverEnd($event)">
+    {{ buttonText }}
+    <input
+        type="file"
+        class="file-input"
+        (change)="handleFileInput($event)"
+        #fileUpload />
+    <div
+        class="interactive-square"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        appDragDropFileUpload
+        (fileDropped)="readAndEmitFile($event)"
+        (click)="fileUpload.click()"
+        (mouseenter)="hoverStart($event)"
+        (mouseleave)="hoverEnd($event)">
         <mat-icon class="larger-icon">
-            {{buttonIcon}}
+            {{ buttonIcon }}
         </mat-icon>
     </div>
 </div>
