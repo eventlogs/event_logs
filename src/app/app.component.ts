@@ -3,10 +3,9 @@ import { FormControl } from '@angular/forms';
 import { ParserService } from './services/parser.service';
 import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
-import { EventLog } from './classes/EventLog/eventlog';
 import { XesService } from './services/xes.service';
 import { EventlogDataService } from './services/eventlog-data.service';
-import {XesParserService} from "./services/xes-parser.service";
+import { XesParserService } from "./services/xes-parser.service";
 
 @Component({
     selector: 'app-root',
@@ -63,20 +62,22 @@ export class AppComponent implements OnDestroy {
     }
 
     textareaExampleValue() {
-        return ".type log\n" +
-            ".attributes\n" +
-            "case-id\n" +
-            "activity\n" +
-            "booleanValue\n" +
-            "intValue\n" +
-            "floatValue\n" +
-            "dateValue\n" +
-            "stringValue\n" +
-            ".events\n" +
-            "1 Auto true 1 1.3 2020-01-31 basadf\n" +
-            "1 Schiff true 2 2.3 2020-01-31 dasf\n" +
-            "2 BusBus false 3 4.5 2020-01-31 adsf\n" +
-            "2 Bus false 4 6.7 2020-01-31 adfd"
+        return (
+            '.type log\n' +
+            '.attributes\n' +
+            'case-id\n' +
+            'activity\n' +
+            'booleanValue\n' +
+            'intValue\n' +
+            'floatValue\n' +
+            'dateValue\n' +
+            'stringValue\n' +
+            '.events\n' +
+            '1 Auto true 1 1.3 2020-01-31 basadf\n' +
+            '1 Schiff true 2 2.3 2020-01-31 dasf\n' +
+            '2 BusBus false 3 4.5 2020-01-31 adsf\n' +
+            '2 Bus false 4 6.7 2020-01-31 adfd'
+        );
     }
 
     getXesValue() {

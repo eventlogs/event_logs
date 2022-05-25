@@ -13,7 +13,9 @@
             buttonText="Import .xes"
             buttonIcon="file_upload"
             [permittedFileExtensions]="['xes']"
-            (newFileUploadedEvent)="processXesImport($event)"></app-upload-button>
+            (newFileUploadedEvent)="
+                processXesImport($event)
+            "></app-upload-button>
         <app-upload-button
             buttonText="Import .log"
             buttonIcon="file_upload"

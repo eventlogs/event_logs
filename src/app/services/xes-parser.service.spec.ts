@@ -1,13 +1,15 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {XesParserService} from './xes-parser.service';
-import {expect} from "@angular/flex-layout/_private-utils/testing";
-import {EventLog} from "../classes/EventLog/eventlog";
-import {Trace} from "../classes/EventLog/trace";
-import {Event} from "../classes/EventLog/event";
-import {FloatAttribute, StringAttribute} from "../classes/EventLog/eventlogattribute";
-import {Classifier} from "../classes/EventLog/classifier";
-
+import { XesParserService } from './xes-parser.service';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { EventLog } from '../classes/EventLog/eventlog';
+import { Trace } from '../classes/EventLog/trace';
+import { Event } from '../classes/EventLog/event';
+import {
+    FloatAttribute,
+    StringAttribute,
+} from '../classes/EventLog/eventlogattribute';
+import { Classifier } from '../classes/EventLog/classifier';
 
 describe('XmlParserService', () => {
     let service: XesParserService;
@@ -22,16 +24,20 @@ describe('XmlParserService', () => {
     });
 
     it('should throw error on invalid xes-file', () => {
-        expect(() => service.parse("INVALID")).toThrow(XesParserService.PARSING_ERROR)
+        expect(() => service.parse('INVALID')).toThrow(
+            XesParserService.PARSING_ERROR
+        );
     });
 
     it('should parse empty xes-file', () => {
-        expect(service.parse("<log ></log>")).toEqual(new EventLog([], [], [], [], []))
+        expect(service.parse('<log ></log>')).toEqual(
+            new EventLog([], [], [], [], [])
+        );
     });
 
     it('should parse simple xes-file', () => {
-
-        const xesString = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+        const xesString =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<log xmlns="http://some/awesome/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xes.version="1849.2016" xes.features="nested-attributes" xsi:schemaLocation="http://some/awesome/schema file:///C:/Users/noahb/Desktop/XES/xes_certification_import_logs/XES%20certification%20import%20logs/Real-life/xes.xsd">\n' +
             '   <global scope="trace">\n' +
             '      <string key="concept:name" value="UNKNOWN" />\n' +
@@ -55,37 +61,62 @@ describe('XmlParserService', () => {
             '         <string key="org:group" value="Org line A2" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
-            '</log>\n'
+            '</log>\n';
 
         const expected = new EventLog(
-            [new Classifier("Activity classifier", ["concept:name", "lifecycle:transition"])],
+            [
+                new Classifier('Activity classifier', [
+                    'concept:name',
+                    'lifecycle:transition',
+                ]),
+            ],
             [],
-            [new StringAttribute("UNKNOWN", "concept:name")],
-            [new Trace(
-                [new StringAttribute("1-147898401", "concept:name")],
-                [
-                    new Event(
-                        [
-                            new StringAttribute("Baden gehen", "activity"),
-                            new StringAttribute("A2_2", "org:role")
-                        ],
-                        "Baden gehen"), // TODO -> Undefined hier eigentlich unpassend
-                    new Event([new StringAttribute("Org line A2", "org:group")],
-                        undefined!)], // TODO -> Undefined hier eigentlich unpassend
-                0),
-                new Trace([],
-                    [new Event([new StringAttribute("Org line A2", "org:group")], undefined!)],
-                    1)],
-            [new FloatAttribute(19.944, "meta_org:resource_events_standard_deviation"),
-                new FloatAttribute(2.538, "10609")])
+            [new StringAttribute('UNKNOWN', 'concept:name')],
+            [
+                new Trace(
+                    [new StringAttribute('1-147898401', 'concept:name')],
+                    [
+                        new Event(
+                            [
+                                new StringAttribute('Baden gehen', 'activity'),
+                                new StringAttribute('A2_2', 'org:role'),
+                            ],
+                            'Baden gehen'
+                        ), // TODO -> Undefined hier eigentlich unpassend
+                        new Event(
+                            [new StringAttribute('Org line A2', 'org:group')],
+                            undefined!
+                        ),
+                    ], // TODO -> Undefined hier eigentlich unpassend
+                    0
+                ),
+                new Trace(
+                    [],
+                    [
+                        new Event(
+                            [new StringAttribute('Org line A2', 'org:group')],
+                            undefined!
+                        ),
+                    ],
+                    1
+                ),
+            ],
+            [
+                new FloatAttribute(
+                    19.944,
+                    'meta_org:resource_events_standard_deviation'
+                ),
+                new FloatAttribute(2.538, '10609'),
+            ]
+        );
 
         const result = service.parse(xesString);
-        expect(result).toEqual(expected)
+        expect(result).toEqual(expected);
     });
 
     it('should parse complex xes-file', () => {
-
-        const xesString = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+        const xesString =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<log xmlns="http://some/awesome/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xes.version="1849.2016" xes.features="nested-attributes" xsi:schemaLocation="http://some/awesome/schema file:///C:/Users/noahb/Desktop/XES/xes_certification_import_logs/XES%20certification%20import%20logs/Real-life/xes.xsd">\n' +
             '  <extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>\n' +
             '  <extension name="MetaData_Concept" prefix="meta_concept" uri="http://www.xes-standard.org/meta_concept.xesext"/>\n' +
@@ -181,16 +212,15 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
-            '</log>\n'
+            '</log>\n';
 
-
-        const result = service.parse(xesString)
-        expect(result.attributes.length).toBe(10)
-        expect(result.traces.length).toBe(2)
-        expect(result.traces[0].events.length).toBe(4)
-        expect(result.traces[1].events.length).toBe(3)
-        expect(result.classifiers.length).toBe(5)
-        expect(result.globalEventAttributes.length).toBe(7)
-        expect(result.globalTraceAttributes.length).toBe(1)
+        const result = service.parse(xesString);
+        expect(result.attributes.length).toBe(10);
+        expect(result.traces.length).toBe(2);
+        expect(result.traces[0].events.length).toBe(4);
+        expect(result.traces[1].events.length).toBe(3);
+        expect(result.classifiers.length).toBe(5);
+        expect(result.globalEventAttributes.length).toBe(7);
+        expect(result.globalTraceAttributes.length).toBe(1);
     });
 });

@@ -4,6 +4,7 @@ export abstract class EventLogAttribute {
 }
 
 export class StringAttribute extends EventLogAttribute {
+
     value: String;
 
     constructor(value: String, key: String) {
@@ -14,6 +15,7 @@ export class StringAttribute extends EventLogAttribute {
 }
 
 export class DateAttribute extends EventLogAttribute {
+
     value: Date;
 
     constructor(value: Date, key: String) {

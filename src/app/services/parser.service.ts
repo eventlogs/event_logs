@@ -29,7 +29,7 @@ export class ParserService {
     private readonly _activityElement = 'activity';
 
     /**
-     * Liest einen String im .type log Format ein, das von XXX und Jakub Kovar definiert wurde und wandelt es in die
+     * Liest einen String im .type log Format ein, das von Robin Bergenthum und Jakub Kovar definiert wurde und wandelt es in die
      * intern verwendete Repräsentation als {@link EventLog} um
      *
      * @param text String im .type log Format, der geparst werden soll

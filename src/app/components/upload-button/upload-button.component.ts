@@ -37,9 +37,17 @@ export class UploadButtonComponent {
     }
 
     readAndEmitFile(file: File) {
-        let actualFileExtension = file.name.split(".").pop() as string;
-        if (this.permittedFileExtensions?.indexOf(actualFileExtension.toLowerCase()) == -1) {
-            alert('Nur Dateien vom Typ ' + this.permittedFileExtensions.map(ext => '.' + ext) + ' werden derzeit unterstützt');
+        let actualFileExtension = file.name.split('.').pop() as string;
+        if (
+            this.permittedFileExtensions?.indexOf(
+                actualFileExtension.toLowerCase()
+            ) == -1
+        ) {
+            alert(
+                'Nur Dateien vom Typ ' +
+                    this.permittedFileExtensions.map(ext => '.' + ext) +
+                    ' werden derzeit unterstützt'
+            );
             return;
         }
         let fileReader = new FileReader();
