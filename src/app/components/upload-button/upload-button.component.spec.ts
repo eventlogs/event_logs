@@ -1,5 +1,5 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {UploadButtonComponent} from './upload-button.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { UploadButtonComponent } from './upload-button.component';
 
 describe('UploadButtonComponent', () => {
     let component: UploadButtonComponent;
@@ -7,9 +7,8 @@ describe('UploadButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [UploadButtonComponent]
-        })
-            .compileComponents();
+            declarations: [UploadButtonComponent],
+        }).compileComponents();
     });
 
     beforeEach(() => {
@@ -35,13 +34,13 @@ describe('UploadButtonComponent', () => {
     it('should emit event with file content', () => {
         const element = fixture.nativeElement;
         const input = element.querySelector('.file-input');
-        const dataTransfer = new DataTransfer()
+        const dataTransfer = new DataTransfer();
         dataTransfer.items.add(new File([exampleFileContent], 'test-file.txt'));
         input.files = dataTransfer.files;
 
         component.newFileUploadedEvent.subscribe((fileContent: string) => {
             expect(fileContent).toBe(exampleFileContent);
-        })
+        });
         input.dispatchEvent(new Event('change'));
     });
 
@@ -49,15 +48,17 @@ describe('UploadButtonComponent', () => {
         const element = fixture.nativeElement;
         const input = element.querySelector('.file-input');
 
-        const dataTransfer = new DataTransfer()
-        dataTransfer.items.add(new File([''], 'test-file.xes'))
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(new File([''], 'test-file.xes'));
         input.files = dataTransfer.files;
 
-        spyOn(window, "alert");
+        spyOn(window, 'alert');
 
         input.dispatchEvent(new InputEvent('change'));
 
-        expect(window.alert).toHaveBeenCalledWith('Nur Textdateien vom Typ .log werden derzeit unterstützt');
+        expect(window.alert).toHaveBeenCalledWith(
+            'Nur Textdateien vom Typ .log werden derzeit unterstützt'
+        );
     });
 
     const exampleFileContent = '.type log\n.events\ne1 a\ne2 b\n.arcs\ne1 2';

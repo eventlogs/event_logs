@@ -1,23 +1,16 @@
-import {
-    Component,
-    Input,
-    Output,
-    EventEmitter,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'upload-button',
+    selector: 'app-upload-button',
     templateUrl: './upload-button.component.html',
-    styleUrls: ['./upload-button.component.scss']
+    styleUrls: ['./upload-button.component.scss'],
 })
 export class UploadButtonComponent {
-
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
     @Output() newFileUploadedEvent = new EventEmitter<string>();
 
-    constructor() {
-    }
+    constructor() {}
 
     prevent(e: Event) {
         e.preventDefault();
@@ -26,13 +19,13 @@ export class UploadButtonComponent {
 
     hoverStart(e: MouseEvent) {
         this.prevent(e);
-        const target = (e.target as HTMLElement);
+        const target = e.target as HTMLElement;
         target.classList.add('mouse-hover');
     }
 
     hoverEnd(e: MouseEvent) {
         this.prevent(e);
-        const target = (e.target as HTMLElement);
+        const target = e.target as HTMLElement;
         target.classList.remove('mouse-hover');
     }
 
@@ -43,9 +36,13 @@ export class UploadButtonComponent {
     }
 
     readAndEmitFile(file: File) {
-        let permittedFileExtensions = ["txt", "log"];
-        let actualFileExtension = file.name.split(".").pop() as string;
-        if (permittedFileExtensions.indexOf(actualFileExtension.toLowerCase()) == -1) {
+        let permittedFileExtensions = ['txt', 'log'];
+        let actualFileExtension = file.name.split('.').pop() as string;
+        if (
+            permittedFileExtensions.indexOf(
+                actualFileExtension.toLowerCase()
+            ) == -1
+        ) {
             alert('Nur Textdateien vom Typ .log werden derzeit unterstützt');
             return;
         }
@@ -53,8 +50,7 @@ export class UploadButtonComponent {
         fileReader.onload = () => {
             let fileContent = fileReader.result as string;
             this.newFileUploadedEvent.emit(fileContent);
-        }
+        };
         fileReader.readAsText(file);
     }
-
 }

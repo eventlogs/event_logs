@@ -1,6 +1,6 @@
-import { EventLogAttribute } from "./eventlogattribute"
-import { Classifier } from "./classifier";
-import { Trace } from "./trace";
+import { EventLogAttribute } from './eventlogattribute';
+import { Classifier } from './classifier';
+import { Trace } from './trace';
 
 export class EventLog {
     private _classifiers: Array<Classifier>;
@@ -44,33 +44,37 @@ export class EventLog {
         this._traces = value;
     }
 
-    public get sortedTraces(): Array<Array<Trace>>{
+    public get sortedTraces(): Array<Array<Trace>> {
         let result = new Array<Array<Trace>>();
 
-        this._traces.forEach((trace) => {
-            const index = result.findIndex( (val) => {
-                return JSON.stringify( val[0].events)  ===  JSON.stringify(trace.events);
+        this._traces.forEach(trace => {
+            const index = result.findIndex(val => {
+                return (
+                    JSON.stringify(val[0].events) ===
+                    JSON.stringify(trace.events)
+                );
             });
-            if ( index == -1 ) {
+            if (index == -1) {
                 let arr = new Array<Trace>();
                 arr.push(trace);
                 result.push(arr);
             } else {
-                result[index].push( trace );      // Trace zu den anderen hinzufügen die die gleichen Events haben
+                result[index].push(trace); // Trace zu den anderen hinzufügen die die gleichen Events haben
             }
         });
         result.sort((a, b) => {
             return b.length - a.length;
-        })
+        });
         return result;
     }
 
-
-    constructor( classifiers: Array<Classifier>,
+    constructor(
+        classifiers: Array<Classifier>,
         globalEventAttributes: Array<EventLogAttribute>,
         globalTraceAttributes: Array<EventLogAttribute>,
-        traces : Array<Trace>,
-        attributes: Array<EventLogAttribute>) {
+        traces: Array<Trace>,
+        attributes: Array<EventLogAttribute>
+    ) {
         this._classifiers = classifiers;
         this._globalEventAttributes = globalEventAttributes;
         this._globalTraceAttributes = globalTraceAttributes;

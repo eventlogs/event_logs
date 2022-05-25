@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Event } from '../classes/EventLog/event';
 import { EventLog } from '../classes/EventLog/eventlog';
-import { BooleanAttribute, DateAttribute, EventLogAttribute, FloatAttribute, IntAttribute, StringAttribute } from '../classes/EventLog/eventlogattribute';
+import {
+    BooleanAttribute,
+    DateAttribute,
+    EventLogAttribute,
+    FloatAttribute,
+    IntAttribute,
+    StringAttribute,
+} from '../classes/EventLog/eventlogattribute';
 import { Trace } from '../classes/EventLog/trace';
 var format = require('xml-formatter');
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class XesService {
-
     /**
      * Wandelt die intern verwendete Repräsentation in ein XES formattierten String um
      *
@@ -38,7 +44,8 @@ export class XesService {
 
     private getEventRepresentation(event: Event): string {
         let eventString = '<event>';
-        eventString += '<string key="activity" value="' + event.activity + '" />';
+        eventString +=
+            '<string key="activity" value="' + event.activity + '" />';
         event.attributes.forEach(attribute => {
             eventString += this.getAttributeRepresentation(attribute);
         });
@@ -48,19 +55,49 @@ export class XesService {
 
     private getAttributeRepresentation(attribute: EventLogAttribute): string {
         if (attribute instanceof StringAttribute) {
-            return '<string key="' + attribute.key + '" value="' + attribute.value + '" />';
+            return (
+                '<string key="' +
+                attribute.key +
+                '" value="' +
+                attribute.value +
+                '" />'
+            );
         }
         if (attribute instanceof DateAttribute) {
-            return '<date key="' + attribute.key + '" value="' + attribute.value.toISOString() + '" />';
+            return (
+                '<date key="' +
+                attribute.key +
+                '" value="' +
+                attribute.value.toISOString() +
+                '" />'
+            );
         }
         if (attribute instanceof IntAttribute) {
-            return '<int key="' + attribute.key + '" value="' + attribute.value + '" />';
+            return (
+                '<int key="' +
+                attribute.key +
+                '" value="' +
+                attribute.value +
+                '" />'
+            );
         }
         if (attribute instanceof FloatAttribute) {
-            return '<float key="' + attribute.key + '" value="' + attribute.value + '" />';
+            return (
+                '<float key="' +
+                attribute.key +
+                '" value="' +
+                attribute.value +
+                '" />'
+            );
         }
         if (attribute instanceof BooleanAttribute) {
-            return '<boolean key="' + attribute.key + '" value="' + attribute.value + '" />';
+            return (
+                '<boolean key="' +
+                attribute.key +
+                '" value="' +
+                attribute.value +
+                '" />'
+            );
         }
         console.error('unknown attribute type');
         return '';

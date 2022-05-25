@@ -1,6 +1,5 @@
 import { Element } from './element';
 
-
 export class GraphEvent {
     public get svgElements(): Array<Element> {
         return this._svgElements;
@@ -10,6 +9,6 @@ export class GraphEvent {
     }
     constructor(
         private readonly _activity: String,
-        private readonly _svgElements: Array<Element>) {
-    }
+        private readonly _svgElements: Array<Element>
+    ) {}
 }

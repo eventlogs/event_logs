@@ -1,9 +1,9 @@
-import {Element} from './element';
+import { Element } from './element';
 import { GraphTrace } from './GraphTrace';
 
 export class Diagram {
     private readonly _traces: Array<GraphTrace>;
-    
+
     public get traces(): Array<GraphTrace> {
         return this._traces;
     }
@@ -11,5 +11,4 @@ export class Diagram {
     constructor(traces: Array<GraphTrace>) {
         this._traces = traces;
     }
-
 }

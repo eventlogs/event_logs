@@ -1,9 +1,9 @@
-import { EventLogAttribute } from "./eventlogattribute";
+import { EventLogAttribute } from './eventlogattribute';
 
 export class Event {
     private _attributes: Array<EventLogAttribute>;
     private _activity: String;
-    
+
     public get attributes(): Array<EventLogAttribute> {
         return this._attributes;
     }
@@ -18,7 +18,7 @@ export class Event {
         this._activity = value;
     }
 
-    constructor( attributes: Array<EventLogAttribute>, activity: string) {
+    constructor(attributes: Array<EventLogAttribute>, activity: string) {
         this._activity = activity;
         this._attributes = attributes;
     }

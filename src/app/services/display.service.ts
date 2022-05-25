@@ -1,18 +1,17 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Diagram } from '../classes/diagram/diagram';
-import { GraphTrace } from "../classes/diagram/GraphTrace";
-import { GraphEvent } from "../classes/diagram/GraphEvent";
+import { GraphTrace } from '../classes/diagram/GraphTrace';
+import { GraphEvent } from '../classes/diagram/GraphEvent';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Event } from '../classes/EventLog/event';
 import { Element, ElementType } from '../classes/diagram/element';
 import { Trace } from '../classes/EventLog/trace';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class DisplayService implements OnDestroy {
-
     private _diagram$: BehaviorSubject<Diagram>;
 
     constructor() {
@@ -35,35 +34,39 @@ export class DisplayService implements OnDestroy {
         this._diagram$.next(net);
     }
 
-    private getEventGraphics(trace: Trace) : GraphEvent[] {
+    private getEventGraphics(trace: Trace): GraphEvent[] {
         let graphEvents = new Array<GraphEvent>();
-        trace.events.forEach( (ev) => {
+        trace.events.forEach(ev => {
             // Text und Rechteck für Events erstellen, Koordinaten kommen vom Layoutservice
-            let el = new Element( ElementType.text);
+            let el = new Element(ElementType.text);
             let box = new Element(ElementType.box);
-            graphEvents.push(new GraphEvent(ev.activity, [box, el])); 
-        })
+            graphEvents.push(new GraphEvent(ev.activity, [box, el]));
+        });
         return graphEvents;
     }
 
-    private convertEventLogToDiagram(log: EventLog) : Diagram {
-        let traces = log.sortedTraces
+    private convertEventLogToDiagram(log: EventLog): Diagram {
+        let traces = log.sortedTraces;
         let graphTraces = new Array<GraphTrace>();
-        traces.forEach((traces) => {
-            let caseIds = traces.map( (val) => {
+        traces.forEach(traces => {
+            let caseIds = traces.map(val => {
                 return val.caseId;
             });
-            let traceCount = new Element( ElementType.text);
-            let gt = new GraphTrace( this.getEventGraphics(traces[0]), traces.length,[traceCount],caseIds );
+            let traceCount = new Element(ElementType.text);
+            let gt = new GraphTrace(
+                this.getEventGraphics(traces[0]),
+                traces.length,
+                [traceCount],
+                caseIds
+            );
             graphTraces.push(gt);
         });
 
-        return new Diagram( graphTraces );
+        return new Diagram(graphTraces);
     }
 
     public displayEventLog(log: EventLog) {
-        let net = this.convertEventLogToDiagram( log);
+        let net = this.convertEventLogToDiagram(log);
         this._diagram$.next(net);
     }
-
 }
