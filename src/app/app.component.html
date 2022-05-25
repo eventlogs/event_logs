@@ -9,10 +9,10 @@
     <app-display class="padding full-size"></app-display>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <upload-button
+        <app-upload-button
             buttonText="Datei importieren"
             buttonIcon="file_upload"
-            (newFileUploadedEvent)="updateTextarea($event)"></upload-button>
+            (newFileUploadedEvent)="updateTextarea($event)"></app-upload-button>
         <mat-form-field appearance="outline" class="textarea">
             <mat-label>Source file</mat-label>
             <textarea
@@ -22,20 +22,20 @@
                 cdkAutosizeMaxRows="20"
                 [formControl]="textareaFc"></textarea>
         </mat-form-field>
-        <export-button
+        <app-export-button
             buttonText="Export .log"
             buttonIcon="file_download"
             [fileContent]="getTextareaValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.log"
-            [datePrefix]="true"></export-button>
-        <export-button
+            [datePrefix]="true"></app-export-button>
+        <app-export-button
             buttonText="Export .xes"
             buttonIcon="file_download"
             [fileContent]="getXesValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.xes"
-            [datePrefix]="true"></export-button>
+            [datePrefix]="true"></app-export-button>
     </div>
 
     <!--  Footer  -->

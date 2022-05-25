@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'upload-button',
+    selector: 'app-upload-button',
     templateUrl: './upload-button.component.html',
     styleUrls: ['./upload-button.component.scss'],
 })

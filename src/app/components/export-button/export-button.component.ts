@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { saveAs } from 'file-saver';
 
 @Component({
-    selector: 'export-button',
+    selector: 'app-export-button',
     templateUrl: './export-button.component.html',
     styleUrls: ['./export-button.component.scss'],
 })
