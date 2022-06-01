@@ -13,6 +13,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { DragDropFileUploadDirective } from './drag-drop-file-upload.directive';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
+import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { ExportButtonComponent } from './components/export-button/export-button.
         UploadButtonComponent,
         DragDropFileUploadDirective,
         ExportButtonComponent,
+        DirectlyFollowsGraphComponent,
     ],
     imports: [
         BrowserModule,

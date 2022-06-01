@@ -5,6 +5,7 @@ import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { EventLog } from './classes/EventLog/eventlog';
 import { XesService } from './services/xes.service';
+import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
 
 @Component({
     selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnDestroy {
     constructor(
         private _parserService: ParserService,
         private _displayService: DisplayService,
+        private _direclyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService
     ) {
         this.textareaFc = new FormControl();
@@ -40,6 +42,9 @@ export class AppComponent implements OnDestroy {
         if (result !== undefined) {
             this.eventLog = result;
             this._displayService.displayEventLog(result);
+            this._direclyFollowsGraphService.displayDirectlyFollowsGraph(
+                result
+            );
         }
     }
 
