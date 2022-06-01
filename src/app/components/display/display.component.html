@@ -1,1 +1,7 @@
-<svg #drawingArea class="canvas"></svg>
+<div #drawingScroll class="canvasScroll">
+    <svg
+        #drawingArea
+        class="canvas"
+        [style.height.px]="height"
+        [style.width.%]="width"></svg>
+</div>
