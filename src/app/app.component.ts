@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ParserService } from './services/parser.service';
 import { DisplayService } from './services/display.service';
@@ -14,9 +14,7 @@ import { DirectlyFollowsGraphService } from './services/directly-follows-graph/d
 })
 export class AppComponent implements OnDestroy {
     public textareaFc: FormControl;
-
     private _sub: Subscription;
-
     private eventLog: EventLog;
 
     constructor(
@@ -46,6 +44,10 @@ export class AppComponent implements OnDestroy {
                 result
             );
         }
+    }
+
+    switchView() {
+        console.log("switch...");
     }
 
     updateTextarea(fileContent: string) {
