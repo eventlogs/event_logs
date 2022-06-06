@@ -80,7 +80,7 @@ export class ParserService {
             eventLine.split(' ').map(attributeValue => attributeValue.trim())
         );
 
-        const dictCaseIdentifierToTrace: Map<Number, Trace> = new Map();
+        const dictCaseIdentifierToTrace: Map<number, Trace> = new Map();
         asTable.forEach(eventLine => {
             if (
                 eventLine[headers.indexOf(this._caseIdElement)] === undefined ||

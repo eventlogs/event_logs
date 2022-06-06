@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Input,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
 import { DisplayService } from '../../services/display.service';
 import { Subscription } from 'rxjs';
 import { LayoutService } from '../../services/layout.service';
@@ -15,6 +21,8 @@ export class DisplayComponent implements OnDestroy {
 
     private _sub: Subscription;
     private _diagram: Diagram | undefined;
+    private _subSelectedTraces: Subscription;
+    private _selectedTraceCaseIds: Array<number> = [];
 
     constructor(
         private _layoutService: LayoutService,
@@ -26,10 +34,18 @@ export class DisplayComponent implements OnDestroy {
             this._layoutService.layout(this._diagram);
             this.draw();
         });
+        this._subSelectedTraces =
+            this._displayService.selectedTraceCaseIds$.subscribe(
+                selectedTraceCaseIds => {
+                    this._selectedTraceCaseIds = selectedTraceCaseIds;
+                    this.draw();
+                }
+            );
     }
 
     ngOnDestroy(): void {
         this._sub.unsubscribe();
+        this._subSelectedTraces.unsubscribe();
     }
 
     private draw() {
@@ -40,7 +56,8 @@ export class DisplayComponent implements OnDestroy {
 
         this.clearDrawingArea();
         const elements = this._svgService.createSvgElements(
-            this._displayService.diagram
+            this._displayService.diagram,
+            this._selectedTraceCaseIds
         );
         for (const element of elements) {
             this.drawingArea.nativeElement.appendChild(element);
