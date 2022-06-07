@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {EventLog} from '../classes/EventLog/eventlog';
-import {Event} from '../classes/EventLog/event';
-import {Trace} from '../classes/EventLog/trace';
+import { Injectable } from '@angular/core';
+import { EventLog } from '../classes/EventLog/eventlog';
+import { Event } from '../classes/EventLog/event';
+import { Trace } from '../classes/EventLog/trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -19,7 +19,7 @@ export class LogParserService {
         'given .type log string can not be parsed'
     );
 
-    private readonly _undefinedValue = '\'\''
+    private readonly _undefinedValue = "''";
 
     private readonly _typeLogElement = '.type log';
     private readonly _attributesElement = '.attributes';
@@ -29,8 +29,7 @@ export class LogParserService {
     private readonly _activityElement = 'activity';
     private readonly _escapeString = "'";
 
-    constructor() {
-    }
+    constructor() {}
 
     private static indexOfTokenIfExists(
         lines: string[],
@@ -64,8 +63,7 @@ export class LogParserService {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(text: string): EventLog {
-
-        if (text.trim() === "") {
+        if (text.trim() === '') {
             return new EventLog([], [], [], [], []);
         }
 
@@ -109,13 +107,17 @@ export class LogParserService {
     }
 
     private parseTraces(headers: string[], eventLines: string[]): Trace[] {
-        const asTable = eventLines.map(eventLine => this.splitEventLineString(eventLine));
+        const asTable = eventLines.map(eventLine =>
+            this.splitEventLineString(eventLine)
+        );
 
         const dictCaseIdentifierToTrace: Map<number, Trace> = new Map();
         asTable.forEach(eventLineSplit => {
             if (
-                eventLineSplit[headers.indexOf(this._caseIdElement)] === undefined ||
-                eventLineSplit[headers.indexOf(this._activityElement)] === undefined
+                eventLineSplit[headers.indexOf(this._caseIdElement)] ===
+                    undefined ||
+                eventLineSplit[headers.indexOf(this._activityElement)] ===
+                    undefined
             ) {
                 throw LogParserService.PARSING_ERROR;
             }
@@ -133,8 +135,14 @@ export class LogParserService {
                             header
                         )
                 )
-                .filter(header => headers.indexOf(header) < eventLineSplit.length)
-                .filter(header => eventLineSplit[headers.indexOf(header)] !== this._undefinedValue)
+                .filter(
+                    header => headers.indexOf(header) < eventLineSplit.length
+                )
+                .filter(
+                    header =>
+                        eventLineSplit[headers.indexOf(header)] !==
+                        this._undefinedValue
+                )
                 .map(header =>
                     LogParserService.eventLogAttributeOf(
                         header,
@@ -157,40 +165,51 @@ export class LogParserService {
     }
 
     private splitEventLineString(eventLine: string): string[] {
-        let lineSplit = []
-        while (eventLine !== "") {
-            let startIndex: number
-            let endIndex: number | undefined
-            let nextIndex: number | undefined
+        let lineSplit = [];
+        while (eventLine !== '') {
+            let startIndex: number;
+            let endIndex: number | undefined;
+            let nextIndex: number | undefined;
             if (eventLine.startsWith(this._undefinedValue)) {
-                lineSplit.push(this._undefinedValue)
-                eventLine = eventLine.slice(this._undefinedValue.length + 1)
-                continue
+                lineSplit.push(this._undefinedValue);
+                eventLine = eventLine.slice(this._undefinedValue.length + 1);
+                continue;
             } else if (eventLine.startsWith(this._escapeString)) {
-                startIndex = 1
-                for (let actIndex = startIndex; actIndex < eventLine.length; actIndex++) {
-                    if (eventLine.charAt(actIndex) == this._escapeString && eventLine.charAt(actIndex - 1) !== "\\") {
+                startIndex = 1;
+                for (
+                    let actIndex = startIndex;
+                    actIndex < eventLine.length;
+                    actIndex++
+                ) {
+                    if (
+                        eventLine.charAt(actIndex) == this._escapeString &&
+                        eventLine.charAt(actIndex - 1) !== '\\'
+                    ) {
                         endIndex = actIndex;
-                        nextIndex = endIndex + 2
+                        nextIndex = endIndex + 2;
                         break;
                     }
                 }
                 if (endIndex === undefined || nextIndex === undefined) {
-                    throw LogParserService.PARSING_ERROR
+                    throw LogParserService.PARSING_ERROR;
                 }
             } else {
-                startIndex = 0
-                if (eventLine.indexOf(" ") === -1) {
-                    endIndex = eventLine.length
+                startIndex = 0;
+                if (eventLine.indexOf(' ') === -1) {
+                    endIndex = eventLine.length;
                 } else {
-                    endIndex = eventLine.indexOf(" ")
+                    endIndex = eventLine.indexOf(' ');
                 }
-                nextIndex = endIndex + 1
+                nextIndex = endIndex + 1;
             }
-            lineSplit.push(eventLine.slice(startIndex, endIndex).replace(new RegExp("\\\\'", 'g'), "'"))
-            eventLine = eventLine.slice(nextIndex)
+            lineSplit.push(
+                eventLine
+                    .slice(startIndex, endIndex)
+                    .replace(new RegExp("\\\\'", 'g'), "'")
+            );
+            eventLine = eventLine.slice(nextIndex);
         }
-        return lineSplit
+        return lineSplit;
     }
 
     private static eventLogAttributeOf(

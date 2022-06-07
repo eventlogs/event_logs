@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as xml2js from 'xml2js';
-import {EventLog} from '../classes/EventLog/eventlog';
-import {Event} from '../classes/EventLog/event';
-import {Trace} from '../classes/EventLog/trace';
+import { EventLog } from '../classes/EventLog/eventlog';
+import { Event } from '../classes/EventLog/event';
+import { Trace } from '../classes/EventLog/trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -11,7 +11,7 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../classes/EventLog/eventlogattribute';
-import {Classifier} from '../classes/EventLog/classifier';
+import { Classifier } from '../classes/EventLog/classifier';
 
 @Injectable({
     providedIn: 'root',
@@ -21,8 +21,7 @@ export class XesParserService {
         'given xes string can not be parsed'
     );
 
-    constructor() {
-    }
+    constructor() {}
 
     private readonly _logToken = 'LOG';
     private readonly _attributesToken = '$';
@@ -60,7 +59,7 @@ export class XesParserService {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(xmlString: string): EventLog {
-        const parser = new xml2js.Parser({strict: false, trim: true});
+        const parser = new xml2js.Parser({ strict: false, trim: true });
         let parsedXmlObj = undefined;
         parser.parseString(xmlString, (err: Error | null, result: any) => {
             if (err == null) {
@@ -86,9 +85,11 @@ export class XesParserService {
         const logObj = result[this._logToken];
 
         const logElements = this.readElementsOfAttribute(logObj);
-        const extensions = this.convertToExtensions(logObj[this._extensionToken]);
+        const extensions = this.convertToExtensions(
+            logObj[this._extensionToken]
+        );
         if (logElements == null || extensions == null) {
-            throw XesParserService.PARSING_ERROR
+            throw XesParserService.PARSING_ERROR;
         }
 
         const classifiers = this.convertToClassifiers(
@@ -285,10 +286,10 @@ export class XesParserService {
             default:
                 console.error(
                     'unknown attribute type ' +
-                    type +
-                    ' with value ' +
-                    value +
-                    ' will be ignored'
+                        type +
+                        ' with value ' +
+                        value +
+                        ' will be ignored'
                 );
                 return undefined;
         }

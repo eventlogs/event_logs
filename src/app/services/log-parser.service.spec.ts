@@ -1,7 +1,7 @@
-import {TestBed} from '@angular/core/testing';
-import {LogParserService} from './log-parser.service';
-import {expect} from '@angular/flex-layout/_private-utils/testing';
-import {Event} from '../classes/EventLog/event';
+import { TestBed } from '@angular/core/testing';
+import { LogParserService } from './log-parser.service';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { Event } from '../classes/EventLog/event';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,8 +9,8 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../classes/EventLog/eventlogattribute';
-import {Trace} from '../classes/EventLog/trace';
-import {EventLog} from '../classes/EventLog/eventlog';
+import { Trace } from '../classes/EventLog/trace';
+import { EventLog } from '../classes/EventLog/eventlog';
 
 describe('LogParserService', () => {
     let service: LogParserService;
@@ -108,28 +108,29 @@ describe('LogParserService', () => {
             'string key\n' +
             'other string key\n' +
             '.events\n' +
-            '1 \'Bus \\\' fahren\' \'string value\'\n' +
-            '1 \'Kart fahren\' \'\' otherstring\\\'value';
+            "1 'Bus \\' fahren' 'string value'\n" +
+            "1 'Kart fahren' '' otherstring\\'value";
 
         const expectedTraces = [
             new Trace(
                 [],
                 [
                     new Event(
-                        [
-                            new StringAttribute('string value', 'string key'),
-                        ],
-                        'Bus \' fahren'
+                        [new StringAttribute('string value', 'string key')],
+                        "Bus ' fahren"
                     ),
                     new Event(
                         [
-                            new StringAttribute('otherstring\'value', 'other string key'),
+                            new StringAttribute(
+                                "otherstring'value",
+                                'other string key'
+                            ),
                         ],
                         'Kart fahren'
                     ),
                 ],
                 1
-            )
+            ),
         ];
 
         expect(service.parse(testLogText)).toEqual(

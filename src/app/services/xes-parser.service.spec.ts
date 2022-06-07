@@ -1,12 +1,15 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {XesParserService} from './xes-parser.service';
-import {expect} from '@angular/flex-layout/_private-utils/testing';
-import {EventLog} from '../classes/EventLog/eventlog';
-import {Trace} from '../classes/EventLog/trace';
-import {Event} from '../classes/EventLog/event';
-import {FloatAttribute, StringAttribute,} from '../classes/EventLog/eventlogattribute';
-import {Classifier} from '../classes/EventLog/classifier';
+import { XesParserService } from './xes-parser.service';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { EventLog } from '../classes/EventLog/eventlog';
+import { Trace } from '../classes/EventLog/trace';
+import { Event } from '../classes/EventLog/event';
+import {
+    FloatAttribute,
+    StringAttribute,
+} from '../classes/EventLog/eventlogattribute';
+import { Classifier } from '../classes/EventLog/classifier';
 
 describe('XmlParserService', () => {
     let service: XesParserService;
@@ -84,8 +87,12 @@ describe('XmlParserService', () => {
                         ),
                         new Event(
                             [
-                                new StringAttribute('Schwimmen gehen', 'activity'),
-                                new StringAttribute('Org line A2', 'org:group')],
+                                new StringAttribute(
+                                    'Schwimmen gehen',
+                                    'activity'
+                                ),
+                                new StringAttribute('Org line A2', 'org:group'),
+                            ],
                             'Schwimmen gehen'
                         ),
                     ],
@@ -97,8 +104,9 @@ describe('XmlParserService', () => {
                         new Event(
                             [
                                 new StringAttribute('Laufen gehen', 'activity'),
-                                new StringAttribute('Org line A2', 'org:group')],
-                            "Laufen gehen"
+                                new StringAttribute('Org line A2', 'org:group'),
+                            ],
+                            'Laufen gehen'
                         ),
                     ],
                     1

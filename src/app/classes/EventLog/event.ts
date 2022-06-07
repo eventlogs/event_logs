@@ -1,4 +1,4 @@
-import {EventLogAttribute} from './eventlogattribute';
+import { EventLogAttribute } from './eventlogattribute';
 
 export class Event {
     private _attributes: Array<EventLogAttribute>;
@@ -20,7 +20,9 @@ export class Event {
     }
 
     public getAttribute(key: string): any {
-        return this._attributes.filter(attribute => key === attribute.key.toString())[0]
+        return this._attributes.filter(
+            attribute => key === attribute.key.toString()
+        )[0];
     }
 
     constructor(attributes: Array<EventLogAttribute>, activity: string) {
