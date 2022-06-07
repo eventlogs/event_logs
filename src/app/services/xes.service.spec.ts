@@ -4,6 +4,7 @@ import { expect } from '@angular/flex-layout/_private-utils/testing';
 import {
     BooleanAttribute,
     DateAttribute,
+    EventLogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
@@ -12,6 +13,13 @@ import { Event } from '../classes/EventLog/event';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Trace } from '../classes/EventLog/trace';
 var format = require('xml-formatter');
+
+class RandomAttribute extends EventLogAttribute {
+    constructor(key: String) {
+        super();
+        this.key = key;
+    }
+}
 
 describe('XesService', () => {
     let service: XesService;
@@ -44,6 +52,7 @@ describe('XesService', () => {
                                     'dateValue'
                                 ),
                                 new StringAttribute('basadf', 'stringValue'),
+                                new RandomAttribute('do not exist!'),
                             ],
                             'Auto'
                         ),
