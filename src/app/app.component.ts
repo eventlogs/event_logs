@@ -5,6 +5,7 @@ import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { EventLog } from './classes/EventLog/eventlog';
 import { XesService } from './services/xes.service';
+import { EventlogDataService } from './services/eventlog-data.service';
 
 @Component({
     selector: 'app-root',
@@ -13,22 +14,22 @@ import { XesService } from './services/xes.service';
 })
 export class AppComponent implements OnDestroy {
     public textareaFc: FormControl;
-
     private _sub: Subscription;
-
-    private eventLog: EventLog;
 
     constructor(
         private _parserService: ParserService,
         private _displayService: DisplayService,
-        private _xesService: XesService
+        private _xesService: XesService,
+        private _eventlogDataService: EventlogDataService
     ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
             .pipe(debounceTime(400))
             .subscribe(val => this.processSourceChange(val));
         this.textareaFc.setValue(this.textareaExampleValue());
-        this.eventLog = this._parserService.parse(this.textareaExampleValue());
+        this._eventlogDataService.eventLog = this._parserService.parse(
+            this.textareaExampleValue()
+        );
     }
 
     ngOnDestroy(): void {
@@ -38,7 +39,7 @@ export class AppComponent implements OnDestroy {
     private processSourceChange(newSource: string) {
         const result = this._parserService.parse(newSource);
         if (result !== undefined) {
-            this.eventLog = result;
+            this._eventlogDataService.eventLog = result;
             this._displayService.displayEventLog(result);
         }
     }
@@ -69,6 +70,6 @@ stringValue
     }
 
     getXesValue() {
-        return this._xesService.generate(this.eventLog);
+        return this._xesService.generate(this._eventlogDataService.eventLog);
     }
 }
