@@ -52,7 +52,6 @@ describe('XesService', () => {
                                     'dateValue'
                                 ),
                                 new StringAttribute('basadf', 'stringValue'),
-                                new RandomAttribute('do not exist!'),
                             ],
                             'Auto'
                         ),
@@ -81,5 +80,24 @@ describe('XesService', () => {
         );
 
         expect(service.generate(event_log)).toEqual(expected_string);
+    });
+
+    it('should print error to console with unknown EventLogAttribute', () => {
+        let event_log = new EventLog(
+            [],
+            [],
+            [],
+            [
+                new Trace(
+                    [],
+                    [new Event([new RandomAttribute('do not exist!')], 'Auto')],
+                    1
+                ),
+            ],
+            []
+        );
+        spyOn(console, 'error');
+        service.generate(event_log);
+        expect(console.error).toHaveBeenCalled();
     });
 });
