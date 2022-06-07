@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UploadButtonComponent } from './upload-button.component';
 
@@ -8,6 +9,7 @@ describe('UploadButtonComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [UploadButtonComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
