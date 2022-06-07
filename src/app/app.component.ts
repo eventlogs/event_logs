@@ -1,11 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ParserService } from './services/parser.service';
+import { LogParserService } from './services/parser.service';
 import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { XesService } from './services/xes.service';
 import { EventlogDataService } from './services/eventlog-data.service';
 import { XesParserService } from "./services/xes-parser.service";
+import { LogService } from "./services/log.service";
+
 
 @Component({
     selector: 'app-root',
@@ -16,12 +18,14 @@ export class AppComponent implements OnDestroy {
     public textareaFc: FormControl;
     private _sub: Subscription;
 
-
-    constructor(private _logParserService: ParserService,
-                private _xesParserService: XesParserService,
-                private _displayService: DisplayService,
-                private _xesService: XesService,
-                private _eventlogDataService: EventlogDataService) {
+    constructor(
+        private _logParserService: LogParserService,
+        private _xesParserService: XesParserService,
+        private _displayService: DisplayService,
+        private _logService: LogService,
+        private _xesService: XesService,
+        private _eventlogDataService: EventlogDataService) {
+    ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
             .pipe(debounceTime(400))
@@ -48,7 +52,7 @@ export class AppComponent implements OnDestroy {
         const result = this._xesParserService.parse(fileContent);
         if (result !== undefined) {
             this._eventlogDataService.eventLog = result;
-            this.updateTextarea("Umwandlung in .log Darstellung ist noch nicht implementiert") // TODO
+            this.updateTextarea(this._logService.generate(result));
             this._displayService.displayEventLog(result);
         }
     }

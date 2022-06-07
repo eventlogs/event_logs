@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as xml2js from 'xml2js';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Event } from '../classes/EventLog/event';
-import { Trace } from '../classes/EventLog/trace';
+import {EventLog} from '../classes/EventLog/eventlog';
+import {Event} from '../classes/EventLog/event';
+import {Trace} from '../classes/EventLog/trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -11,7 +11,7 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../classes/EventLog/eventlogattribute';
-import { Classifier } from '../classes/EventLog/classifier';
+import {Classifier} from '../classes/EventLog/classifier';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +21,8 @@ export class XesParserService {
         'given xes string can not be parsed'
     );
 
-    constructor() {}
+    constructor() {
+    }
 
     private readonly _logToken = 'LOG';
     private readonly _attributesToken = '$';
@@ -59,7 +60,7 @@ export class XesParserService {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(xmlString: string): EventLog {
-        const parser = new xml2js.Parser({ strict: false, trim: true });
+        const parser = new xml2js.Parser({strict: false, trim: true});
         let parsedXmlObj = undefined;
         parser.parseString(xmlString, (err: Error | null, result: any) => {
             if (err == null) {
@@ -83,10 +84,13 @@ export class XesParserService {
             return new EventLog([], [], [], [], []);
         }
         const logObj = result[this._logToken];
-        const logElements = this.readElementsOfAttribute(logObj); // TODO -> Nutzen?? > Sachen wie XES.VERSION, OPENXES.VERSION, XES.FEATURES, XMLNS, XMLNS:XSI,  XSI:SCHEMALOCATION etc.
-        const extensions = this.convertToExtensions(
-            logObj[this._extensionToken]
-        ); // TODO -> Nutzen ?? Aktuell Array, dass jeweils eine Extension mit Keys (NAME, PREFIX, URI) enthält
+
+        const logElements = this.readElementsOfAttribute(logObj);
+        const extensions = this.convertToExtensions(logObj[this._extensionToken]);
+        if (logElements == null || extensions == null) {
+            throw XesParserService.PARSING_ERROR
+        }
+
         const classifiers = this.convertToClassifiers(
             logObj[this._classifierToken]
         );
@@ -213,8 +217,10 @@ export class XesParserService {
                     this._activityEventLogAttributeKey
             )
             .map(eventLogAttribute => eventLogAttribute.value);
-        const activity = activityArr.length === 1 ? activityArr[0] : undefined; // TODO -> Passt hier undefined??!! oder gar kein Event returnen??!!
-        return new Event(eventLogAttributes, activity);
+        if (activityArr.length !== 1) {
+            throw XesParserService.PARSING_ERROR;
+        }
+        return new Event(eventLogAttributes, activityArr[0]);
     }
 
     private extractEventLogAttributes(eventObj: any): EventLogAttribute[] {
@@ -279,10 +285,10 @@ export class XesParserService {
             default:
                 console.error(
                     'unknown attribute type ' +
-                        type +
-                        ' with value ' +
-                        value +
-                        ' will be ignored'
+                    type +
+                    ' with value ' +
+                    value +
+                    ' will be ignored'
                 );
                 return undefined;
         }

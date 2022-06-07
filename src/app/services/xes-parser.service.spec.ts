@@ -1,15 +1,12 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { XesParserService } from './xes-parser.service';
-import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Trace } from '../classes/EventLog/trace';
-import { Event } from '../classes/EventLog/event';
-import {
-    FloatAttribute,
-    StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
-import { Classifier } from '../classes/EventLog/classifier';
+import {XesParserService} from './xes-parser.service';
+import {expect} from '@angular/flex-layout/_private-utils/testing';
+import {EventLog} from '../classes/EventLog/eventlog';
+import {Trace} from '../classes/EventLog/trace';
+import {Event} from '../classes/EventLog/event';
+import {FloatAttribute, StringAttribute,} from '../classes/EventLog/eventlogattribute';
+import {Classifier} from '../classes/EventLog/classifier';
 
 describe('XmlParserService', () => {
     let service: XesParserService;
@@ -53,11 +50,13 @@ describe('XmlParserService', () => {
             '         <string key="org:role" value="A2_2" />\n' +
             '      </event>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Schwimmen gehen" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
             '   <trace>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Laufen gehen" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
@@ -82,20 +81,24 @@ describe('XmlParserService', () => {
                                 new StringAttribute('A2_2', 'org:role'),
                             ],
                             'Baden gehen'
-                        ), // TODO -> Undefined hier eigentlich unpassend
-                        new Event(
-                            [new StringAttribute('Org line A2', 'org:group')],
-                            undefined!
                         ),
-                    ], // TODO -> Undefined hier eigentlich unpassend
+                        new Event(
+                            [
+                                new StringAttribute('Schwimmen gehen', 'activity'),
+                                new StringAttribute('Org line A2', 'org:group')],
+                            'Schwimmen gehen'
+                        ),
+                    ],
                     0
                 ),
                 new Trace(
                     [],
                     [
                         new Event(
-                            [new StringAttribute('Org line A2', 'org:group')],
-                            undefined!
+                            [
+                                new StringAttribute('Laufen gehen', 'activity'),
+                                new StringAttribute('Org line A2', 'org:group')],
+                            "Laufen gehen"
                         ),
                     ],
                     1
@@ -110,8 +113,7 @@ describe('XmlParserService', () => {
             ]
         );
 
-        const result = service.parse(xesString);
-        expect(result).toEqual(expected);
+        expect(service.parse(xesString)).toEqual(expected);
     });
 
     it('should parse complex xes-file', () => {
@@ -152,6 +154,7 @@ describe('XmlParserService', () => {
             '   <trace>\n' +
             '      <string key="concept:name" value="1-147898401" />\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="concept:name" value="Accepted" />\n' +
@@ -161,6 +164,7 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="concept:name" value="Accepted" />\n' +
@@ -170,6 +174,7 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="concept:name" value="Accepted" />\n' +
@@ -179,6 +184,7 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="Wait" />\n' +
             '      </event>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="concept:name" value="Accepted" />\n' +
@@ -191,6 +197,7 @@ describe('XmlParserService', () => {
             '   <trace>\n' +
             '      <string key="concept:name" value="1-165554831" />\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="concept:name" value="Accepted" />\n' +
@@ -200,6 +207,7 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
@@ -207,6 +215,7 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="Wait" />\n' +
             '      </event>\n' +
             '      <event>\n' +
+            '         <string key="activity" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <date key="time:timestamp" value="2011-09-03T07:10:53+02:00" />\n' +
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
