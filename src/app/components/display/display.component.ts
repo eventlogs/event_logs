@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { LayoutService } from '../../services/layout.service';
 import { SvgService } from '../../services/svg.service';
 import { Diagram } from '../../classes/diagram/diagram';
-import { IfStmt } from '@angular/compiler';
 
 @Component({
     selector: 'app-display',
@@ -17,8 +16,8 @@ export class DisplayComponent implements OnDestroy {
 
     private _sub: Subscription;
     private _diagram: Diagram | undefined;
-    public height: Number = 390;
-    public width: Number = 100;
+    public heightPx: Number = 390;
+    public widthPercent: Number = 100;
 
     constructor(
         private _layoutService: LayoutService,
@@ -28,7 +27,7 @@ export class DisplayComponent implements OnDestroy {
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
             let pixelWidth = 0;
-            [pixelWidth, this.height] = this._layoutService.layout(
+            [pixelWidth, this.heightPx] = this._layoutService.layout(
                 this._diagram
             );
             this.calcWidth(pixelWidth);
@@ -41,7 +40,7 @@ export class DisplayComponent implements OnDestroy {
 
     private calcWidth(pixelWidth: number) {
         if (this.drawingScroll != undefined) {
-            this.width =
+            this.widthPercent =
                 (pixelWidth / this.drawingScroll?.nativeElement.clientWidth) *
                 100;
         }
