@@ -17,10 +17,11 @@ export class ExportButtonComponent {
     constructor() {}
 
     processMouseClick(e: MouseEvent) {
-        let fileName = this.fileName;
-        if (this.datePrefix) {
-            fileName = new Date().toLocaleString() + '_' + fileName;
-        }
-        saveAs(new Blob([this.fileContent], { type: this.fileType }), fileName);
+        saveAs(
+            new Blob([this.fileContent], { type: this.fileType }),
+            this.datePrefix
+                ? new Date().toLocaleString() + '_'
+                : '' + this.fileName
+        );
     }
 }
