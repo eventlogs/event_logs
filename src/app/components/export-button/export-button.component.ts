@@ -19,9 +19,8 @@ export class ExportButtonComponent {
     processMouseClick(e: MouseEvent) {
         saveAs(
             new Blob([this.fileContent], { type: this.fileType }),
-            this.datePrefix
-                ? new Date().toLocaleString() + '_'
-                : '' + this.fileName
+            (this.datePrefix ? new Date().toLocaleString() + '_' : '') +
+                this.fileName
         );
     }
 }
