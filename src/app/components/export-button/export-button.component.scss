@@ -7,7 +7,7 @@
     margin-top: 14px;
 }
 
-.mouse-hover {
+.interactive-square:hover {
     border-color: black;
     cursor: pointer;
 }
@@ -19,6 +19,6 @@
     color: dimgrey;
 }
 
-.mouse-hover .larger-icon {
+.interactive-square:hover .larger-icon {
     color: black;
 }
