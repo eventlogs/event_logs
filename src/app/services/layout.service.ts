@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Diagram } from '../classes/diagram/diagram';
-import { ElementType } from '../classes/diagram/element';
 
 @Injectable({
     providedIn: 'root',
@@ -11,9 +10,11 @@ export class LayoutService {
     private static readonly XSTEP = 150;
     private static readonly YSTEP = 50;
 
-    public layout(diagram: Diagram): void {
+    // Ordnet die Elemente des Diagrams an und gibt die maximalen Ausmaße der Zeichnung zurück
+    public layout(diagram: Diagram): [number, number] {
         let x = 0;
         let y = 0;
+        let xMax = 0;
 
         diagram.traces.forEach(trace => {
             trace.svgElements[0].x =
@@ -37,8 +38,25 @@ export class LayoutService {
 
                 x++;
             });
+            if (x > xMax) {
+                xMax = x;
+            }
             x = 0;
             y++;
         });
+
+        return this.calculateLayoutSize(xMax, y);
+    }
+
+    private calculateLayoutSize(xMax: number, y: number): [number, number] {
+        // Halbe Stepsize wird wieder abgezogen da die Elemente in der Zeichnug ihren Nullpunkt in der Mitte haben
+        return [
+            LayoutService.XOFFSET +
+                xMax * LayoutService.XSTEP -
+                (xMax > 0 ? LayoutService.XSTEP / 2 : 0),
+            LayoutService.YOFFSET +
+                y * LayoutService.YSTEP -
+                (y > 0 ? LayoutService.YSTEP / 2 : 0),
+        ];
     }
 }
