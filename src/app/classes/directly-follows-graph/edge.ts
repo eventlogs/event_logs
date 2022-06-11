@@ -5,8 +5,9 @@ export class Edge {
     private _startVertex: Vertex;
     private _endVertex: Vertex;
     private _activityCount: number;
+    private _svgElement: SVGElement | undefined;
 
-    public get startVertice(): Vertex {
+    public get startVertex(): Vertex {
         return this._startVertex;
     }
     public set startVertex(value: Vertex) {
@@ -27,9 +28,29 @@ export class Edge {
         this._activityCount = value;
     }
 
+    public get svgElement(): SVGElement | undefined {
+        return this._svgElement;
+    }
+
+    public set svgElement(svgElement: SVGElement | undefined) {
+        this._svgElement = svgElement;
+        if (this._svgElement != undefined) {
+            this._svgElement.onmousedown = event => {
+                this.processMouseDown(event);
+            };
+            this._svgElement.onmouseup = event => {
+                this.processMouseUp(event);
+            };
+        }
+    }
+
     constructor(startVertex: Vertex, endVertex: Vertex, activityCount: number) {
         this._startVertex = startVertex;
         this._endVertex = endVertex;
         this._activityCount = activityCount;
     }
+
+    private processMouseDown(event: MouseEvent) {}
+
+    private processMouseUp(event: MouseEvent) {}
 }

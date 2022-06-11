@@ -40,20 +40,22 @@ export class DirectlyFollowsGraphService implements OnDestroy {
                 let event: Event = traces[0].events[i];
 
                 //Überprüft, ob der Knoten bereits vorhanden ist, bzw. ob ein neuer Knoten erstellt werden muss.
-                let vertex: Vertex | undefined = vertices.find(vertex => {
-                    vertex.activityName === event.activity;
-                });
+                let vertex: Vertex | undefined = vertices.find(
+                    vertex => vertex.activityName === event.activity
+                );
+
                 if (vertex !== undefined) vertex.activityCount += traces.length;
                 else vertices.push(new Vertex(event.activity, traces.length));
 
                 //Überprüft, ob zwischen den letzten beiden Events bereits eine Kante vorhanden ist, bzw. ob eine neue Kante erstellt werden muss.
-                if (i > 1) {
+                if (i >= 1) {
                     let previousEvent: Event = traces[0].events[i - 1];
-                    let edge: Edge | undefined = edges.find(edge => {
-                        edge.startVertex.activityName ===
-                            previousEvent.activity &&
-                            edge.endVertex.activityName === event.activity;
-                    });
+                    let edge: Edge | undefined = edges.find(
+                        edge =>
+                            edge.startVertex?.activityName ===
+                                previousEvent.activity &&
+                            edge.endVertex.activityName === event.activity
+                    );
                     if (edge !== undefined) edge.activityCount += traces.length;
                     else {
                         let startVertex: Vertex | undefined = vertices.find(
