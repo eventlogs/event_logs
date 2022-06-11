@@ -121,8 +121,8 @@ export class Vertex {
         edges.forEach(e => {
             //Kanten verlaufen in die selbe Richtung
             if (
-                edge.startVertex === e.startVertex ||
-                edge.endVertex === e.endVertex
+                edge.startVertex.layer < edge.endVertex.layer ===
+                e.startVertex.layer < e.endVertex.layer
             ) {
                 if (
                     (this === e.startVertex &&
@@ -141,8 +141,8 @@ export class Vertex {
                         edge.startVertex.getSvgElementXValue() >=
                             e.endVertex.getSvgElementXValue()) ||
                     (this === e.endVertex &&
-                        edge.startVertex.getSvgElementXValue() >=
-                            e.endVertex.getSvgElementXValue())
+                        edge.endVertex.getSvgElementXValue() >=
+                            e.startVertex.getSvgElementXValue())
                 )
                     position++;
             }
