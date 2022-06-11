@@ -80,6 +80,7 @@ export class Vertex {
         return y;
     }
 
+    //Gibt alle Kanten mit Knoten niedrigerer Ebenen zurück
     public getLowerLayerEdges(edges: Edge[]): Edge[] {
         let lowerLayerEdges: Edge[] = [];
 
@@ -96,6 +97,7 @@ export class Vertex {
         return lowerLayerEdges;
     }
 
+    //Gibt alle Kanten mit Knoten höherer Ebenen zurück
     public getUpperLayerEdges(edges: Edge[]): Edge[] {
         let upperLayerEdges: Edge[] = [];
 
@@ -112,10 +114,12 @@ export class Vertex {
         return upperLayerEdges;
     }
 
+    //Berechnet die Position einer Kante zu den anderen Kanten
     public calculateEdgePosition(edge: Edge, edges: Edge[]): number {
         let position = 1;
 
         edges.forEach(e => {
+            //Kanten verlaufen in die selbe Richtung
             if (
                 edge.startVertex === e.startVertex ||
                 edge.endVertex === e.endVertex
@@ -129,7 +133,9 @@ export class Vertex {
                             e.startVertex.getSvgElementXValue())
                 )
                     position++;
-            } else {
+            }
+            //Kanten verlaufen in gegengesetzte Richtungen
+            else {
                 if (
                     (this === e.startVertex &&
                         edge.startVertex.getSvgElementXValue() >=
@@ -140,6 +146,8 @@ export class Vertex {
                 )
                     position++;
             }
+
+            //Verlaufen zwischen 2 Knoten Kanten in beide Richtungen, positioniere eine Kante weiter links
             if (
                 (edge.startVertex == this &&
                     edge.endVertex == e.startVertex &&

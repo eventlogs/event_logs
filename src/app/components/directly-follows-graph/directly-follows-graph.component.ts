@@ -44,8 +44,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this._displayService.graph
         );
         for (const svgElement of svgElements) {
-            let element =
-                this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
+            this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
     }
 

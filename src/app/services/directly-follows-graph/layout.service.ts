@@ -4,6 +4,7 @@ import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 @Injectable({
     providedIn: 'root',
 })
+//Platzhalter für Sugiyama Algorithmus
 export class LayoutService {
     private readonly layerValues = [1, 2, 2, 3, 3, 4];
     private readonly positionValues = [160, 10, 310, 10, 310, 160];

@@ -29,7 +29,7 @@ export class SvgService {
             result.push(container);
         });
 
-        //Pfeilspitzen für Kanten erstellen
+        //Pfeilspitze für Kanten erstellen
         let arrow = this.createArrow();
         result.push(arrow);
 
@@ -57,6 +57,7 @@ export class SvgService {
         let svg = this.createSvgElement('svg');
 
         svg.setAttribute('x', vertex.position.toString());
+        //Setze Abstand zwischen den Ebenen
         let y = 50 + this.layerOffset * (vertex.layer - 1);
         svg.setAttribute('y', y.toString());
         svg.setAttribute('width', this.rectWidth.toString());
@@ -75,6 +76,7 @@ export class SvgService {
         rect.setAttribute('width', this.rectWidth.toString());
         rect.setAttribute('height', this.rectHeight.toString());
         rect.setAttribute('fill', 'rgb(150, 150, 150)');
+        //Setze höhere Füllstärke, für häufiger vorkommende Knoten
         let fillOpacity =
             0.1 + 0.8 * (vertex.activityCount / this.activityCount);
         rect.setAttribute('fill-opacity', fillOpacity.toString());
@@ -100,6 +102,21 @@ export class SvgService {
         );
 
         return text;
+    }
+
+    private createTspanForText(text: string, offset: number): SVGElement {
+        let tspan = this.createSvgElement('tspan');
+
+        tspan.setAttribute('x', (this.rectWidth / 2).toString());
+        tspan.setAttribute('dy', (this.rectHeight * offset).toString());
+        tspan.setAttribute('width', `100%`);
+        tspan.setAttribute('height', `100%`);
+        tspan.setAttribute('text-anchor', `middle`);
+        tspan.setAttribute('dominant-baseline', `middle`);
+
+        tspan.textContent = text;
+
+        return tspan;
     }
 
     private createArrow(): SVGElement {
@@ -138,7 +155,17 @@ export class SvgService {
             edge.startVertex.activityName +
             edge.endVertex.activityName;
         path.setAttribute('id', id);
+        path.setAttribute('d', this.setCoordinates(edge, edges));
+        path.setAttribute('marker-end', 'url(#marker)');
+        path.setAttribute('stroke-width', '1');
+        path.setAttribute('stroke', 'black');
 
+        edge.svgElement = path;
+
+        return path;
+    }
+
+    private setCoordinates(edge: Edge, edges: Edge[]) {
         let startX = 0;
         let startY = 0;
         let endX = 0;
@@ -148,7 +175,7 @@ export class SvgService {
         let startYOffset = 0;
         let endYOffset = 0;
 
-        //Setze Kante basierend auf den Ebenen
+        //Setze Koordinaten basierend auf den Ebenen
         if (edge.startVertex.layer < edge.endVertex.layer) {
             let upperLayerEdges = edge.startVertex.getUpperLayerEdges(edges);
             startXOffset =
@@ -187,31 +214,7 @@ export class SvgService {
         let coordinates =
             'M ' + startX + ' ' + startY + ' L ' + endX + ' ' + endY;
 
-        path.setAttribute('d', coordinates);
-
-        path.setAttribute('marker-end', 'url(#marker)');
-
-        path.setAttribute('stroke-width', '1');
-        path.setAttribute('stroke', 'black');
-
-        edge.svgElement = path;
-
-        return path;
-    }
-
-    private createTspanForText(text: string, offset: number): SVGElement {
-        let tspan = this.createSvgElement('tspan');
-
-        tspan.setAttribute('x', (this.rectWidth / 2).toString());
-        tspan.setAttribute('dy', (this.rectHeight * offset).toString());
-        tspan.setAttribute('width', `100%`);
-        tspan.setAttribute('height', `100%`);
-        tspan.setAttribute('text-anchor', `middle`);
-        tspan.setAttribute('dominant-baseline', `middle`);
-
-        tspan.textContent = text;
-
-        return tspan;
+        return coordinates;
     }
 
     private createTextForEdge(edge: Edge): SVGElement {
