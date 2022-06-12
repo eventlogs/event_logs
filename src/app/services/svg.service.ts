@@ -19,6 +19,9 @@ export class SvgService {
         'rgb(54, 142, 189)',
     ];
 
+    private readonly font = '15px Courier';
+    private readonly maxFontWidth = 120;
+
     private activityColorMap = new Map<String, number>();
 
     /// Erstellt alle benötigten SVGElemente für ein gegebenes Diagram
@@ -36,7 +39,7 @@ export class SvgService {
                 ev.svgElements.forEach(svgEl => {
                     if (svgEl.type === ElementType.text) {
                         const text = this.createSvgForText(
-                            ev.svgElements[0],
+                            ev.svgElements[1],
                             ev.activity
                         );
                         result.push(text);
@@ -45,11 +48,11 @@ export class SvgService {
                             this.activityColorMap.set(
                                 ev.activity,
                                 this.activityColorMap.size %
-                                    this.backgroundColors.length
+                                this.backgroundColors.length
                             ); // Wenn die Map größer ist als Size Farben recyclen
                         }
                         const rect = this.createBoxForElement(
-                            ev.svgElements[1],
+                            ev.svgElements[0],
                             this.activityColorMap.get(ev.activity)!
                         );
                         result.push(rect);
@@ -79,12 +82,43 @@ export class SvgService {
 
     private createSvgForText(element: Element, text: String): SVGElement {
         const svg = this.createSvgElement('text');
-        svg.setAttribute('x', `${element.x}`);
-        svg.setAttribute('y', `${element.y}`);
-        svg.setAttribute('font', 'bold 30px sans-serif');
-        svg.textContent = text.toString();
+        svg.setAttribute('x', `${element.x - 5}`);
+        svg.setAttribute('y', `${element.y - 4}`);
+        let stringWidth = this.GetStringWidth(text);
+        if (stringWidth > this.maxFontWidth) {
+            let pos = Math.round(
+                (this.maxFontWidth / stringWidth) * text.length
+            );
+            const svg1 = this.createSvgElement('tspan');
+            svg1.setAttribute('font', this.font);
+            svg1.textContent = text.substring(0, pos).toString();
+            const svg2 = this.createSvgElement('tspan');
+            svg2.setAttribute('font', this.font);
+            if (stringWidth > this.maxFontWidth * 2) {
+                svg2.textContent = text.substring(pos, pos * 2).toString();
+            } else {
+                svg2.textContent = text.substring(pos).toString();
+            }
+            svg2.setAttribute('x', `${element.x - 5}`);
+            svg2.setAttribute('dy', '20px');
+            svg.appendChild(svg1);
+            svg.appendChild(svg2);
+        } else {
+            svg.setAttribute('font', this.font);
+            svg.textContent = text.toString();
+        }
         element.registerSvg(svg);
         return svg;
+    }
+
+    private GetStringWidth(text: String): number {
+        var canvas = document.createElement('canvas');
+        canvas.setAttribute('width', '100%');
+        canvas.setAttribute('height', '380px');
+        var ctx = canvas.getContext('2d');
+        ctx!.font = this.font;
+        var strWidth = ctx!.measureText(text.toString()).width;
+        return strWidth;
     }
 
     private createSvgElement(name: string): SVGElement {
