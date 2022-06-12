@@ -31,6 +31,8 @@ describe('Log.ServiceService', () => {
                                 new StringAttribute('Group 1', 'org:group'),
                                 new StringAttribute('Role 1', 'org:role'),
                                 new StringAttribute("Name ' 1", 'org:name'),
+                                new StringAttribute('', 'ignoredAttributeEmptyValue'),
+                                new StringAttribute('ignoredAttributeEmptyKey', ''),
                             ],
                             'Baden'
                         ),
@@ -52,7 +54,8 @@ describe('Log.ServiceService', () => {
                             'Lesen'
                         ),
                         new Event(
-                            [new StringAttribute('Other Value 4', 'org:other')],
+                            [
+                                new StringAttribute('Other Value 4', 'org:other')],
                             'Lesen'
                         ),
                     ],

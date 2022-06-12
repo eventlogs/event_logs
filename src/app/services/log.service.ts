@@ -31,7 +31,7 @@ export class LogService {
             return String(attribute);
         }
         if (attribute instanceof StringAttribute) {
-            return attribute.value.toString();
+            return attribute.value;
         }
         if (attribute instanceof DateAttribute) {
             return attribute.value.toISOString();
@@ -81,7 +81,8 @@ export class LogService {
         const attributesWithDuplicates = traces
             .flatMap(trace => trace.events)
             .flatMap(event => event.attributes)
-            .map(attribute => attribute.key.toString())
+            .filter(attribute => attribute.key !== '' && attribute.value !== '')
+            .map(attribute => attribute.key)
             .filter(
                 attributeKey =>
                     ![this._activityElement, this._caseIdElement].includes(
@@ -119,7 +120,7 @@ export class LogService {
         const otherAttributes = attributes.map(attributeKey =>
             event.getAttribute(attributeKey)
         );
-        const eventAttributes = [caseId, event.activity.toString()].concat(
+        const eventAttributes = [caseId, event.activity].concat(
             otherAttributes
         );
         const attributesAsStrings = eventAttributes.map(attribute =>

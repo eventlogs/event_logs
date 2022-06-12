@@ -2,7 +2,7 @@ import { EventLogAttribute } from './eventlogattribute';
 
 export class Event {
     private _attributes: Array<EventLogAttribute>;
-    private _activity: String;
+    private _activity: string;
 
     public get attributes(): Array<EventLogAttribute> {
         return this._attributes;
@@ -11,11 +11,11 @@ export class Event {
         this._attributes = value;
     }
 
-    public get activity(): String {
+    public get activity(): string {
         return this._activity;
     }
 
-    public set activity(value: String) {
+    public set activity(value: string) {
         this._activity = value;
     }
 

@@ -214,14 +214,17 @@ export class XesParserService {
         const activityArr = eventLogAttributes
             .filter(
                 eventLogAttribute =>
-                    eventLogAttribute.key.toLowerCase() ==
+                    eventLogAttribute.key.toLowerCase() ===
                     this._activityEventLogAttributeKey
             )
             .map(eventLogAttribute => eventLogAttribute.value);
         if (activityArr.length !== 1) {
             throw XesParserService.PARSING_ERROR;
         }
-        return new Event(eventLogAttributes, activityArr[0]);
+        const eventLogAttributesWithoutActivity = eventLogAttributes.filter( eventLogAttribute =>
+            eventLogAttribute.key.toLowerCase() !==
+            this._activityEventLogAttributeKey)
+        return new Event(eventLogAttributesWithoutActivity, activityArr[0]);
     }
 
     private extractEventLogAttributes(eventObj: any): EventLogAttribute[] {
@@ -249,6 +252,11 @@ export class XesParserService {
                 (attribute: { [x: string]: any }) =>
                     attribute[this._attributesToken]
             )
+            .filter(
+                (attribute: { [x: string]: any }) =>
+                    attribute[this._valueToken].trim() !== '' &&
+                    attribute[this._keyToken].trim() !== ''
+            )
             .map((attribute: { [x: string]: any }) =>
                 this.buildAttribute(
                     type,
@@ -270,7 +278,7 @@ export class XesParserService {
     private buildAttribute(
         type: string,
         value: any,
-        key: String
+        key: string
     ): EventLogAttribute | undefined {
         switch (type) {
             case this._stringAttributeToken:

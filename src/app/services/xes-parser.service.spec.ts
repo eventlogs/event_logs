@@ -51,6 +51,8 @@ describe('XmlParserService', () => {
             '      <event>\n' +
             '         <string key="activity" value="Baden gehen" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
+            '         <string key="ignoreEmptyValue" value="" />\n' +
+            '         <string key="" value="ignoreEmptyKey" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="activity" value="Schwimmen gehen" />\n' +
@@ -80,18 +82,13 @@ describe('XmlParserService', () => {
                     [
                         new Event(
                             [
-                                new StringAttribute('Baden gehen', 'activity'),
-                                new StringAttribute('A2_2', 'org:role'),
+                                new StringAttribute('A2_2', 'org:role')
                             ],
                             'Baden gehen'
                         ),
                         new Event(
                             [
-                                new StringAttribute(
-                                    'Schwimmen gehen',
-                                    'activity'
-                                ),
-                                new StringAttribute('Org line A2', 'org:group'),
+                                new StringAttribute('Org line A2', 'org:group')
                             ],
                             'Schwimmen gehen'
                         ),
@@ -103,8 +100,7 @@ describe('XmlParserService', () => {
                     [
                         new Event(
                             [
-                                new StringAttribute('Laufen gehen', 'activity'),
-                                new StringAttribute('Org line A2', 'org:group'),
+                                 new StringAttribute('Org line A2', 'org:group')
                             ],
                             'Laufen gehen'
                         ),
