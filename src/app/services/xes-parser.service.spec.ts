@@ -81,15 +81,11 @@ describe('XmlParserService', () => {
                     [new StringAttribute('1-147898401', 'concept:name')],
                     [
                         new Event(
-                            [
-                                new StringAttribute('A2_2', 'org:role')
-                            ],
+                            [new StringAttribute('A2_2', 'org:role')],
                             'Baden gehen'
                         ),
                         new Event(
-                            [
-                                new StringAttribute('Org line A2', 'org:group')
-                            ],
+                            [new StringAttribute('Org line A2', 'org:group')],
                             'Schwimmen gehen'
                         ),
                     ],
@@ -99,9 +95,7 @@ describe('XmlParserService', () => {
                     [],
                     [
                         new Event(
-                            [
-                                 new StringAttribute('Org line A2', 'org:group')
-                            ],
+                            [new StringAttribute('Org line A2', 'org:group')],
                             'Laufen gehen'
                         ),
                     ],
