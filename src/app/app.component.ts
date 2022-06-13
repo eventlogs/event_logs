@@ -46,10 +46,6 @@ export class AppComponent implements OnDestroy {
         }
     }
 
-    switchView() {
-        console.log("switch...");
-    }
-
     updateTextarea(fileContent: string) {
         this.textareaFc.setValue(fileContent);
     }
