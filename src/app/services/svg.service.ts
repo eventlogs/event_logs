@@ -7,18 +7,17 @@ import { Element, ElementType } from '../classes/diagram/element';
 })
 export class SvgService {
     private readonly backgroundColors = [
-        'rgb(206, 57, 57)',
-        'rgb(210, 55, 89)',
-        'rgb(205, 62, 119)',
-        'rgb(193, 76, 146)',
-        'rgb(175, 91, 169)',
-        'rgb(151, 105, 185)',
-        'rgb(125, 117, 195)',
-        'rgb(97, 128, 199)',
-        'rgb(71, 136, 196)',
-        'rgb(54, 142, 189)',
+        'rgb(227, 26, 28)',
+        'rgb(251, 154, 153)',
+        'rgb(254, 191, 111)',
+        'rgb(166, 206, 227)',
+        'rgb(32, 120, 181)',
+        'rgb(125, 227, 183)',
+        'rgb(152, 250, 232, 1)',
+        'rgb(112, 203, 255)',
+        'rgb(227, 175, 166)',
+        'rgb(181, 65, 33)',
     ];
-
     private readonly FONT = '15px sans-Serif';
     private readonly MAXFONTWIDTH = 120;
     private readonly XTEXTOFFSET = 5;
@@ -89,10 +88,7 @@ export class SvgService {
             if (length > this.MAXFONTWIDTH) {
                 for (let j = i; j <= text.length; j++) {
                     let length2 = this.GetStringWidth(text.substring(i, j));
-                    console.log(length2);
                     if (length2 > this.MAXFONTWIDTH) {
-                        console.log(i);
-                        console.log(j);
                         return [
                             text.substring(0, i - 1),
                             text.substring(i, j - 1) + '...',
@@ -112,7 +108,6 @@ export class SvgService {
         let stringWidth = this.GetStringWidth(text);
         if (stringWidth > this.MAXFONTWIDTH) {
             let subStrings = this.getSubStrings(text);
-            console.log(subStrings);
             const svg1 = this.createSvgElement('tspan');
             svg1.setAttribute('font', this.FONT);
             svg1.textContent = subStrings[0].toString();
