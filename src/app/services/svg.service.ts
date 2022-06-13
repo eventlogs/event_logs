@@ -19,8 +19,11 @@ export class SvgService {
         'rgb(54, 142, 189)',
     ];
 
-    private readonly font = '15px Courier';
-    private readonly maxFontWidth = 120;
+    private readonly FONT = '15px sans-Serif';
+    private readonly MAXFONTWIDTH = 120;
+    private readonly XTEXTOFFSET = 5;
+    private readonly YTEXTOFFSET = 4;
+    private readonly YNEXTROWOFFSET = 20;
 
     private activityColorMap = new Map<String, number>();
 
@@ -80,31 +83,48 @@ export class SvgService {
         return svg;
     }
 
+    private getSubStrings(text: String): [String, String] {
+        for (let i = 0; i <= text.length; i++) {
+            let length = this.GetStringWidth(text.substring(0, i));
+            if (length > this.MAXFONTWIDTH) {
+                for (let j = i; j <= text.length; j++) {
+                    let length2 = this.GetStringWidth(text.substring(i, j));
+                    console.log(length2);
+                    if (length2 > this.MAXFONTWIDTH) {
+                        console.log(i);
+                        console.log(j);
+                        return [
+                            text.substring(0, i - 1),
+                            text.substring(i, j - 1) + '...',
+                        ];
+                    }
+                }
+                return [text.substring(0, i - 1), text.substring(i)];
+            }
+        }
+        return [text, ''];
+    }
+
     private createSvgForText(element: Element, text: String): SVGElement {
         const svg = this.createSvgElement('text');
-        svg.setAttribute('x', `${element.x - 5}`);
-        svg.setAttribute('y', `${element.y - 4}`);
+        svg.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
+        svg.setAttribute('y', `${element.y - this.YTEXTOFFSET}`);
         let stringWidth = this.GetStringWidth(text);
-        if (stringWidth > this.maxFontWidth) {
-            let pos = Math.round(
-                (this.maxFontWidth / stringWidth) * text.length
-            );
+        if (stringWidth > this.MAXFONTWIDTH) {
+            let subStrings = this.getSubStrings(text);
+            console.log(subStrings);
             const svg1 = this.createSvgElement('tspan');
-            svg1.setAttribute('font', this.font);
-            svg1.textContent = text.substring(0, pos).toString();
+            svg1.setAttribute('font', this.FONT);
+            svg1.textContent = subStrings[0].toString();
             const svg2 = this.createSvgElement('tspan');
-            svg2.setAttribute('font', this.font);
-            if (stringWidth > this.maxFontWidth * 2) {
-                svg2.textContent = text.substring(pos, pos * 2).toString();
-            } else {
-                svg2.textContent = text.substring(pos).toString();
-            }
-            svg2.setAttribute('x', `${element.x - 5}`);
-            svg2.setAttribute('dy', '20px');
+            svg2.setAttribute('font', this.FONT);
+            svg2.textContent = subStrings[1].toString();
+            svg2.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
+            svg2.setAttribute('dy', `${this.YNEXTROWOFFSET}` + 'px');
             svg.appendChild(svg1);
             svg.appendChild(svg2);
         } else {
-            svg.setAttribute('font', this.font);
+            svg.setAttribute('font', this.FONT);
             svg.textContent = text.toString();
         }
         element.registerSvg(svg);
@@ -116,7 +136,7 @@ export class SvgService {
         canvas.setAttribute('width', '100%');
         canvas.setAttribute('height', '380px');
         var ctx = canvas.getContext('2d');
-        ctx!.font = this.font;
+        ctx!.font = this.FONT;
         var strWidth = ctx!.measureText(text.toString()).width;
         return strWidth;
     }
