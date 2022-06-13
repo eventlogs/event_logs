@@ -50,7 +50,7 @@ export class SvgService {
                             this.activityColorMap.set(
                                 ev.activity,
                                 this.activityColorMap.size %
-                                this.backgroundColors.length
+                                    this.backgroundColors.length
                             ); // Wenn die Map größer ist als Size Farben recyclen
                         }
                         const rect = this.createBoxForElement(
