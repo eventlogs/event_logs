@@ -6,9 +6,11 @@ import { Component } from '@angular/core';
     styleUrls: ['./drawingArea.component.scss'],
 })
 export class DrawingAreaComponent {
+    wertschoepfungsketteHidden: boolean = false;
+    direktfolgegraphHidden: boolean = true;
 
     switchView() {
-        console.log("switch...");
+        this.direktfolgegraphHidden = !this.direktfolgegraphHidden;
+        this.wertschoepfungsketteHidden = !this.wertschoepfungsketteHidden;
     }
-
 }

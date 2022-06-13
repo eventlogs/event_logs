@@ -13,7 +13,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-drop-file-upload.directive';
-import { SwitchViewDirective } from './directives/switch-view/switch-view.directive';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { SwitchViewButtonComponent } from "./components/switch-view-button/switch-view-button.component";
@@ -26,7 +25,6 @@ import { SwitchViewButtonComponent } from "./components/switch-view-button/switc
         FooterComponent,
         UploadButtonComponent,
         DragDropFileUploadDirective,
-        SwitchViewDirective,
         ExportButtonComponent,
         DirectlyFollowsGraphComponent,
         SwitchViewButtonComponent

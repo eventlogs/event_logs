@@ -1,5 +1,5 @@
-<app-wertschoepfungskette class="padding full-size"></app-wertschoepfungskette>
-<app-directly-follows-graph class="padding full-size" #directlyFollowsGraphCanvas></app-directly-follows-graph>
+<app-wertschoepfungskette [hidden]="wertschoepfungsketteHidden" class="padding full-size"></app-wertschoepfungskette>
+<app-directly-follows-graph [hidden]="direktfolgegraphHidden" class="padding full-size"></app-directly-follows-graph>
 <div fxLayout="row" fxLayoutAlign="space-evenly start">
     <app-switch-view-button (switchViewEvent)="switchView()">
     </app-switch-view-button>
