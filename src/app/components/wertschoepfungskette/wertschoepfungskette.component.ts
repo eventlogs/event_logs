@@ -6,11 +6,11 @@ import { SvgService } from '../../services/svg.service';
 import { Diagram } from '../../classes/diagram/diagram';
 
 @Component({
-    selector: 'app-display',
-    templateUrl: './display.component.html',
-    styleUrls: ['./display.component.scss'],
+    selector: 'app-wertschoepfungskette',
+    templateUrl: './wertschoepfungskette.component.html',
+    styleUrls: ['./wertschoepfungskette.component.scss'],
 })
-export class DisplayComponent implements OnDestroy {
+export class WertschoepfungsketteComponent implements OnDestroy {
     @ViewChild('drawingArea') drawingArea: ElementRef<SVGElement> | undefined;
 
     private _sub: Subscription;

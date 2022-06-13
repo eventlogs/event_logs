@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
-import { DisplayComponent } from './components/display/display.component';
+import { WertschoepfungsketteComponent } from './components/wertschoepfungskette/wertschoepfungskette.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +21,7 @@ import { SwitchViewButtonComponent } from "./components/switch-view-button/switc
 @NgModule({
     declarations: [
         AppComponent,
-        DisplayComponent,
+        WertschoepfungsketteComponent,
         DrawingAreaComponent,
         FooterComponent,
         UploadButtonComponent,

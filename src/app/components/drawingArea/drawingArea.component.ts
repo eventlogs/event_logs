@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { DisplayComponent} from "../display/display.component";
-import { DirectlyFollowsGraphComponent } from "../directly-follows-graph/directly-follows-graph.component";
 
 @Component({
     selector: 'app-drawing-area',
