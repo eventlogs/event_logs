@@ -2,6 +2,7 @@ import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
+import { LayoutService } from 'src/app/services/directly-follows-graph/layout.service';
 import { SvgService } from 'src/app/services/directly-follows-graph/svg.service';
 
 @Component({
@@ -18,11 +19,13 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
     private _graph: Graph | undefined;
 
     constructor(
+        private _layoutService: LayoutService,
         private _svgService: SvgService,
         private _displayService: DirectlyFollowsGraphService
     ) {
         this._subscription = this._displayService.graph$.subscribe(graph => {
             this._graph = graph;
+            this._layoutService.layout(this._graph);
             this.draw();
         });
     }
