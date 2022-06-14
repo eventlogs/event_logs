@@ -36,7 +36,7 @@ export class ParserService {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(text: string): EventLog {
-        const lines: string[] = text.split('\n');
+        const lines: string[] = text.split(/\r?\n/);
 
         const indexLog = ParserService.indexOfTokenIfExists(
             lines,
