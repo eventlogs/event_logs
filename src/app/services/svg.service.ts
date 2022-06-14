@@ -50,7 +50,7 @@ export class SvgService {
                             this.activityColorMap.set(
                                 ev.activity,
                                 this.activityColorMap.size %
-                                    this.backgroundColors.length
+                                this.backgroundColors.length
                             ); // Wenn die Map größer ist als Size Farben recyclen
                         }
                         const rect = this.createBoxForElement(
@@ -87,15 +87,15 @@ export class SvgService {
             let length = this.GetStringWidth(text.substring(0, i));
             if (length > this.MAXFONTWIDTH) {
                 for (let j = i; j <= text.length; j++) {
-                    let length2 = this.GetStringWidth(text.substring(i, j));
+                    let length2 = this.GetStringWidth(text.substring(i, j - 1));
                     if (length2 > this.MAXFONTWIDTH) {
                         return [
-                            text.substring(0, i - 1),
-                            text.substring(i, j - 1) + '...',
+                            text.substring(0, i),
+                            text.substring(i, j - 2) + '...',
                         ];
                     }
                 }
-                return [text.substring(0, i - 1), text.substring(i)];
+                return [text.substring(0, i), text.substring(i)];
             }
         }
         return [text, ''];
