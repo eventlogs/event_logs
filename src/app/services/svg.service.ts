@@ -19,6 +19,11 @@ export class SvgService {
         'rgb(54, 142, 189)',
     ];
 
+    private readonly xTraceBorderOffset = -5;
+    private readonly yTraceBorderOffset = -24;
+    private readonly widthTraceBorderPerElement = 150;
+    private readonly widthTraceBorderOffset = 70;
+
     private activityColorMap = new Map<String, number>();
 
     /// Erstellt alle benötigten SVGElemente für ein gegebenes Diagram
@@ -36,9 +41,10 @@ export class SvgService {
                 JSON.stringify(trace.caseIds)
             ) {
                 let traceBorder = this.createSelectedTraceBorder(
-                    trace.svgElements[0].x - 5,
-                    trace.svgElements[0].y - 25,
-                    trace.events.length * 160 + 60
+                    trace.svgElements[0].x + this.xTraceBorderOffset,
+                    trace.svgElements[0].y + this.yTraceBorderOffset,
+                    trace.events.length * this.widthTraceBorderPerElement +
+                        this.widthTraceBorderOffset
                 );
                 result.push(traceBorder);
             }
@@ -82,7 +88,7 @@ export class SvgService {
         svg.setAttribute('x', `${x}`);
         svg.setAttribute('y', `${y}`);
         svg.setAttribute('width', `${width}`);
-        svg.setAttribute('height', '50');
+        svg.setAttribute('height', '48');
         svg.setAttribute('fill', 'none');
         svg.setAttribute('stroke-width', '2');
         svg.setAttribute('stroke', 'black');
