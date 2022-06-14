@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventLog } from 'src/app/classes/EventLog/eventlog';
 import {
@@ -11,6 +10,7 @@ import { Trace } from 'src/app/classes/EventLog/trace';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { DeleteButtonComponent } from './delete-button.component';
 import { DisplayService } from 'src/app/services/display.service';
+import { MatIcon } from '@angular/material/icon';
 
 describe('DeleteButtonComponent', () => {
     let component: DeleteButtonComponent;
@@ -20,8 +20,7 @@ describe('DeleteButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DeleteButtonComponent],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            declarations: [DeleteButtonComponent, MatIcon],
         }).compileComponents();
     });
 

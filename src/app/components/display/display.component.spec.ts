@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DisplayComponent } from './display.component';
 
@@ -9,7 +8,6 @@ describe('DisplayComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [DisplayComponent],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 

@@ -1,5 +1,5 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIcon } from '@angular/material/icon';
 import { ExportButtonComponent } from './export-button.component';
 
 describe('ExportButtonComponent', () => {
@@ -8,8 +8,7 @@ describe('ExportButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ExportButtonComponent],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            declarations: [ExportButtonComponent, MatIcon],
         }).compileComponents();
     });
 
