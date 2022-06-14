@@ -21,7 +21,7 @@ export class AppComponent implements OnDestroy {
         private _parserService: ParserService,
         private _displayService: DisplayService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
-        private _xesService: XesService
+        private _xesService: XesService,
         private _eventlogDataService: EventlogDataService
     ) {
         this.textareaFc = new FormControl();
