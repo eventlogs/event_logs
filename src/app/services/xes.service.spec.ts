@@ -15,10 +15,12 @@ import { Trace } from '../classes/EventLog/trace';
 var format = require('xml-formatter');
 
 class RandomAttribute extends EventLogAttribute {
-    constructor(key: String) {
+    constructor(key: string) {
         super();
         this.key = key;
     }
+
+    value: any;
 }
 
 describe('XesService', () => {

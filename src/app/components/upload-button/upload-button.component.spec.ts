@@ -45,7 +45,9 @@ describe('UploadButtonComponent', () => {
         input.dispatchEvent(new Event('change'));
     });
 
-    it('should throw warning if file is not .txt', () => {
+    it('should throw warning if file extension is not permitted', () => {
+        component.permittedFileExtensions = ['log', 'txt'];
+
         const element = fixture.nativeElement;
         const input = element.querySelector('.file-input');
 
@@ -58,7 +60,7 @@ describe('UploadButtonComponent', () => {
         input.dispatchEvent(new InputEvent('change'));
 
         expect(window.alert).toHaveBeenCalledWith(
-            'Nur Textdateien vom Typ .log werden derzeit unterstützt'
+            'Nur Dateien vom Typ .log,.txt sind hier erlaubt'
         );
     });
 

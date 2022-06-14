@@ -8,6 +8,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class UploadButtonComponent {
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
+    @Input() permittedFileExtensions: string[] | undefined;
     @Output() newFileUploadedEvent = new EventEmitter<string>();
 
     constructor() {}
@@ -36,14 +37,17 @@ export class UploadButtonComponent {
     }
 
     readAndEmitFile(file: File) {
-        let permittedFileExtensions = ['txt', 'log'];
         let actualFileExtension = file.name.split('.').pop() as string;
         if (
-            permittedFileExtensions.indexOf(
+            this.permittedFileExtensions?.indexOf(
                 actualFileExtension.toLowerCase()
             ) == -1
         ) {
-            alert('Nur Textdateien vom Typ .log werden derzeit unterstützt');
+            alert(
+                'Nur Dateien vom Typ ' +
+                    this.permittedFileExtensions.map(ext => '.' + ext) +
+                    ' sind hier erlaubt'
+            );
             return;
         }
         let fileReader = new FileReader();
