@@ -24,7 +24,6 @@ export class AppComponent implements OnDestroy {
         private _logService: LogService,
         private _xesService: XesService,
         private _eventlogDataService: EventlogDataService) {
-    ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
             .pipe(debounceTime(400))

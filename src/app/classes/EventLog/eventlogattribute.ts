@@ -49,7 +49,7 @@ export class FloatAttribute extends EventLogAttribute {
 
 export class BooleanAttribute extends EventLogAttribute {
 
-    value: Boolean;
+    value: boolean;
 
     constructor(value: boolean, key: string) {
         super();
