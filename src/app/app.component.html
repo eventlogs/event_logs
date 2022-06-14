@@ -10,8 +10,16 @@
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
         <app-upload-button
-            buttonText="Datei importieren"
+            buttonText="Import .xes"
             buttonIcon="file_upload"
+            [permittedFileExtensions]="['xes']"
+            (newFileUploadedEvent)="
+                processXesImport($event)
+            "></app-upload-button>
+        <app-upload-button
+            buttonText="Import .log"
+            buttonIcon="file_upload"
+            [permittedFileExtensions]="['log', 'txt']"
             (newFileUploadedEvent)="updateTextarea($event)"></app-upload-button>
         <app-delete-button
             buttonText="Ausgewählte Traces löschen"
