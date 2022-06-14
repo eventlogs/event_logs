@@ -1,12 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ParserService } from './services/parser.service';
+import { LogParserService } from './services/log-parser.service';
 import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
-import { EventLog } from './classes/EventLog/eventlog';
 import { XesService } from './services/xes.service';
 import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
 import { EventlogDataService } from './services/eventlog-data.service';
+import { XesParserService } from './services/xes-parser.service';
+import { LogService } from './services/log.service';
 
 @Component({
     selector: 'app-root',
@@ -18,8 +19,10 @@ export class AppComponent implements OnDestroy {
     private _sub: Subscription;
 
     constructor(
-        private _parserService: ParserService,
-        private _displayService: DisplayService,
+        private _logParserService: LogParserService,
+        private _xesParserService: XesParserService,
+        private _displayService: DisplayService,         
+        private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService
         private _eventlogDataService: EventlogDataService
@@ -29,7 +32,7 @@ export class AppComponent implements OnDestroy {
             .pipe(debounceTime(400))
             .subscribe(val => this.processSourceChange(val));
         this.textareaFc.setValue(this.textareaExampleValue());
-        this._eventlogDataService.eventLog = this._parserService.parse(
+        this._eventlogDataService.eventLog = this._logParserService.parse(
             this.textareaExampleValue()
         );
     }
@@ -39,13 +42,31 @@ export class AppComponent implements OnDestroy {
     }
 
     private processSourceChange(newSource: string) {
-        const result = this._parserService.parse(newSource);
+        const result = this._logParserService.parse(newSource);
         if (result !== undefined) {
             this._eventlogDataService.eventLog = result;
             this._displayService.displayEventLog(result);
             this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
                 result
             );
+        }
+    }
+
+    processXesImport(fileContent: string) {
+        try {
+            const result = this._xesParserService.parse(fileContent);
+            if (result !== undefined) {
+                this._eventlogDataService.eventLog = result;
+                this.updateTextarea(this._logService.generate(result));
+                this._displayService.displayEventLog(result);
+            }
+        } catch (e) {
+            if (e === XesParserService.PARSING_ERROR) {
+                alert("Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n" +
+                    "Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.");
+            } else {
+                throw e;
+            }
         }
     }
 
@@ -58,20 +79,22 @@ export class AppComponent implements OnDestroy {
     }
 
     textareaExampleValue() {
-        return `.type log
-.attributes
-case-id
-activity
-booleanValue
-intValue
-floatValue
-dateValue
-stringValue
-.events
-1 Auto true 1 1.3 2020-01-31 basadf
-1 Schiff true 2 2.3 2020-01-31 dasf
-2 BusBus false 3 4.5 2020-01-31 adsf
-2 Bus false 4 6.7 2020-01-31 adfd`;
+        return (
+            '.type log\n' +
+            '.attributes\n' +
+            'case-id\n' +
+            'activity\n' +
+            'booleanValue\n' +
+            'intValue\n' +
+            'floatValue\n' +
+            'dateValue\n' +
+            'stringValue\n' +
+            '.events\n' +
+            '1 Auto true 1 1.3 2020-01-31 basadf\n' +
+            '1 Schiff true 2 2.3 2020-01-31 dasf\n' +
+            '2 BusBus false 3 4.5 2020-01-31 adsf\n' +
+            '2 Bus false 4 6.7 2020-01-31 adfd'
+        );
     }
 
     getXesValue() {
