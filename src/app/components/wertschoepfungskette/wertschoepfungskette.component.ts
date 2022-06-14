@@ -40,9 +40,9 @@ export class WertschoepfungsketteComponent implements OnDestroy {
 
     private calcWidth(pixelWidth: number) {
         if (this.drawingScroll != undefined) {
-            let widthTemp = (pixelWidth / this.drawingScroll?.nativeElement.clientWidth) *
+            this.widthPercent =
+                (pixelWidth / this.drawingScroll?.nativeElement.clientWidth) *
                 100;
-            widthTemp < 100 ? this.widthPercent = 100 : this.widthPercent = widthTemp;
         }
     }
 
