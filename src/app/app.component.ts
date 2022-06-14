@@ -22,7 +22,7 @@ export class AppComponent implements OnDestroy {
     constructor(
         private _parserService: ParserService,
         private _displayService: DisplayService,
-        private _direclyFollowsGraphService: DirectlyFollowsGraphService,
+        private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService
     ) {
         this.textareaFc = new FormControl();
@@ -42,7 +42,7 @@ export class AppComponent implements OnDestroy {
         if (result !== undefined) {
             this.eventLog = result;
             this._displayService.displayEventLog(result);
-            this._direclyFollowsGraphService.displayDirectlyFollowsGraph(
+            this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
                 result
             );
         }

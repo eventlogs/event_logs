@@ -77,7 +77,7 @@ export class DirectlyFollowsGraphService implements OnDestroy {
             }
         });
 
-        return new Graph(vertices, edges); //incomplete
+        return new Graph(vertices, edges);
     }
 
     public displayDirectlyFollowsGraph(eventLog: EventLog) {
