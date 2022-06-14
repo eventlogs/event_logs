@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIcon } from '@angular/material/icon';
 import { UploadButtonComponent } from './upload-button.component';
 
 describe('UploadButtonComponent', () => {
@@ -7,7 +8,7 @@ describe('UploadButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [UploadButtonComponent],
+            declarations: [UploadButtonComponent, MatIcon],
         }).compileComponents();
     });
 

@@ -23,7 +23,7 @@ export class DateAttribute extends EventLogAttribute {
 }
 
 export class IntAttribute extends EventLogAttribute {
-    value: Number;
+    value: number;
 
     constructor(value: number, key: String) {
         super();
@@ -33,7 +33,7 @@ export class IntAttribute extends EventLogAttribute {
 }
 
 export class FloatAttribute extends EventLogAttribute {
-    value: Number;
+    value: number;
 
     constructor(value: number, key: String) {
         super();

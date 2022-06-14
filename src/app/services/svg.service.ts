@@ -19,14 +19,36 @@ export class SvgService {
         'rgb(54, 142, 189)',
     ];
 
+    private readonly xTraceBorderOffset = -5;
+    private readonly yTraceBorderOffset = -24;
+    private readonly widthTraceBorderPerElement = 150;
+    private readonly widthTraceBorderOffset = 70;
+
     private activityColorMap = new Map<String, number>();
 
     /// Erstellt alle benötigten SVGElemente für ein gegebenes Diagram
     /// Alle SVG's werden außerdem zurückgegeben
-    public createSvgElements(diagram: Diagram): Array<SVGElement> {
+    public createSvgElements(
+        diagram: Diagram,
+        selectedTraceCaseIds: Array<number>
+    ): Array<SVGElement> {
         const result: Array<SVGElement> = [];
 
         diagram.traces.forEach(trace => {
+            // Rahmen um die ausgewählten Traces
+            if (
+                JSON.stringify(selectedTraceCaseIds) ==
+                JSON.stringify(trace.caseIds)
+            ) {
+                let traceBorder = this.createSelectedTraceBorder(
+                    trace.svgElements[0].x + this.xTraceBorderOffset,
+                    trace.svgElements[0].y + this.yTraceBorderOffset,
+                    trace.events.length * this.widthTraceBorderPerElement +
+                        this.widthTraceBorderOffset
+                );
+                result.push(traceBorder);
+            }
+
             const textNumber = this.createSvgForText(
                 trace.svgElements[0],
                 trace.count.toString()
@@ -59,6 +81,18 @@ export class SvgService {
         });
         this.activityColorMap.clear();
         return result;
+    }
+
+    private createSelectedTraceBorder(x: number, y: number, width: number) {
+        const svg = this.createSvgElement('rect');
+        svg.setAttribute('x', `${x}`);
+        svg.setAttribute('y', `${y}`);
+        svg.setAttribute('width', `${width}`);
+        svg.setAttribute('height', '48');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke', 'black');
+        return svg;
     }
 
     private createBoxForElement(element: Element, fill: number): SVGElement {

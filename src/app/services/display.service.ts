@@ -13,9 +13,11 @@ import { Trace } from '../classes/EventLog/trace';
 })
 export class DisplayService implements OnDestroy {
     private _diagram$: BehaviorSubject<Diagram>;
+    private _selectedTraceCaseIds$: BehaviorSubject<Array<number>>;
 
     constructor() {
         this._diagram$ = new BehaviorSubject<Diagram>(new Diagram([]));
+        this._selectedTraceCaseIds$ = new BehaviorSubject(new Array());
     }
 
     ngOnDestroy(): void {
@@ -34,12 +36,31 @@ export class DisplayService implements OnDestroy {
         this._diagram$.next(net);
     }
 
-    private getEventGraphics(trace: Trace): GraphEvent[] {
+    public get selectedTraceCaseIds$(): Observable<Array<number>> {
+        return this._selectedTraceCaseIds$.asObservable();
+    }
+
+    public get selectedTraceCaseIds(): Array<number> {
+        return this._selectedTraceCaseIds$.getValue();
+    }
+
+    public selectTraceCaseIds(value: Array<number>) {
+        this._selectedTraceCaseIds$.next(value);
+    }
+
+    private getEventGraphics(
+        trace: Trace,
+        caseIds: Array<number>
+    ): GraphEvent[] {
         let graphEvents = new Array<GraphEvent>();
         trace.events.forEach(ev => {
             // Text und Rechteck für Events erstellen, Koordinaten kommen vom Layoutservice
-            let el = new Element(ElementType.text);
-            let box = new Element(ElementType.box);
+            let el = new Element(ElementType.text, () =>
+                this.selectTraceCaseIds(caseIds)
+            );
+            let box = new Element(ElementType.box, () =>
+                this.selectTraceCaseIds(caseIds)
+            );
             graphEvents.push(new GraphEvent(ev.activity, [box, el]));
         });
         return graphEvents;
@@ -52,9 +73,11 @@ export class DisplayService implements OnDestroy {
             let caseIds = traces.map(val => {
                 return val.caseId;
             });
-            let traceCount = new Element(ElementType.text);
+            let traceCount = new Element(ElementType.text, () =>
+                this.selectTraceCaseIds(caseIds)
+            );
             let gt = new GraphTrace(
-                this.getEventGraphics(traces[0]),
+                this.getEventGraphics(traces[0], caseIds),
                 traces.length,
                 [traceCount],
                 caseIds
