@@ -221,9 +221,11 @@ export class XesParserService {
         if (activityArr.length !== 1) {
             throw XesParserService.PARSING_ERROR;
         }
-        const eventLogAttributesWithoutActivity = eventLogAttributes.filter( eventLogAttribute =>
-            eventLogAttribute.key.toLowerCase() !==
-            this._activityEventLogAttributeKey)
+        const eventLogAttributesWithoutActivity = eventLogAttributes.filter(
+            eventLogAttribute =>
+                eventLogAttribute.key.toLowerCase() !==
+                this._activityEventLogAttributeKey
+        );
         return new Event(eventLogAttributesWithoutActivity, activityArr[0]);
     }
 

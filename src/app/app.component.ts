@@ -4,6 +4,7 @@ import { LogParserService } from './services/log-parser.service';
 import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { XesService } from './services/xes.service';
+import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
 import { EventlogDataService } from './services/eventlog-data.service';
 import { XesParserService } from './services/xes-parser.service';
 import { LogService } from './services/log.service';
@@ -22,8 +23,10 @@ export class AppComponent implements OnDestroy {
         private _xesParserService: XesParserService,
         private _displayService: DisplayService,
         private _logService: LogService,
+        private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService,
-        private _eventlogDataService: EventlogDataService) {
+        private _eventlogDataService: EventlogDataService
+    ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
             .pipe(debounceTime(400))
@@ -43,6 +46,9 @@ export class AppComponent implements OnDestroy {
         if (result !== undefined) {
             this._eventlogDataService.eventLog = result;
             this._displayService.displayEventLog(result);
+            this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
+                result
+            );
         }
     }
 
@@ -56,8 +62,10 @@ export class AppComponent implements OnDestroy {
             }
         } catch (e) {
             if (e === XesParserService.PARSING_ERROR) {
-                alert("Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n" +
-                    "Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.");
+                alert(
+                    'Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n' +
+                        'Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.'
+                );
             } else {
                 throw e;
             }
