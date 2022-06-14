@@ -4,7 +4,7 @@ import { Event } from './event';
 export class Trace {
     private _attributes: Array<EventLogAttribute>;
     private _events: Array<Event>;
-    private _caseId: Number;
+    private _caseId: number;
 
     public get attributes(): Array<EventLogAttribute> {
         return this._attributes;
@@ -20,17 +20,17 @@ export class Trace {
         this._events = value;
     }
 
-    public get caseId(): Number {
+    public get caseId(): number {
         return this._caseId;
     }
-    public set caseId(value: Number) {
+    public set caseId(value: number) {
         this._caseId = value;
     }
 
     constructor(
         attributes: Array<EventLogAttribute>,
         events: Array<Event>,
-        caseId: Number
+        caseId: number
     ) {
         this._attributes = attributes;
         this._events = events;

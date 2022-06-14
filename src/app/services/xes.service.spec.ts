@@ -4,6 +4,7 @@ import { expect } from '@angular/flex-layout/_private-utils/testing';
 import {
     BooleanAttribute,
     DateAttribute,
+    EventLogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
@@ -12,6 +13,15 @@ import { Event } from '../classes/EventLog/event';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Trace } from '../classes/EventLog/trace';
 var format = require('xml-formatter');
+
+class RandomAttribute extends EventLogAttribute {
+    constructor(key: string) {
+        super();
+        this.key = key;
+    }
+
+    value: any;
+}
 
 describe('XesService', () => {
     let service: XesService;
@@ -72,5 +82,24 @@ describe('XesService', () => {
         );
 
         expect(service.generate(event_log)).toEqual(expected_string);
+    });
+
+    it('should print error to console with unknown EventLogAttribute', () => {
+        let event_log = new EventLog(
+            [],
+            [],
+            [],
+            [
+                new Trace(
+                    [],
+                    [new Event([new RandomAttribute('do not exist!')], 'Auto')],
+                    1
+                ),
+            ],
+            []
+        );
+        spyOn(console, 'error');
+        service.generate(event_log);
+        expect(console.error).toHaveBeenCalled();
     });
 });

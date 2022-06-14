@@ -21,75 +21,75 @@ describe('LayoutService', () => {
 
         function resetDiagrams() {
             const graphElement1: GraphEvent = new GraphEvent('a', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement2: GraphEvent = new GraphEvent('b', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement3: GraphEvent = new GraphEvent('c', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement4: GraphEvent = new GraphEvent('a', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement5: GraphEvent = new GraphEvent('b', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement6: GraphEvent = new GraphEvent('c', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement7: GraphEvent = new GraphEvent('a', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement8: GraphEvent = new GraphEvent('b', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement9: GraphEvent = new GraphEvent('c', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement10: GraphEvent = new GraphEvent('a', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement11: GraphEvent = new GraphEvent('b', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement12: GraphEvent = new GraphEvent('c', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement13: GraphEvent = new GraphEvent('a', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement14: GraphEvent = new GraphEvent('b', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const graphElement15: GraphEvent = new GraphEvent('c', [
-                new Element(ElementType.text),
-                new Element(ElementType.box),
+                new Element(ElementType.text, () => undefined),
+                new Element(ElementType.box, () => undefined),
             ]);
             const shortTrace: GraphTrace = new GraphTrace(
                 [graphElement1, graphElement2, graphElement3],
                 1,
-                [new Element(ElementType.text)],
+                [new Element(ElementType.text, () => undefined)],
                 [1, 2, 3]
             );
             const shortTrace2: GraphTrace = new GraphTrace(
                 [graphElement4],
                 1,
-                [new Element(ElementType.text)],
+                [new Element(ElementType.text, () => undefined)],
                 [1]
             );
             const longTrace: GraphTrace = new GraphTrace(
@@ -111,7 +111,7 @@ describe('LayoutService', () => {
                     graphElement15,
                 ],
                 1,
-                [new Element(ElementType.text)],
+                [new Element(ElementType.text, () => undefined)],
                 [1]
             );
 

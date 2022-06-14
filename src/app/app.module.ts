@@ -16,6 +16,7 @@ import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-dr
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { SwitchViewButtonComponent } from "./components/switch-view-button/switch-view-button.component";
+import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import { SwitchViewButtonComponent } from "./components/switch-view-button/switc
         DragDropFileUploadDirective,
         ExportButtonComponent,
         DirectlyFollowsGraphComponent,
+        DeleteButtonComponent,
         SwitchViewButtonComponent
     ],
     imports: [

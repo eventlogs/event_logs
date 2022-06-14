@@ -68,6 +68,12 @@ export class EventLog {
         return result;
     }
 
+    public deleteTraceByCaseIds(caseIds: Array<number>) {
+        this.traces = this.traces.filter(trace => {
+            return caseIds.indexOf(trace.caseId) === -1;
+        });
+    }
+
     constructor(
         classifiers: Array<Classifier>,
         globalEventAttributes: Array<EventLogAttribute>,

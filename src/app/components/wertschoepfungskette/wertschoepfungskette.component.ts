@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Input,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
 import { DisplayService } from '../../services/display.service';
 import { Subscription } from 'rxjs';
 import { LayoutService } from '../../services/layout.service';
@@ -16,6 +22,8 @@ export class WertschoepfungsketteComponent implements OnDestroy {
 
     private _sub: Subscription;
     private _diagram: Diagram | undefined;
+    private _subSelectedTraces: Subscription;
+    private _selectedTraceCaseIds: Array<number> = [];
     public heightPx: Number = 390;
     public widthPercent: Number = 100;
 
@@ -36,6 +44,13 @@ export class WertschoepfungsketteComponent implements OnDestroy {
             }
             this.draw();
         });
+        this._subSelectedTraces =
+            this._displayService.selectedTraceCaseIds$.subscribe(
+                selectedTraceCaseIds => {
+                    this._selectedTraceCaseIds = selectedTraceCaseIds;
+                    this.draw();
+                }
+            );
     }
 
     private calcWidth(pixelWidth: number) {
@@ -48,6 +63,7 @@ export class WertschoepfungsketteComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this._sub.unsubscribe();
+        this._subSelectedTraces.unsubscribe();
     }
 
     private draw() {
@@ -58,7 +74,8 @@ export class WertschoepfungsketteComponent implements OnDestroy {
 
         this.clearDrawingArea();
         const elements = this._svgService.createSvgElements(
-            this._displayService.diagram
+            this._displayService.diagram,
+            this._selectedTraceCaseIds
         );
         for (const element of elements) {
             this.drawingArea.nativeElement.appendChild(element);
