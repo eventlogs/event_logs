@@ -14,6 +14,7 @@ import { UploadButtonComponent } from './components/upload-button/upload-button.
 import { DragDropFileUploadDirective } from './drag-drop-file-upload.directive';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
+import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { DirectlyFollowsGraphComponent } from './components/directly-follows-gra
         DragDropFileUploadDirective,
         ExportButtonComponent,
         DirectlyFollowsGraphComponent,
+        DeleteButtonComponent,
     ],
     imports: [
         BrowserModule,

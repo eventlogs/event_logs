@@ -36,7 +36,7 @@ export class ParserService {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(text: string): EventLog {
-        const lines: string[] = text.split('\n');
+        const lines: string[] = text.split(/\r?\n/);
 
         const indexLog = ParserService.indexOfTokenIfExists(
             lines,
@@ -80,7 +80,7 @@ export class ParserService {
             eventLine.split(' ').map(attributeValue => attributeValue.trim())
         );
 
-        const dictCaseIdentifierToTrace: Map<Number, Trace> = new Map();
+        const dictCaseIdentifierToTrace: Map<number, Trace> = new Map();
         asTable.forEach(eventLine => {
             if (
                 eventLine[headers.indexOf(this._caseIdElement)] === undefined ||

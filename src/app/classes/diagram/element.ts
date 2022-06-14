@@ -8,6 +8,7 @@ export class Element {
     private _y: number;
     private _svgElement: SVGElement | undefined;
     private _type: ElementType;
+    private _selectTraceCaseIds: Function;
 
     public get type(): ElementType {
         return this._type;
@@ -16,10 +17,11 @@ export class Element {
         this._type = value;
     }
 
-    constructor(type: ElementType) {
+    constructor(type: ElementType, selectTraceCaseIds: Function) {
         this._x = 0;
         this._y = 0;
         this._type = type;
+        this._selectTraceCaseIds = selectTraceCaseIds;
     }
 
     get x(): number {
@@ -48,7 +50,9 @@ export class Element {
         };
     }
 
-    private processMouseDown(event: MouseEvent) {}
+    private processMouseDown(event: MouseEvent) {
+        this._selectTraceCaseIds();
+    }
 
     private processMouseUp(event: MouseEvent) {}
 }
