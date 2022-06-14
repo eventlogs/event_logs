@@ -6,6 +6,7 @@ import { debounceTime, Subscription } from 'rxjs';
 import { EventLog } from './classes/EventLog/eventlog';
 import { XesService } from './services/xes.service';
 import { EventlogDataService } from './services/eventlog-data.service';
+import {XesParserService} from "./services/xes-parser.service";
 
 @Component({
     selector: 'app-root',
