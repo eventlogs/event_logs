@@ -21,7 +21,7 @@ export class AppComponent implements OnDestroy {
     constructor(
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
-        private _displayService: DisplayService,         
+        private _displayService: DisplayService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService,
@@ -62,8 +62,10 @@ export class AppComponent implements OnDestroy {
             }
         } catch (e) {
             if (e === XesParserService.PARSING_ERROR) {
-                alert("Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n" +
-                    "Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.");
+                alert(
+                    'Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n' +
+                        'Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.'
+                );
             } else {
                 throw e;
             }
