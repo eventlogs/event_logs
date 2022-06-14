@@ -60,7 +60,7 @@ describe('UploadButtonComponent', () => {
         input.dispatchEvent(new InputEvent('change'));
 
         expect(window.alert).toHaveBeenCalledWith(
-            'Nur Dateien vom Typ .log,.txt werden derzeit unterstützt'
+            'Nur Dateien vom Typ .log,.txt sind hier erlaubt'
         );
     });
 

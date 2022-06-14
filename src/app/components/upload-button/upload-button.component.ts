@@ -46,7 +46,7 @@ export class UploadButtonComponent {
             alert(
                 'Nur Dateien vom Typ ' +
                     this.permittedFileExtensions.map(ext => '.' + ext) +
-                    ' werden derzeit unterstützt'
+                    ' sind hier erlaubt'
             );
             return;
         }

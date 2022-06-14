@@ -1,13 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { LogParserService } from './services/parser.service';
+import { LogParserService } from './services/log-parser.service';
 import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { XesService } from './services/xes.service';
 import { EventlogDataService } from './services/eventlog-data.service';
-import { XesParserService } from "./services/xes-parser.service";
-import { LogService } from "./services/log.service";
-
+import { XesParserService } from './services/xes-parser.service';
+import { LogService } from './services/log.service';
 
 @Component({
     selector: 'app-root',
@@ -49,11 +48,20 @@ export class AppComponent implements OnDestroy {
     }
 
     processXesImport(fileContent: string) {
-        const result = this._xesParserService.parse(fileContent);
-        if (result !== undefined) {
-            this._eventlogDataService.eventLog = result;
-            this.updateTextarea(this._logService.generate(result));
-            this._displayService.displayEventLog(result);
+        try {
+            const result = this._xesParserService.parse(fileContent);
+            if (result !== undefined) {
+                this._eventlogDataService.eventLog = result;
+                this.updateTextarea(this._logService.generate(result));
+                this._displayService.displayEventLog(result);
+            }
+        } catch (e) {
+            if (e === XesParserService.PARSING_ERROR) {
+                alert("Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n" +
+                    "Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.");
+            } else {
+                throw e;
+            }
         }
     }
 
