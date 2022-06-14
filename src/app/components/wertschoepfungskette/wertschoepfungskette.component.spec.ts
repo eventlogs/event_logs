@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DisplayComponent } from './display.component';
+import { WertschoepfungsketteComponent } from './wertschoepfungskette.component';
 
-describe('DisplayComponent', () => {
-    let component: DisplayComponent;
-    let fixture: ComponentFixture<DisplayComponent>;
+describe('WertschoepfungsketteComponent', () => {
+    let component: WertschoepfungsketteComponent;
+    let fixture: ComponentFixture<WertschoepfungsketteComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DisplayComponent],
+            declarations: [WertschoepfungsketteComponent],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DisplayComponent);
+        fixture = TestBed.createComponent(WertschoepfungsketteComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
