@@ -1,0 +1,11 @@
+<app-switch-view-button
+    (switchViewEvent)="switchView()"></app-switch-view-button>
+<div #drawingArea class="drawingArea">
+    <app-wertschoepfungskette
+        [clientWidth]="canvasWidth"
+        [hidden]="wertschoepfungsketteHidden"
+        class="padding full-size"></app-wertschoepfungskette>
+    <app-directly-follows-graph
+        [hidden]="direktfolgegraphHidden"
+        class="padding full-size"></app-directly-follows-graph>
+</div>

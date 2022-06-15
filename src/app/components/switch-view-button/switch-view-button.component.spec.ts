@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DisplayComponent } from './display.component';
+import { SwitchViewButtonComponent } from './switch-view-button.component';
 
-describe('DisplayComponent', () => {
-    let component: DisplayComponent;
-    let fixture: ComponentFixture<DisplayComponent>;
+describe('SwitchViewButtonComponent', () => {
+    let component: SwitchViewButtonComponent;
+    let fixture: ComponentFixture<SwitchViewButtonComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DisplayComponent],
+            declarations: [SwitchViewButtonComponent],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DisplayComponent);
+        fixture = TestBed.createComponent(SwitchViewButtonComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

@@ -4,7 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
-import { DisplayComponent } from './components/display/display.component';
+import { WertschoepfungsketteComponent } from './components/wertschoepfungskette/wertschoepfungskette.component';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
@@ -16,7 +16,7 @@ describe('AppComponent', () => {
             declarations: [
                 AppComponent,
                 DeleteButtonComponent,
-                DisplayComponent,
+                WertschoepfungsketteComponent,
                 ExportButtonComponent,
                 FooterComponent,
                 UploadButtonComponent,

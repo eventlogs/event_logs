@@ -12,20 +12,20 @@ import { SvgService } from '../../services/svg.service';
 import { Diagram } from '../../classes/diagram/diagram';
 
 @Component({
-    selector: 'app-display',
-    templateUrl: './display.component.html',
-    styleUrls: ['./display.component.scss'],
+    selector: 'app-wertschoepfungskette',
+    templateUrl: './wertschoepfungskette.component.html',
+    styleUrls: ['./wertschoepfungskette.component.scss'],
 })
-export class DisplayComponent implements OnDestroy {
-    @ViewChild('drawingArea') drawingArea: ElementRef<SVGElement> | undefined;
-    @ViewChild('drawingScroll') drawingScroll: ElementRef | undefined;
+export class WertschoepfungsketteComponent implements OnDestroy {
+    @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
+    @Input() clientWidth: number | undefined;
 
     private _sub: Subscription;
     private _diagram: Diagram | undefined;
     private _subSelectedTraces: Subscription;
     private _selectedTraceCaseIds: Array<number> = [];
-    public heightPx: Number = 390;
-    public widthPercent: Number = 100;
+    public heightPx: number = 390;
+    public widthPercent: number = 100;
 
     constructor(
         private _layoutService: LayoutService,
@@ -39,7 +39,7 @@ export class DisplayComponent implements OnDestroy {
                 this._diagram
             );
             this.calcWidth(pixelWidth);
-            if (this.drawingArea == undefined) {
+            if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
             this.draw();
@@ -54,10 +54,11 @@ export class DisplayComponent implements OnDestroy {
     }
 
     private calcWidth(pixelWidth: number) {
-        if (this.drawingScroll != undefined) {
-            this.widthPercent =
-                (pixelWidth / this.drawingScroll?.nativeElement.clientWidth) *
-                100;
+        if (this.clientWidth != undefined) {
+            let drawingWidth = (pixelWidth / this.clientWidth) * 100;
+            drawingWidth < 100
+                ? (this.widthPercent = 100)
+                : (this.widthPercent = drawingWidth);
         }
     }
 
@@ -67,7 +68,7 @@ export class DisplayComponent implements OnDestroy {
     }
 
     private draw() {
-        if (this.drawingArea === undefined) {
+        if (this.canvas === undefined) {
             console.debug('drawing area not ready yet');
             return;
         }
@@ -78,18 +79,18 @@ export class DisplayComponent implements OnDestroy {
             this._selectedTraceCaseIds
         );
         for (const element of elements) {
-            this.drawingArea.nativeElement.appendChild(element);
+            this.canvas.nativeElement.appendChild(element);
         }
     }
 
     private clearDrawingArea() {
-        const drawingArea = this.drawingArea?.nativeElement;
-        if (drawingArea?.childElementCount === undefined) {
+        const canvas = this.canvas?.nativeElement;
+        if (canvas?.childElementCount === undefined) {
             return;
         }
 
-        while (drawingArea.childElementCount > 0) {
-            drawingArea.removeChild(drawingArea.lastChild as ChildNode);
+        while (canvas.childElementCount > 0) {
+            canvas.removeChild(canvas.lastChild as ChildNode);
         }
     }
 }
