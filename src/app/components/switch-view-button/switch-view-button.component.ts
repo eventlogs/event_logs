@@ -11,6 +11,6 @@ export class SwitchViewButtonComponent {
     constructor() {}
 
     switchView() {
-        this.switchViewEvent.emit("none");
+        this.switchViewEvent.emit('none');
     }
 }
