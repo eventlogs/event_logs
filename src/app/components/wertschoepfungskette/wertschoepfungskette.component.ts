@@ -17,8 +17,7 @@ import { Diagram } from '../../classes/diagram/diagram';
     styleUrls: ['./wertschoepfungskette.component.scss'],
 })
 export class WertschoepfungsketteComponent implements OnDestroy {
-    @ViewChild('drawingArea') drawingArea: ElementRef<SVGElement> | undefined;
-    @ViewChild('drawingScroll') drawingScroll: ElementRef | undefined;
+    @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
     @Input() clientWidth: number | undefined;
 
     private _sub: Subscription;
@@ -40,7 +39,7 @@ export class WertschoepfungsketteComponent implements OnDestroy {
                 this._diagram
             );
             this.calcWidth(pixelWidth);
-            if (this.drawingArea == undefined) {
+            if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
             this.draw();
@@ -71,7 +70,7 @@ export class WertschoepfungsketteComponent implements OnDestroy {
     }
 
     private draw() {
-        if (this.drawingArea === undefined) {
+        if (this.canvas === undefined) {
             console.debug('drawing area not ready yet');
             return;
         }
@@ -82,18 +81,18 @@ export class WertschoepfungsketteComponent implements OnDestroy {
             this._selectedTraceCaseIds
         );
         for (const element of elements) {
-            this.drawingArea.nativeElement.appendChild(element);
+            this.canvas.nativeElement.appendChild(element);
         }
     }
 
     private clearDrawingArea() {
-        const drawingArea = this.drawingArea?.nativeElement;
-        if (drawingArea?.childElementCount === undefined) {
+        const canvas = this.canvas?.nativeElement;
+        if (canvas?.childElementCount === undefined) {
             return;
         }
 
-        while (drawingArea.childElementCount > 0) {
-            drawingArea.removeChild(drawingArea.lastChild as ChildNode);
+        while (canvas.childElementCount > 0) {
+            canvas.removeChild(canvas.lastChild as ChildNode);
         }
     }
 }
