@@ -1,5 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import { fromEvent, Observable, Subscription } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
     selector: 'app-drawing-area',
