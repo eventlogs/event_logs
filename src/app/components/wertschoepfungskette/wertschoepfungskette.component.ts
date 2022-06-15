@@ -19,13 +19,14 @@ import { Diagram } from '../../classes/diagram/diagram';
 export class WertschoepfungsketteComponent implements OnDestroy {
     @ViewChild('drawingArea') drawingArea: ElementRef<SVGElement> | undefined;
     @ViewChild('drawingScroll') drawingScroll: ElementRef | undefined;
+    @Input() clientWidth: number | undefined;
 
     private _sub: Subscription;
     private _diagram: Diagram | undefined;
     private _subSelectedTraces: Subscription;
     private _selectedTraceCaseIds: Array<number> = [];
-    public heightPx: Number = 390;
-    public widthPercent: Number = 100;
+    public heightPx: number = 390;
+    public widthPercent: number = 100;
 
     constructor(
         private _layoutService: LayoutService,
@@ -54,10 +55,13 @@ export class WertschoepfungsketteComponent implements OnDestroy {
     }
 
     private calcWidth(pixelWidth: number) {
-        if (this.drawingScroll != undefined) {
-            this.widthPercent =
-                (pixelWidth / this.drawingScroll?.nativeElement.clientWidth) *
+        if (this.clientWidth != undefined) {
+            let drawingWidth =
+                (pixelWidth / this.clientWidth) *
                 100;
+            drawingWidth < 100 ?
+                this.widthPercent = 100 :
+                this.widthPercent = drawingWidth;
         }
     }
 
