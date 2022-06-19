@@ -161,4 +161,26 @@ export class Vertex {
 
         return position;
     }
+
+    //Gibt alle ausgehenden Kanten zurück
+    public getOutgoingEdges(edges: Edge[]): Edge[] {
+        let outgoingEdges: Edge[] = [];
+
+        edges.forEach(edge => {
+            if (this === edge.startVertex) outgoingEdges.push(edge);
+        });
+
+        return outgoingEdges;
+    }
+
+    //Gibt alle eingehenden Kanten zurück
+    public getIncomingEdges(edges: Edge[]): Edge[] {
+        let incomingEdges: Edge[] = [];
+
+        edges.forEach(edge => {
+            if (this === edge.endVertex) incomingEdges.push(edge);
+        });
+
+        return incomingEdges;
+    }
 }

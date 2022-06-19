@@ -10,6 +10,7 @@ import { pathToFileURL } from 'url';
 export class SvgService {
     private rectWidth: number = 150;
     private rectHeight: number = 40;
+    private positionOffset: number = this.rectWidth * 1.5;
     private layerOffset: number = this.rectHeight * 2.5;
     private activityCount = 0;
 
@@ -56,7 +57,9 @@ export class SvgService {
     private createContainer(vertex: Vertex): SVGElement {
         let svg = this.createSvgElement('svg');
 
-        svg.setAttribute('x', vertex.position.toString());
+        //Setze Abstand zwischen den Positionen
+        let x = 50 + this.positionOffset * (vertex.position - 1);
+        svg.setAttribute('x', x.toString());
         //Setze Abstand zwischen den Ebenen
         let y = 50 + this.layerOffset * (vertex.layer - 1);
         svg.setAttribute('y', y.toString());
