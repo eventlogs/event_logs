@@ -50,6 +50,9 @@ export class EventLog {
         this._traces.forEach(trace => {
             const index = result.findIndex(val => {
                 for (let i = 0; i < val[0].events.length; i++) {
+                    if (val[0].events.length !== trace.events.length) {
+                        return false;
+                    }
                     if (
                         val[0].events[i].activity !== trace.events[i].activity
                     ) {
