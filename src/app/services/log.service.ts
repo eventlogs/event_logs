@@ -56,6 +56,9 @@ export class LogService {
      * @return .type log formattierter String
      */
     public generate(eventLog: EventLog): string {
+        if (eventLog.traces.length == 0) {
+            return '';
+        }
         const traces = eventLog.traces;
         let logString = '.type log' + '\n' + '.attributes' + '\n';
 
