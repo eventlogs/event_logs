@@ -17,7 +17,7 @@ describe('Log.ServiceService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should format internal representation as formatted xes string', () => {
+    it('should format internal representation as formatted log string', () => {
         const sampleExportLog = new EventLog(
             [],
             [],
@@ -47,7 +47,7 @@ describe('Log.ServiceService', () => {
                             'Schwimmen'
                         ),
                     ],
-                    0
+                    7
                 ),
                 new Trace(
                     [],
@@ -64,7 +64,7 @@ describe('Log.ServiceService', () => {
                             'Lesen'
                         ),
                     ],
-                    1
+                    5
                 ),
             ],
             []
@@ -80,10 +80,10 @@ describe('Log.ServiceService', () => {
             'org:role\n' +
             'org:other\n' +
             '.events\n' +
-            "0 Baden 'Group 1' 'Name \\' 1' 'Role 1'\n" +
-            "0 Schwimmen 'Group 2'\n" +
-            "1 Lesen 'Group 3' 'Name 3'\n" +
-            "1 Lesen '' '' '' 'Other Value 4'";
+            "7 Baden 'Group 1' 'Name \\' 1' 'Role 1'\n" +
+            "7 Schwimmen 'Group 2'\n" +
+            "5 Lesen 'Group 3' 'Name 3'\n" +
+            "5 Lesen '' '' '' 'Other Value 4'";
 
         expect(service.generate(sampleExportLog)).toEqual(expectedResult);
     });
