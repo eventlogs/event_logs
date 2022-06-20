@@ -49,10 +49,14 @@ export class EventLog {
 
         this._traces.forEach(trace => {
             const index = result.findIndex(val => {
-                return (
-                    JSON.stringify(val[0].events) ===
-                    JSON.stringify(trace.events)
-                );
+                for (let i = 0; i < val[0].events.length; i++) {
+                    if (
+                        val[0].events[i].activity !== trace.events[i].activity
+                    ) {
+                        return false;
+                    }
+                }
+                return true;
             });
             if (index == -1) {
                 let arr = new Array<Trace>();
