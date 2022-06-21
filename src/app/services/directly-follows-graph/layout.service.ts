@@ -101,9 +101,10 @@ export class LayoutService {
         let layer: number = 1;
 
         incomingEdges.forEach(edge => {
-            layer =
-                Math.max(layer, this.calculateLayer(edge.startVertex, graph)) +
-                1;
+            layer = Math.max(
+                layer,
+                this.calculateLayer(edge.startVertex, graph) + 1
+            );
         });
 
         return (vertex.layer = layer);
