@@ -2,4 +2,24 @@
     "eslint.options": {
         "overrideConfigFile": ".eslintrc.json"
     },
+    "cSpell.words": [
+        "Ausgewählte",
+        "basadf",
+        "Datei",
+        "einen",
+        "erneut",
+        "Eventlog",
+        "geparsed",
+        "hochgeladenen",
+        "konnte",
+        "löschen",
+        "nicht",
+        "Prüfe",
+        "Schiff",
+        "sidenav",
+        "valide",
+        "versuche",
+        "werden",
+        "wertschoepfungskette"
+    ],
 }
