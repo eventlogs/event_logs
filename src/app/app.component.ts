@@ -17,6 +17,8 @@ import { LogService } from './services/log.service';
 export class AppComponent implements OnDestroy {
     public textareaFc: FormControl;
     private _sub: Subscription;
+    private _subSelectedTraces: Subscription;
+    public _selectedTraceCaseIds: Array<number> = [];
 
     constructor(
         private _logParserService: LogParserService,
@@ -35,14 +37,20 @@ export class AppComponent implements OnDestroy {
         this._eventlogDataService.eventLog = this._logParserService.parse(
             this.textareaExampleValue()
         );
-        this._displayService.selectedTraceCaseIds$.subscribe(value =>
-            this.updateViews()
-        );
+
+        this._subSelectedTraces =
+            this._displayService.selectedTraceCaseIds$.subscribe(
+                selectedTraceCaseIds => {
+                    this._selectedTraceCaseIds = selectedTraceCaseIds;
+                    this.updateViews();
+                }
+            );
         this.updateViews();
     }
 
     ngOnDestroy(): void {
         this._sub.unsubscribe();
+        this._subSelectedTraces.unsubscribe();
     }
 
     @HostListener('document:keydown', ['$event'])

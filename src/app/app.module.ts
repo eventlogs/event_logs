@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
@@ -40,6 +41,7 @@ import { APP_BASE_HREF } from '@angular/common';
         MatInputModule,
         MatButtonModule,
         MatIconModule,
+        MatSidenavModule,
         ReactiveFormsModule,
     ],
     providers: [{ provide: APP_BASE_HREF, useValue: '/' }],

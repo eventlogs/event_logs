@@ -1,54 +1,68 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
-    <!--  Header  -->
-    <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
-        ><h1>I <span class="red">❤</span> Petri Nets</h1></a
-    >
-    <h2>Show an event log as a Value Chain or Directly-Follows Graph.</h2>
+    <mat-sidenav-container class="sidenav-container">
+        <mat-sidenav
+            mode="side"
+            position="end"
+            opened
+            *ngIf="_selectedTraceCaseIds.length > 0"
+            >Sidenav content</mat-sidenav
+        >
+        <mat-sidenav-content>
+            <!--  Header  -->
+            <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
+                ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+            >
+            <h2>
+                Show an event log as a Value Chain or Directly-Follows Graph.
+            </h2>
 
-    <!--    Main content    -->
-    <app-drawing-area></app-drawing-area>
-    <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <app-upload-button
-            buttonText="Import .xes"
-            buttonIcon="file_upload"
-            [permittedFileExtensions]="['xes']"
-            (newFileUploadedEvent)="
-                processXesImport($event)
-            "></app-upload-button>
-        <app-upload-button
-            buttonText="Import .log"
-            buttonIcon="file_upload"
-            [permittedFileExtensions]="['log', 'txt']"
-            (newFileUploadedEvent)="updateTextarea($event)"></app-upload-button>
-        <app-delete-button
-            buttonText="Ausgewählte Traces löschen"
-            buttonIcon="delete"
-            (updateTextarea)="updateTextarea($event)"></app-delete-button>
-        <mat-form-field appearance="outline" class="textarea">
-            <mat-label>Source file</mat-label>
-            <textarea
-                matInput
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                cdkAutosizeMaxRows="20"
-                [formControl]="textareaFc"></textarea>
-        </mat-form-field>
-        <app-export-button
-            buttonText="Export .log"
-            buttonIcon="file_download"
-            [fileContent]="getLogExportValue()"
-            fileType="text/plain;charset=utf-8"
-            fileName="event.log"
-            [datePrefix]="true"></app-export-button>
-        <app-export-button
-            buttonText="Export .xes"
-            buttonIcon="file_download"
-            [fileContent]="getXesExportValue()"
-            fileType="text/plain;charset=utf-8"
-            fileName="event.xes"
-            [datePrefix]="true"></app-export-button>
-    </div>
+            <!--    Main content    -->
 
+            <app-drawing-area></app-drawing-area>
+            <div fxLayout="row" fxLayoutAlign="space-evenly start">
+                <app-upload-button
+                    buttonText="Import .xes"
+                    buttonIcon="file_upload"
+                    [permittedFileExtensions]="['xes']"
+                    (newFileUploadedEvent)="
+                        processXesImport($event)
+                    "></app-upload-button>
+                <app-upload-button
+                    buttonText="Import .log"
+                    buttonIcon="file_upload"
+                    [permittedFileExtensions]="['log', 'txt']"
+                    (newFileUploadedEvent)="
+                        updateTextarea($event)
+                    "></app-upload-button>
+                <app-delete-button
+                    buttonText="Ausgewählte Traces löschen"
+                    buttonIcon="delete"></app-delete-button>
+                <mat-form-field appearance="outline" class="textarea">
+                    <mat-label>Source file</mat-label>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="10"
+                        cdkAutosizeMaxRows="20"
+                        [formControl]="textareaFc"></textarea>
+                </mat-form-field>
+                <app-export-button
+                    buttonText="Export .log"
+                    buttonIcon="file_download"
+                    [fileContent]="getLogExportValue()"
+                    fileType="text/plain;charset=utf-8"
+                    fileName="event.log"
+                    [datePrefix]="true"></app-export-button>
+                <app-export-button
+                    buttonText="Export .xes"
+                    buttonIcon="file_download"
+                    [fileContent]="getXesExportValue()"
+                    fileType="text/plain;charset=utf-8"
+                    fileName="event.xes"
+                    [datePrefix]="true"></app-export-button>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
     <!--  Footer  -->
     <hr />
     <app-footer></app-footer>
