@@ -19,6 +19,7 @@ import { DirectlyFollowsGraphComponent } from './components/directly-follows-gra
 import { SwitchViewButtonComponent } from './components/switch-view-button/switch-view-button.component';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 import { APP_BASE_HREF } from '@angular/common';
+import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,7 @@ import { APP_BASE_HREF } from '@angular/common';
         DirectlyFollowsGraphComponent,
         DeleteButtonComponent,
         SwitchViewButtonComponent,
+        TracesDetailViewComponent,
     ],
     imports: [
         BrowserModule,

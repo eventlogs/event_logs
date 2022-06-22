@@ -4,9 +4,9 @@
             mode="side"
             position="end"
             opened
-            *ngIf="_selectedTraceCaseIds.length > 0"
-            >Sidenav content</mat-sidenav
-        >
+            *ngIf="_selectedTraceCaseIds.length > 0">
+            <app-traces-detail-view></app-traces-detail-view>
+        </mat-sidenav>
         <mat-sidenav-content>
             <!--  Header  -->
             <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
