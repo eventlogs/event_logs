@@ -17,6 +17,7 @@ import { ExportButtonComponent } from './components/export-button/export-button.
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { SwitchViewButtonComponent } from './components/switch-view-button/switch-view-button.component';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -41,7 +42,7 @@ import { DeleteButtonComponent } from './components/delete-button/delete-button.
         MatIconModule,
         ReactiveFormsModule,
     ],
-    providers: [],
+    providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
