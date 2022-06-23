@@ -28,7 +28,7 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
-            "deployUrl": "/ilovepetrinets/event_logs/",
+            "baseHref": "/ilovepetrinets/event_logs/",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
