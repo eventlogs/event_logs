@@ -25,7 +25,7 @@ export class WertschoepfungsketteComponent implements OnDestroy {
     private _subSelectedTraces: Subscription;
     private _selectedTraceCaseIds: Array<number> = [];
     public heightPx: number = 390;
-    public widthPercent: number = 100;
+    public widthPx: number = 1080;
 
     constructor(
         private _layoutService: LayoutService,
@@ -34,11 +34,9 @@ export class WertschoepfungsketteComponent implements OnDestroy {
     ) {
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
-            let pixelWidth = 0;
-            [pixelWidth, this.heightPx] = this._layoutService.layout(
+            [this.widthPx, this.heightPx] = this._layoutService.layout(
                 this._diagram
             );
-            this.calcWidth(pixelWidth);
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
@@ -51,15 +49,6 @@ export class WertschoepfungsketteComponent implements OnDestroy {
                     this.draw();
                 }
             );
-    }
-
-    private calcWidth(pixelWidth: number) {
-        if (this.clientWidth != undefined) {
-            let drawingWidth = (pixelWidth / this.clientWidth) * 100;
-            drawingWidth < 100
-                ? (this.widthPercent = 100)
-                : (this.widthPercent = drawingWidth);
-        }
     }
 
     ngOnDestroy(): void {
