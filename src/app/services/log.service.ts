@@ -73,8 +73,8 @@ export class LogService {
 
         logString += '.events' + '\n';
         logString += traces
-            .map((trace, caseId) =>
-                this.getTraceRepresentation(trace, caseId, attributes)
+            .map(trace =>
+                this.getTraceRepresentation(trace, trace.caseId, attributes)
             )
             .join('\n');
         return logString;
