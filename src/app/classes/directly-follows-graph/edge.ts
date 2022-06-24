@@ -52,11 +52,16 @@ export class Edge {
         this._isReversed = value;
     }
 
-    constructor(startVertex: Vertex, endVertex: Vertex, activityCount: number) {
+    constructor(
+        startVertex: Vertex,
+        endVertex: Vertex,
+        activityCount: number = 0,
+        isReversed: boolean = false
+    ) {
         this._startVertex = startVertex;
         this._endVertex = endVertex;
         this._activityCount = activityCount;
-        this._isReversed = false;
+        this._isReversed = isReversed;
     }
 
     public reverse(): void {
@@ -64,6 +69,10 @@ export class Edge {
         this._startVertex = this._endVertex;
         this._endVertex = temp;
         this._isReversed = !this._isReversed;
+    }
+
+    public isTargetingSelf(): boolean {
+        return this._startVertex == this._endVertex;
     }
 
     private processMouseDown(event: MouseEvent) {}

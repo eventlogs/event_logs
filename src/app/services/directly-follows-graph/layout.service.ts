@@ -11,26 +11,10 @@ export class LayoutService {
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
         this.setLayers(graph);
+        this.createDummyVertices(graph);
 
         this.setPosition(graph);
-    }
-
-    private setPosition(graph: Graph): void {
-        let sinks: Vertex[] = graph.getSinks();
-
-        let max: number = 0;
-
-        sinks.forEach(vertex => {
-            max = Math.max(max, vertex.layer);
-        });
-
-        let positions: number[] = new Array<number>(max);
-
-        for (let i = 0; i < max; i++) positions[i] = 1;
-
-        graph.vertices.forEach(
-            vertex => (vertex.position = positions[vertex.layer - 1]++)
-        );
+        this.correctEdgeDirection(graph.edges);
     }
 
     private makeGraphAcyclic(graph: Graph): void {
@@ -74,15 +58,14 @@ export class LayoutService {
 
             if (vertices.length != 0) {
                 let vertex = newGraph.getMaxEdgeDifferenceVertex();
-                if (vertex != undefined) {
-                    let outgoingEdges = vertex.getOutgoingEdges(edges);
-                    let incomingEdges = vertex.getIncomingEdges(edges);
 
-                    newGraph.removeVertex(vertex);
-                    newGraph.removeEdges(outgoingEdges);
-                    newGraph.removeEdges(incomingEdges);
-                    incomingEdges.forEach(edge => edge.reverse());
-                }
+                let outgoingEdges = vertex.getOutgoingEdges(edges);
+                let incomingEdges = vertex.getIncomingEdges(edges);
+
+                newGraph.removeVertex(vertex);
+                newGraph.removeEdges(outgoingEdges);
+                newGraph.removeEdges(incomingEdges);
+                incomingEdges.forEach(edge => edge.reverse());
             }
         }
     }
@@ -108,5 +91,88 @@ export class LayoutService {
         });
 
         return (vertex.layer = layer);
+    }
+
+    private createDummyVertices(graph: Graph): void {
+        graph.edges.forEach(edge => {
+            let layerDiff: number = Math.abs(
+                edge.startVertex.layer - edge.endVertex.layer
+            );
+
+            //Lege Dummyknoten an, wenn zwischen ihnen Ebenen liegen.
+            if (layerDiff > 1) {
+                let newVertices: Vertex[] = new Array<Vertex>(layerDiff - 1);
+                //Erstelle für jede Ebene einen Knoten
+                for (let i = 1; i < layerDiff; i++) {
+                    let vertexName: String =
+                        edge.startVertex.activityName.toString() +
+                        ' To ' +
+                        edge.endVertex.activityName.toString() +
+                        ' ' +
+                        i.toString();
+                    let vertex: Vertex = new Vertex(vertexName);
+                    vertex.layer =
+                        Math.min(edge.startVertex.layer, edge.endVertex.layer) +
+                        i;
+                    graph.vertices.push(vertex);
+                    newVertices[i - 1] = vertex;
+                }
+
+                //Kante zu ursprünglichen Startknoten
+                let newEdge: Edge = new Edge(
+                    edge.startVertex,
+                    newVertices[0],
+                    edge.activityCount,
+                    edge.isReversed
+                );
+                graph.edges.push(newEdge);
+
+                //Kanten zwischen Dummyknoten
+                for (let i = 0; i < layerDiff - 2; i++) {
+                    newEdge = new Edge(
+                        newVertices[i],
+                        newVertices[i + 1],
+                        edge.activityCount,
+                        edge.isReversed
+                    );
+                    graph.edges.push(newEdge);
+                }
+
+                //Kante zu ursprünglichen Endknoten
+                newEdge = new Edge(
+                    newVertices[layerDiff - 2],
+                    edge.endVertex,
+                    edge.activityCount,
+                    edge.isReversed
+                );
+                graph.edges.push(newEdge);
+
+                graph.removeEdge(edge);
+            }
+        });
+    }
+
+    private setPosition(graph: Graph): void {
+        let sinks: Vertex[] = graph.getSinks();
+
+        let max: number = 0;
+
+        sinks.forEach(vertex => {
+            max = Math.max(max, vertex.layer);
+        });
+
+        let positions: number[] = new Array<number>(max);
+
+        for (let i = 0; i < max; i++) positions[i] = 1;
+
+        graph.vertices.forEach(
+            vertex => (vertex.position = positions[vertex.layer - 1]++)
+        );
+    }
+
+    private correctEdgeDirection(edges: Edge[]): void {
+        edges.forEach(edge => {
+            if (edge.isReversed) edge.reverse();
+        });
     }
 }

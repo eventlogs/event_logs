@@ -6,6 +6,7 @@ export class Vertex {
     private _layer: number;
     private _position: number;
     private _svgElement: SVGElement | undefined;
+    private _isDummy: boolean;
 
     public get activityName(): String {
         return this._activityName;
@@ -55,11 +56,20 @@ export class Vertex {
         }
     }
 
-    constructor(activityName: String, activityCount: number) {
+    public get isDummy(): boolean {
+        return this._isDummy;
+    }
+
+    constructor(
+        activityName: String,
+        activityCount: number = 0,
+        isDummy: boolean = false
+    ) {
         this._activityName = activityName;
         this._activityCount = activityCount;
         this._layer = 0;
         this._position = 0;
+        this._isDummy = isDummy;
     }
 
     private processMouseDown(event: MouseEvent) {}
@@ -167,7 +177,8 @@ export class Vertex {
         let outgoingEdges: Edge[] = [];
 
         edges.forEach(edge => {
-            if (this === edge.startVertex) outgoingEdges.push(edge);
+            if (this === edge.startVertex && !edge.isTargetingSelf())
+                outgoingEdges.push(edge);
         });
 
         return outgoingEdges;
@@ -178,7 +189,8 @@ export class Vertex {
         let incomingEdges: Edge[] = [];
 
         edges.forEach(edge => {
-            if (this === edge.endVertex) incomingEdges.push(edge);
+            if (this === edge.endVertex && !edge.isTargetingSelf())
+                incomingEdges.push(edge);
         });
 
         return incomingEdges;
