@@ -3,10 +3,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { EventLogAttribute } from 'src/app/classes/EventLog/eventlogattribute';
-import { Trace } from 'src/app/classes/EventLog/trace';
 import { DisplayService } from 'src/app/services/display.service';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { TracesDetailViewDataSource } from './traces-detail-view-datasource';
+import { Event } from 'src/app/classes/EventLog/event';
 
 @Component({
     selector: 'app-traces-detail-view',
@@ -16,7 +16,7 @@ import { TracesDetailViewDataSource } from './traces-detail-view-datasource';
 export class TracesDetailViewComponent implements AfterViewInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
-    @ViewChild(MatTable) table!: MatTable<Trace>;
+    @ViewChild(MatTable) table!: MatTable<Event>;
     dataSource: TracesDetailViewDataSource;
 
     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
@@ -37,6 +37,15 @@ export class TracesDetailViewComponent implements AfterViewInit {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.table.dataSource = this.dataSource;
+    }
+
+    public getCaseId(event: Event): number {
+        for (let trace of this._eventlogDataService.eventLog.traces) {
+            if (trace.events.includes(event)) {
+                return trace.caseId;
+            }
+        }
+        return 0;
     }
 
     public getAttributeValue(
