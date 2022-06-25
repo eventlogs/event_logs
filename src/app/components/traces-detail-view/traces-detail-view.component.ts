@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Attribute, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
+import { EventLogAttribute } from 'src/app/classes/EventLog/eventlogattribute';
 import { Trace } from 'src/app/classes/EventLog/trace';
 import { DisplayService } from 'src/app/services/display.service';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
@@ -19,21 +20,29 @@ export class TracesDetailViewComponent implements AfterViewInit {
     dataSource: TracesDetailViewDataSource;
 
     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-    displayedColumns = ['caseId', 'activity'];
+    displayedColumns: string[] = [];
 
     constructor(
         private _eventlogDataService: EventlogDataService,
-        private _displayServie: DisplayService
+        private _displayService: DisplayService
     ) {
         this.dataSource = new TracesDetailViewDataSource(
             _eventlogDataService,
-            _displayServie
+            _displayService
         );
+        this.displayedColumns = this.dataSource.getColumns();
     }
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.table.dataSource = this.dataSource;
+    }
+
+    public getAttributeValue(
+        attributes: Array<EventLogAttribute>,
+        key: string
+    ): any {
+        return attributes.filter(attr => attr.key === key)[0].value;
     }
 }

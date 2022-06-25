@@ -32,6 +32,22 @@ export class TracesDetailViewDataSource extends DataSource<Trace> {
         //this.data = this._eventlogDataService.eventLog.;
     }
 
+    getColumns(): string[] {
+        let result = ['caseId'];
+        result.push('activity');
+        for (let trace of this._eventlogDataService.eventLog.traces) {
+            if (
+                this._displayService.selectedTraceCaseIds.includes(trace.caseId)
+            ) {
+                trace.events[0].attributes.forEach(attr => {
+                    result.push(attr.key);
+                });
+                break;
+            }
+        }
+        return result;
+    }
+
     /**
      * Connect this data source to the table. The table will only update when
      * the returned stream emits new items.
@@ -91,13 +107,13 @@ export class TracesDetailViewDataSource extends DataSource<Trace> {
         return data.sort((a, b) => {
             const isAsc = this.sort?.direction === 'asc';
             switch (this.sort?.active) {
-                case 'name':
+                case 'activity':
                     return compare(
                         a.events[0].activity,
                         b.events[0].activity,
                         isAsc
                     );
-                case 'id':
+                case 'caseId':
                     return compare(+a.caseId, +b.caseId, isAsc);
                 default:
                     return 0;
