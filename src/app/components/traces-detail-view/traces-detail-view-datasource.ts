@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import { Observable, of as observableOf, merge, BehaviorSubject } from 'rxjs';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { Trace } from 'src/app/classes/EventLog/trace';
@@ -14,25 +14,31 @@ import { Event } from 'src/app/classes/EventLog/event';
  * (including sorting, pagination, and filtering).
  */
 export class TracesDetailViewDataSource extends DataSource<Event> {
-    data: Event[] = [];
+    _data: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>([]);
     paginator: MatPaginator | undefined;
     sort: MatSort | undefined;
+    _selectedTraceCaseIds: BehaviorSubject<Number[]> = new BehaviorSubject<
+        Number[]
+    >([]);
 
     constructor(
         private _eventlogDataService: EventlogDataService,
         private _displayService: DisplayService
     ) {
         super();
-        let selectedTraceCaseIds = _displayService.selectedTraceCaseIds;
+    }
+
+    loadData(selectedTraceCaseIds: Number[]) {
+        let data: Event[] = [];
         this._eventlogDataService.eventLog.traces.forEach(trace => {
             if (selectedTraceCaseIds.includes(trace.caseId)) {
                 trace.events.forEach(element => {
-                    this.data.push(element);
+                    data.push(element);
+                    this._data.next(data);
                 });
             }
         });
-        console.log(this.data);
-        //this.data = this._eventlogDataService.eventLog.;
+        this._selectedTraceCaseIds.next(selectedTraceCaseIds);
     }
 
     getColumns(): string[] {
@@ -61,13 +67,13 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
             // Combine everything that affects the rendered data into one update
             // stream for the data-table to consume.
             return merge(
-                observableOf(this.data),
+                this._data,
                 this.paginator.page,
                 this.sort.sortChange
             ).pipe(
                 map(() => {
                     return this.getPagedData(
-                        this.getSortedData([...this.data])
+                        this.getSortedData([...this._data.value])
                     );
                 })
             );
@@ -82,7 +88,10 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
      *  Called when the table is being destroyed. Use this function, to clean up
      * any open connections or free any held resources that were set up during connect.
      */
-    disconnect(): void {}
+    disconnect(): void {
+        this._selectedTraceCaseIds.complete();
+        this._data.complete();
+    }
 
     /**
      * Paginate the data (client-side). If you're using server-side pagination,
