@@ -31,12 +31,13 @@ module.exports = function (config) {
         { type: 'lcov' }
       ],
       check: {
-        global: {
-          statements: 80,
-          branches: 80,
-            functions: 80,
-            lines: 80
-        }
+          emitWarning: true,
+          global: {
+              statements: 80,
+              branches: 80,
+              functions: 80,
+              lines: 80
+          }
       }
     },
       reporters: ['progress', 'kjhtml'],
