@@ -8,11 +8,18 @@ import { pathToFileURL } from 'url';
     providedIn: 'root',
 })
 export class SvgService {
-    private rectWidth: number = 150;
+    private _rectWidth: number = 150;
     private rectHeight: number = 40;
-    private positionOffset: number = this.rectWidth * 1.5;
+    private positionOffset: number = this._rectWidth * 1.5;
     private layerOffset: number = this.rectHeight * 2.5;
-    private activityCount = 0;
+    private maxActivityCount = 0;
+
+    public get rectWidth(): number {
+        return this._rectWidth;
+    }
+    public set rectWidth(value: number) {
+        this._rectWidth = value;
+    }
 
     public createSvgElements(graph: Graph): SVGElement[] {
         let result: SVGElement[] = [];
@@ -45,11 +52,11 @@ export class SvgService {
     }
 
     private setMaxActivityCount(graph: Graph) {
-        this.activityCount = 0;
+        this.maxActivityCount = 0;
         graph.vertices.forEach(vertex => {
-            this.activityCount = Math.max(
+            this.maxActivityCount = Math.max(
                 vertex.activityCount,
-                this.activityCount
+                this.maxActivityCount
             );
         });
     }
@@ -81,7 +88,7 @@ export class SvgService {
         rect.setAttribute('fill', 'rgb(150, 150, 150)');
         //Setze höhere Füllstärke, für häufiger vorkommende Knoten
         let fillOpacity =
-            0.1 + 0.8 * (vertex.activityCount / this.activityCount);
+            0.1 + 0.8 * (vertex.activityCount / this.maxActivityCount);
         rect.setAttribute('fill-opacity', fillOpacity.toString());
         rect.setAttribute('stroke-width', '2');
         rect.setAttribute('stroke', 'black');

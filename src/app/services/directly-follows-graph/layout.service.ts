@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
+import { SvgService } from './svg.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,8 +14,111 @@ export class LayoutService {
         this.setLayers(graph);
         this.createDummyVertices(graph);
 
-        this.setPosition(graph);
+        this.minimizeCrossings(graph);
+
+        //this.setPosition(graph);
         this.correctEdgeDirection(graph.edges);
+    }
+
+    constructor(private _svgService: SvgService) {}
+
+    private minimizeCrossings(graph: Graph): void {
+        let maxLayer: number = this.getMaxLayer(graph.vertices);
+        let maxVerticesOnLayer: number = this.getMaxVerticesOnLayer(
+            graph.vertices,
+            maxLayer
+        );
+        let maxSize: number =
+            2 * maxVerticesOnLayer * this._svgService.rectWidth;
+
+        let graphClone: Graph = Object.assign(
+            new Graph(new Array<Vertex>(), new Array<Edge>()),
+            graph
+        );
+
+        //Zufällige Permutation für die erste Ebene
+        this.permutateFirstLayerPositions(graphClone.vertices);
+        //Betrachte iterative die zwei aufeinanderfolgenden Ebenen
+        for (let i = 1; i < maxLayer; i++)
+            this.setNextLayerPositions(graphClone, i, i + 1);
+        console.log(graphClone);
+        //minimize crossings by permuting next layer, while keeping previous fixed
+        //repeat steps 2 and 3 in reverse order starting with last layer
+        //repeat steps 2 too 4 till no improvement
+        //repeast seteps 1 too 5 with different starting permutation
+    }
+
+    private getMaxLayer(vertices: Vertex[]): number {
+        let maxLayer: number = 0;
+
+        vertices.forEach(
+            vertex => (maxLayer = Math.max(maxLayer, vertex.layer))
+        );
+
+        return maxLayer;
+    }
+
+    private getMaxVerticesOnLayer(
+        vertices: Vertex[],
+        maxLayer: number
+    ): number {
+        let verticesOnLayer: number[] = new Array<number>(maxLayer);
+        let maxVerticesOnLayer = 0;
+
+        verticesOnLayer.forEach(n => (n = 0));
+        vertices.forEach(
+            vertex =>
+                (maxVerticesOnLayer = Math.max(
+                    maxVerticesOnLayer,
+                    ++verticesOnLayer[vertex.layer - 1]
+                ))
+        );
+
+        return maxVerticesOnLayer;
+    }
+
+    private permutateFirstLayerPositions(vertices: Vertex[]): void {
+        let firstLayerVertices: Vertex[] = vertices.filter(
+            vertex => vertex.layer == 1
+        );
+
+        for (let i = 0; i < firstLayerVertices.length; i++)
+            firstLayerVertices[i].position = i + 1;
+
+        for (let i = 0; i < firstLayerVertices.length; i++) {
+            let n: number = Math.floor(
+                Math.random() * firstLayerVertices.length
+            );
+            let tmp: number = firstLayerVertices[i].position;
+            firstLayerVertices[i].position = firstLayerVertices[n].position;
+            firstLayerVertices[n].position = tmp;
+        }
+    }
+
+    private setNextLayerPositions(
+        graph: Graph,
+        layer: number,
+        nextLayer: number
+    ): void {
+        let vertices: Vertex[] = graph.vertices.filter(
+            vertex => vertex.layer == layer
+        );
+        let nextVertices: Vertex[] = graph.vertices.filter(
+            vertex => vertex.layer == nextLayer
+        );
+
+        nextVertices.forEach(nextVertex => {
+            let edges: Edge[] = graph.edges.filter(
+                edge => edge.endVertex === nextVertex
+            );
+            let neighbours: Vertex[] = vertices.filter(
+                vertex =>
+                    edges.find(edge => edge.startVertex === vertex) != undefined
+            );
+            let value: number = 0;
+            neighbours.forEach(neighbour => (value += neighbour.position));
+            nextVertex.position = value / neighbours.length;
+        });
     }
 
     private makeGraphAcyclic(graph: Graph): void {
