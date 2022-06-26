@@ -22,8 +22,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Setup Angular Full CI
-      uses: colbyhill21/angular-full-ci@v1.0
     - name: Setup Chrome
       uses: browser-actions/setup-chrome@latest
     - run: npm ci
