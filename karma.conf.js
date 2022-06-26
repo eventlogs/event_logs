@@ -34,18 +34,24 @@ module.exports = function (config) {
         global: {
           statements: 80,
           branches: 80,
-          functions: 80,
-          lines: 80
+            functions: 80,
+            lines: 80
         }
       }
     },
-    reporters: ['progress', 'kjhtml'],
-    port: 9876,
-    colors: true,
-    logLevel: config.LOG_INFO,
-    autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false,
-    restartOnFileChange: true
+      reporters: ['progress', 'kjhtml'],
+      port: 9876,
+      colors: true,
+      logLevel: config.LOG_INFO,
+      autoWatch: true,
+      browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
+      customLaunchers: {
+          ChromeHeadlessCI: {
+              base: 'ChromeHeadless',
+              flags: ['--no-sandbox']
+          }
+      },
+      singleRun: false,
+      restartOnFileChange: true
   });
 };
