@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { LogParserService } from './services/log-parser.service';
 import { DisplayService } from './services/display.service';
@@ -39,6 +39,30 @@ export class AppComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this._sub.unsubscribe();
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+        var activeElement = document.activeElement;
+        var inputs = ['input', 'textarea'];
+        if (
+            activeElement &&
+            inputs.indexOf(activeElement.tagName.toLowerCase()) !== -1
+        ) {
+            return;
+        }
+
+        if (event.key == 'Escape') {
+            this._displayService.selectTraceCaseIds([]);
+        }
+        if (event.key == 'Delete') {
+            let eventLog = this._eventlogDataService.eventLog;
+            eventLog.deleteTraceByCaseIds(
+                this._displayService.selectedTraceCaseIds
+            );
+            this._displayService.selectTraceCaseIds([]);
+            this.updateTextarea(this._logService.generate(eventLog));
+        }
     }
 
     private processSourceChange(newSource: string) {

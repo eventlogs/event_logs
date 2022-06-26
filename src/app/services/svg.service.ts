@@ -25,7 +25,7 @@ export class SvgService {
     private readonly YNEXTROWOFFSET = 20;
 
     private readonly xTraceBorderOffset = -5;
-    private readonly yTraceBorderOffset = -24;
+    private readonly yTraceBorderOffset = -23;
     private readonly widthTraceBorderPerElement = 150;
     private readonly widthTraceBorderOffset = 70;
 
@@ -42,8 +42,7 @@ export class SvgService {
         diagram.traces.forEach(trace => {
             // Rahmen um die ausgewählten Traces
             if (
-                JSON.stringify(selectedTraceCaseIds) ==
-                JSON.stringify(trace.caseIds)
+                trace.caseIds.every(val => selectedTraceCaseIds.includes(val))
             ) {
                 let traceBorder = this.createSelectedTraceBorder(
                     trace.svgElements[0].x + this.xTraceBorderOffset,
@@ -93,7 +92,7 @@ export class SvgService {
         svg.setAttribute('x', `${x}`);
         svg.setAttribute('y', `${y}`);
         svg.setAttribute('width', `${width}`);
-        svg.setAttribute('height', '48');
+        svg.setAttribute('height', '46');
         svg.setAttribute('fill', 'none');
         svg.setAttribute('stroke-width', '2');
         svg.setAttribute('stroke', 'black');

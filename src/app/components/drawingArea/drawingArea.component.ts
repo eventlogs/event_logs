@@ -4,6 +4,7 @@ import {
     ElementRef,
     ViewChild,
 } from '@angular/core';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
     selector: 'app-drawing-area',
@@ -16,6 +17,8 @@ export class DrawingAreaComponent implements AfterContentChecked {
     wertschoepfungsketteHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
 
+    constructor(private _displayService: DisplayService) {}
+
     ngAfterContentChecked() {
         if (this.drawingArea != undefined) {
             this.canvasWidth = this.drawingArea?.nativeElement.clientWidth;
@@ -25,5 +28,9 @@ export class DrawingAreaComponent implements AfterContentChecked {
     switchView() {
         this.direktfolgegraphHidden = !this.direktfolgegraphHidden;
         this.wertschoepfungsketteHidden = !this.wertschoepfungsketteHidden;
+    }
+
+    clickDrawArea() {
+        this._displayService.selectTraceCaseIds([]);
     }
 }

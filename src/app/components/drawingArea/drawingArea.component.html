@@ -1,6 +1,6 @@
 <app-switch-view-button
     (switchViewEvent)="switchView()"></app-switch-view-button>
-<div #drawingArea class="drawingArea">
+<div #drawingArea class="drawingArea" (click)="clickDrawArea()">
     <app-wertschoepfungskette
         [clientWidth]="canvasWidth"
         [hidden]="wertschoepfungsketteHidden"
