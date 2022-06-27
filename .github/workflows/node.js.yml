@@ -2,12 +2,12 @@ name: Node.js CI (Run Karma Tests)
 
 on:
   push:
-    branches: [ "master", "EL-49" ]
+    branches: [ "master", "EL-49" ] # TODO
   pull_request:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
@@ -16,16 +16,36 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+
     - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - name: Setup Chrome
       uses: browser-actions/setup-chrome@latest
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm i -D puppeteer karma-chrome-launcher
-    - run: npm run github-actions-test
+
+    - name: Install Dependencies in CI-Environment
+      run: npm ci
+
+    - name: Run tests in headless environment
+      run: npm run github-actions-test
+
+    - name: Build Angular project
+      run: npm run github-actions-build
+
+    - name: Deploy to Github Pages
+      if: sucess() && ${{ github.ref == 'refs/heads/main' }}
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          enable_jekyll: true
+
+
+
+
 
