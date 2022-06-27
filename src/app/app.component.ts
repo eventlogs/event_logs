@@ -35,6 +35,10 @@ export class AppComponent implements OnDestroy {
         this._eventlogDataService.eventLog = this._logParserService.parse(
             this.textareaExampleValue()
         );
+        this._displayService.selectedTraceCaseIds$.subscribe(value =>
+            this.updateViews()
+        );
+        this.updateViews();
     }
 
     ngOnDestroy(): void {
@@ -69,10 +73,7 @@ export class AppComponent implements OnDestroy {
         const result = this._logParserService.parse(newSource);
         if (result !== undefined) {
             this._eventlogDataService.eventLog = result;
-            this._displayService.displayEventLog(result);
-            this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
-                result
-            );
+            this.updateViews();
         }
     }
 
@@ -82,7 +83,7 @@ export class AppComponent implements OnDestroy {
             if (result !== undefined) {
                 this._eventlogDataService.eventLog = result;
                 this.updateTextarea(this._logService.generate(result));
-                this._displayService.displayEventLog(result);
+                this.updateViews();
             }
         } catch (e) {
             if (e === XesParserService.PARSING_ERROR) {
@@ -123,7 +124,27 @@ export class AppComponent implements OnDestroy {
         );
     }
 
-    getXesValue() {
-        return this._xesService.generate(this._eventlogDataService.eventLog);
+    getLogExportValue() {
+        return this._logService.generate(
+            this._eventlogDataService
+                .eventLogWithSelectedOrAllWhenNothingSelected
+        );
+    }
+
+    getXesExportValue() {
+        return this._xesService.generate(
+            this._eventlogDataService
+                .eventLogWithSelectedOrAllWhenNothingSelected
+        );
+    }
+
+    updateViews() {
+        this._displayService.displayEventLog(
+            this._eventlogDataService.eventLog
+        );
+        this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
+            this._eventlogDataService
+                .eventLogWithSelectedOrAllWhenNothingSelected
+        );
     }
 }

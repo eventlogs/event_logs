@@ -36,14 +36,14 @@
         <app-export-button
             buttonText="Export .log"
             buttonIcon="file_download"
-            [fileContent]="getTextareaValue()"
+            [fileContent]="getLogExportValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.log"
             [datePrefix]="true"></app-export-button>
         <app-export-button
             buttonText="Export .xes"
             buttonIcon="file_download"
-            [fileContent]="getXesValue()"
+            [fileContent]="getXesExportValue()"
             fileType="text/plain;charset=utf-8"
             fileName="event.xes"
             [datePrefix]="true"></app-export-button>
