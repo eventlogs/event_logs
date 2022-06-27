@@ -1,51 +1,38 @@
-name: Node.js CI (Run Karma Tests)
+name: EventLogs-CI/CD-Pipeline
 
-on:
-  push:
-    branches: [ "master", "EL-49" ] # TODO
-  pull_request:
-    branches: [ "master" ]
+on: [ push ]
 
 jobs:
-  build-and-test:
+  build-test-and-deploy-if-master:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
-    - name: Checkout
+    - name: Checkout Git-Repo
       uses: actions/checkout@v3
 
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '16.x'
         cache: 'npm'
 
     - name: Setup Chrome
       uses: browser-actions/setup-chrome@latest
 
-    - name: Install Dependencies in CI-Environment
+    - name: Install NPM-Dependencies
       run: npm ci
 
-    - name: Run tests in headless environment
+    - name: Run Karma tests headless
       run: npm run github-actions-test
 
     - name: Build Angular project
       run: npm run github-actions-build
 
     - name: Deploy to Github Pages if branch is master
-      if: ${{ github.ref == 'refs/heads/EL-49' }} # TODO
+      if: ${{ github.ref == 'refs/heads/master' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           enable_jekyll: true
-
-
-
-
-
