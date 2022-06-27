@@ -35,6 +35,15 @@
             "prefix": "app",
             "style": "kebab-case"
           }
+        ],
+        "no-warning-comments": [
+          "warn",
+          {
+            "terms": [
+              "todo",
+              "fixme"
+            ]
+          }
         ]
       }
     },
