@@ -38,7 +38,7 @@ jobs:
       run: npm run github-actions-build
 
     - name: Deploy to Github Pages if branch is master
-      if: ${{ github.ref == 'refs/heads/master' }}
+      if: ${{ github.ref == 'refs/heads/EL-49' }} # TODO
       uses: peaceiris/actions-gh-pages@v3
       with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
