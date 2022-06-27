@@ -31,6 +31,7 @@ module.exports = function (config) {
                 { type: 'lcov' }
             ],
             check: {
+                emitWarning: true,
                 global: {
                     statements: 80,
                     branches: 80,
