@@ -32,9 +32,13 @@ export class AppComponent implements OnDestroy {
             .pipe(debounceTime(400))
             .subscribe(val => this.processSourceChange(val));
         this.textareaFc.setValue(this.textareaExampleValue());
-        this._eventlogDataService.eventLog = this._logParserService.parse(this.textareaExampleValue());
-        this._displayService.selectedTraceCaseIds$.subscribe(value => this.updateViews())
-        this.updateViews()
+        this._eventlogDataService.eventLog = this._logParserService.parse(
+            this.textareaExampleValue()
+        );
+        this._displayService.selectedTraceCaseIds$.subscribe(value =>
+            this.updateViews()
+        );
+        this.updateViews();
     }
 
     ngOnDestroy(): void {
@@ -121,15 +125,26 @@ export class AppComponent implements OnDestroy {
     }
 
     getLogExportValue() {
-        return this._logService.generate(this._eventlogDataService.eventLogWithSelectedOrAllWhenNothingSelected)
+        return this._logService.generate(
+            this._eventlogDataService
+                .eventLogWithSelectedOrAllWhenNothingSelected
+        );
     }
 
     getXesExportValue() {
-        return this._xesService.generate(this._eventlogDataService.eventLogWithSelectedOrAllWhenNothingSelected);
+        return this._xesService.generate(
+            this._eventlogDataService
+                .eventLogWithSelectedOrAllWhenNothingSelected
+        );
     }
 
     updateViews() {
-        this._displayService.displayEventLog(this._eventlogDataService.eventLog);
-        this._directlyFollowsGraphService.displayDirectlyFollowsGraph(this._eventlogDataService.eventLogWithSelectedOrAllWhenNothingSelected);
+        this._displayService.displayEventLog(
+            this._eventlogDataService.eventLog
+        );
+        this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
+            this._eventlogDataService
+                .eventLogWithSelectedOrAllWhenNothingSelected
+        );
     }
 }
