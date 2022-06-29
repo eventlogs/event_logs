@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
@@ -18,6 +19,10 @@ import { DirectlyFollowsGraphComponent } from './components/directly-follows-gra
 import { SwitchViewButtonComponent } from './components/switch-view-button/switch-view-button.component';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 import { APP_BASE_HREF } from '@angular/common';
+import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
     declarations: [
@@ -31,6 +36,7 @@ import { APP_BASE_HREF } from '@angular/common';
         DirectlyFollowsGraphComponent,
         DeleteButtonComponent,
         SwitchViewButtonComponent,
+        TracesDetailViewComponent,
     ],
     imports: [
         BrowserModule,
@@ -40,7 +46,11 @@ import { APP_BASE_HREF } from '@angular/common';
         MatInputModule,
         MatButtonModule,
         MatIconModule,
+        MatSidenavModule,
         ReactiveFormsModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
     ],
     providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
     bootstrap: [AppComponent],
