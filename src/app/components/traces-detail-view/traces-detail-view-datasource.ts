@@ -2,10 +2,9 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { DisplayService } from 'src/app/services/display.service';
-import { Trace } from 'src/app/classes/EventLog/trace';
 import { Event } from 'src/app/classes/EventLog/event';
 
 /**
@@ -28,33 +27,35 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
         super();
     }
 
-    loadData(selectedTraceCaseIds: Number[]) {
-        let data: Event[] = [];
-        this._eventlogDataService.eventLog.traces.forEach(trace => {
-            if (selectedTraceCaseIds.includes(trace.caseId)) {
-                trace.events.forEach(element => {
-                    data.push(element);
-                    this._data.next(data);
-                });
-            }
-        });
-        this._selectedTraceCaseIds.next(selectedTraceCaseIds);
+    refreshData() {
+        let eventlog =
+            this._eventlogDataService
+                .eventLogWithSelectedOrNothingWhenNothingSelected;
+
+        let eventsData = eventlog.traces.flatMap(trace => trace.events);
+        this._data.next(eventsData);
+
+        let selectedData = eventlog.traces.map(trace => trace.caseId);
+        this._selectedTraceCaseIds.next(selectedData);
     }
 
     getColumns(): string[] {
-        let result = ['caseId'];
-        result.push('activity');
-        for (let trace of this._eventlogDataService.eventLog.traces) {
-            if (
-                this._displayService.selectedTraceCaseIds.includes(trace.caseId)
-            ) {
-                trace.events[0].attributes.forEach(attr => {
-                    result.push(attr.key);
-                });
-                break;
-            }
+        let eventlog =
+            this._eventlogDataService
+                .eventLogWithSelectedOrNothingWhenNothingSelected;
+        if (!eventlog.traces.length) {
+            return [];
         }
-        return result;
+        let result = ['caseId', 'activity'];
+
+        const otherAttributes = new Set<string>(
+            eventlog.traces
+                .flatMap(trace => trace.events)
+                .flatMap(event => event.attributes)
+                .map(attribute => attribute.key)
+        );
+
+        return result.concat(Array.from(otherAttributes));
     }
 
     /**

@@ -1,4 +1,4 @@
-import { AfterViewInit, Attribute, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
@@ -24,12 +24,11 @@ export class TracesDetailViewComponent implements AfterViewInit {
     dataSource: TracesDetailViewDataSource;
     subscription: Subscription; //TODO schließen der Subscription
 
+    private readonly MAX_LETTERS_TABLE_ENTRY_WITHOUT_WHITE_SPACE = 20;
+    private readonly MAX_LETTERS_TABLE_ENTRY_TOTAL = 120;
+
     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
     displayedColumns: string[] = [];
-
-    refresh(): void {
-        console.log('refresh');
-    }
 
     constructor(
         private _eventlogDataService: EventlogDataService,
@@ -41,8 +40,8 @@ export class TracesDetailViewComponent implements AfterViewInit {
         );
         this.displayedColumns = this.dataSource.getColumns();
         this.subscription =
-            this._displayService.selectedTraceCaseIds$.subscribe(num => {
-                this.dataSource.loadData(num);
+            this._displayService.selectedTraceCaseIds$.subscribe(value => {
+                this.refresh();
             });
     }
 
@@ -50,6 +49,11 @@ export class TracesDetailViewComponent implements AfterViewInit {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.table.dataSource = this.dataSource;
+    }
+
+    public refresh(): void {
+        this.displayedColumns = this.dataSource.getColumns();
+        this.dataSource.refreshData();
     }
 
     public getCaseId(event: Event): number {
@@ -81,5 +85,40 @@ export class TracesDetailViewComponent implements AfterViewInit {
             });
         }
         return attribute.value;
+    }
+
+    public trimValue(value: any) {
+        if (value == null) {
+            return value;
+        }
+
+        const stringParts = value.toString().split(/(\s+)/);
+
+        let result = '';
+        for (let i = 0; i < stringParts.length; i++) {
+            const stringPart = stringParts[i];
+            console.log(stringPart);
+            if (
+                stringPart.length >
+                this.MAX_LETTERS_TABLE_ENTRY_WITHOUT_WHITE_SPACE
+            ) {
+                result +=
+                    stringPart.substring(
+                        0,
+                        this.MAX_LETTERS_TABLE_ENTRY_WITHOUT_WHITE_SPACE - 1
+                    ) + '...';
+                break;
+            }
+            result = result.concat(stringPart);
+        }
+
+        if (result.length > this.MAX_LETTERS_TABLE_ENTRY_TOTAL) {
+            return (
+                result.substring(0, this.MAX_LETTERS_TABLE_ENTRY_TOTAL - 1) +
+                '...'
+            );
+        }
+
+        return result;
     }
 }
