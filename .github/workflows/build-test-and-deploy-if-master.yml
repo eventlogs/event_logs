@@ -27,7 +27,7 @@ jobs:
       uses: wearerequired/lint-action@v2
       with:
         eslint: true
-        prettier: false
+        prettier: true
         prettier_extensions: ts,html
         prettier_auto_fix: false
 
