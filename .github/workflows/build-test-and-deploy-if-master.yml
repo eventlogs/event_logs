@@ -28,7 +28,7 @@ jobs:
       with:
         eslint: true
         prettier: true
-        prettier_args: "--check --config ./.prettierrc.json './**/*.{ts,tsx}'"
+        prettier_args: "--list-different --config ./.prettierrc.json './**/*.{ts,html}'"
 
     - name: Run Karma tests headless
       run: npm run github-actions-test
