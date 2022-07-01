@@ -27,8 +27,6 @@ jobs:
       uses: wearerequired/lint-action@v2
       with:
         eslint: true
-        prettier: true
-        prettier_args: "--list-different --config ./.prettierrc.json './**/*.{ts,html}'"
 
     - name: Run Karma tests headless
       run: npm run github-actions-test
