@@ -4,6 +4,8 @@
 
 # Eventlogs
 
+![CI](https://github.com/eventlogs/event_logs/actions/workflows/build-test-and-deploy-if-master.yml/badge.svg)
+
 Das vorliegende Projekt Eventlogs ist im Rahmen des **Fachpraktikum 63681 Programmiersysteme** an der [Fernuniversität Hagen](https://www.fernuni-hagen.de/) entstanden. Die Betreuung im Fachpraktikum erfolgt durch Robin Bergenthum und Jakub Kovar.
 
 Die Funktionalität der Anwendung ist das Anzeigen und Bearbeiten von Eventlogs. Hierzu bietet die Anwendung einen .xes und .log Import sowie Export. Die eingelesenen Logs können dann in der Darstellungsform einer Wertschöpfungskette und eines Direkt-Folge-Graphs angezeigt werden. Zudem verfügt die Anwendung über Editor Funktionalitäten um das geladene Eventlog bearbeiten zu können.
