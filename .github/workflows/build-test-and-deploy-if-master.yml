@@ -28,6 +28,7 @@ jobs:
       with:
         eslint: true
         eslint_args: "--config ./.eslintrc.json './**/*.{ts,html}'"
+        neutral_check_on_warning: true
 
     - name: Run Karma tests headless
       run: npm run github-actions-test
