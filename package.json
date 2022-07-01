@@ -9,8 +9,8 @@
       "test": "ng test",
       "github-actions-test": "ng test --karma-config github-actions.karma.conf.js",
       "github-actions-build": "ng build --output-path docs --base-href /event_logs/",
-      "lint": "ng lint",
-      "format": "ng lint --fix"
+      "lint": "eslint --config ./.eslintrc.json './**/*.{ts,html}'",
+      "format": "eslint --config ./.eslintrc.json './**/*.{ts,html}' --fix"
   },
   "private": true,
   "dependencies": {
