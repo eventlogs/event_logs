@@ -18,6 +18,10 @@ export class Graph {
         this._edges = edges;
     }
 
+    public addEdges(edges: Edge[]): void {
+        edges.forEach(edge => this.edges.push(edge));
+    }
+
     public removeVertex(vertex: Vertex): void {
         let index = this._vertices.findIndex(v => v === vertex);
         if (index > -1) this._vertices.splice(index, 1);

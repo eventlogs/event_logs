@@ -10,15 +10,16 @@ import { pathToFileURL } from 'url';
 export class SvgService {
     private _rectWidth: number = 150;
     private rectHeight: number = 40;
-    private positionOffset: number = this._rectWidth * 1.5;
+    private _positionOffset: number = this._rectWidth * 1.5;
     private layerOffset: number = this.rectHeight * 2.5;
     private maxActivityCount = 0;
 
     public get rectWidth(): number {
         return this._rectWidth;
     }
-    public set rectWidth(value: number) {
-        this._rectWidth = value;
+
+    public get positionOffset(): number {
+        return this._positionOffset;
     }
 
     public createSvgElements(graph: Graph): SVGElement[] {
@@ -28,11 +29,15 @@ export class SvgService {
 
         graph.vertices.forEach(vertex => {
             let container = this.createContainer(vertex);
-            let text = this.createTextForGraph(vertex);
-            let box = this.createRect(vertex);
-            //Mache Box und Text zu Kindern, damit sie gemeinsam manipuliert werden können.
-            container.append(box);
-            container.append(text);
+
+            if (!vertex.isDummy) {
+                let text = this.createTextForGraph(vertex);
+                let box = this.createRect(vertex);
+                //Mache Box und Text zu Kindern, damit sie gemeinsam manipuliert werden können.
+                container.append(box);
+                container.append(text);
+            }
+
             vertex.svgElement = container;
             result.push(container);
         });
@@ -42,9 +47,11 @@ export class SvgService {
         result.push(arrow);
 
         graph.edges.forEach(edge => {
-            let path = this.createPath(edge, graph.edges);
-            let text = this.createTextForEdge(edge);
-            result.push(text);
+            let path = this.createPath(edge, graph);
+            if (!edge.endVertex.isDummy) {
+                let text = this.createTextForEdge(edge);
+                result.push(text);
+            }
             result.push(path);
         });
 
@@ -65,7 +72,7 @@ export class SvgService {
         let svg = this.createSvgElement('svg');
 
         //Setze Abstand zwischen den Positionen
-        let x = 50 + this.positionOffset * (vertex.position - 1);
+        let x = 50 + vertex.position;
         svg.setAttribute('x', x.toString());
         //Setze Abstand zwischen den Ebenen
         let y = 50 + this.layerOffset * (vertex.layer - 1);
@@ -157,7 +164,7 @@ export class SvgService {
         return marker;
     }
 
-    private createPath(edge: Edge, edges: Edge[]): SVGElement {
+    private createPath(edge: Edge, graph: Graph): SVGElement {
         let path = this.createSvgElement('path');
 
         let id =
@@ -165,35 +172,41 @@ export class SvgService {
             edge.startVertex.activityName +
             edge.endVertex.activityName;
         path.setAttribute('id', id);
-        path.setAttribute('d', this.setCoordinates(edge, edges));
-        path.setAttribute('marker-end', 'url(#marker)');
+        path.setAttribute('d', this.setCoordinates(edge, graph));
         path.setAttribute('stroke-width', '1');
         path.setAttribute('stroke', 'black');
+        path.setAttribute('fill', 'none');
+        if (!edge.endVertex.isDummy)
+            path.setAttribute('marker-end', 'url(#marker)');
 
         edge.svgElement = path;
 
         return path;
     }
 
-    private setCoordinates(edge: Edge, edges: Edge[]) {
-        let startX = 0;
-        let startY = 0;
-        let endX = 0;
-        let endY = 0;
-        let startXOffset = 0;
-        let endXOffset = 0;
-        let startYOffset = 0;
-        let endYOffset = 0;
+    private setCoordinates(edge: Edge, graph: Graph) {
+        let startX: number = 0;
+        let startY: number = 0;
+        let endX: number = 0;
+        let endY: number = 0;
+        let startXOffset: number = 0;
+        let endXOffset: number = 0;
+        let startYOffset: number = 0;
+        let endYOffset: number = 0;
 
         //Setze Koordinaten basierend auf den Ebenen
         if (edge.startVertex.layer < edge.endVertex.layer) {
-            let upperLayerEdges = edge.startVertex.getUpperLayerEdges(edges);
+            let upperLayerEdges = edge.startVertex.getUpperLayerEdges(
+                graph.edges
+            );
             startXOffset =
                 edge.startVertex.calculateEdgePosition(edge, upperLayerEdges) /
                 (upperLayerEdges.length + 1);
             startXOffset *= this.rectWidth;
 
-            let lowerLayerEdges = edge.endVertex.getLowerLayerEdges(edges);
+            let lowerLayerEdges = edge.endVertex.getLowerLayerEdges(
+                graph.edges
+            );
             endXOffset =
                 edge.endVertex.calculateEdgePosition(edge, lowerLayerEdges) /
                 (lowerLayerEdges.length + 1);
@@ -201,13 +214,17 @@ export class SvgService {
 
             startYOffset = this.rectHeight;
         } else {
-            let lowerLayerEdges = edge.startVertex.getLowerLayerEdges(edges);
+            let lowerLayerEdges = edge.startVertex.getLowerLayerEdges(
+                graph.edges
+            );
             startXOffset =
                 edge.startVertex.calculateEdgePosition(edge, lowerLayerEdges) /
                 (lowerLayerEdges.length + 1);
             startXOffset *= this.rectWidth;
 
-            let upperLayerEdges = edge.endVertex.getUpperLayerEdges(edges);
+            let upperLayerEdges = edge.endVertex.getUpperLayerEdges(
+                graph.edges
+            );
             endXOffset =
                 edge.endVertex.calculateEdgePosition(edge, upperLayerEdges) /
                 (upperLayerEdges.length + 1);
@@ -220,6 +237,31 @@ export class SvgService {
         endX = edge.endVertex.getSvgElementXValue() + endXOffset;
         startY = edge.startVertex.getSvgElementYValue() + startYOffset;
         endY = edge.endVertex.getSvgElementYValue() + endYOffset;
+
+        //Setze Pfadpunkte von Dummyknoten in die Mitte der Knoten
+        if (
+            edge.startVertex.isDummy &&
+            edge.startVertex.layer < edge.endVertex.layer
+        )
+            startY -= this.rectHeight / 2;
+
+        if (
+            edge.startVertex.isDummy &&
+            edge.startVertex.layer > edge.endVertex.layer
+        )
+            startY += this.rectHeight / 2;
+
+        if (
+            edge.endVertex.isDummy &&
+            edge.startVertex.layer < edge.endVertex.layer
+        )
+            endY += this.rectHeight / 2;
+
+        if (
+            edge.endVertex.isDummy &&
+            edge.startVertex.layer > edge.endVertex.layer
+        )
+            endY -= this.rectHeight / 2;
 
         let coordinates =
             'M ' + startX + ' ' + startY + ' L ' + endX + ' ' + endY;
