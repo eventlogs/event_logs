@@ -3,8 +3,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import {
+    DateAttribute,
     EventLogAttribute,
-    StringAttribute,
 } from 'src/app/classes/EventLog/eventlogattribute';
 import { DisplayService } from 'src/app/services/display.service';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
@@ -65,8 +65,21 @@ export class TracesDetailViewComponent implements AfterViewInit {
         attributes: Array<EventLogAttribute>,
         key: string
     ): any {
-        return attributes.filter(attr => attr.key === key).length
-            ? attributes.filter(attr => attr.key === key)[0].value
-            : '';
+        if (attributes.filter(attr => attr.key === key).length == 0) {
+            return '';
+        }
+        let attribute = attributes.filter(attr => attr.key === key)[0];
+        if (attribute instanceof DateAttribute) {
+            return attribute.value.toLocaleDateString('de-De', {
+                timeZone: 'UTC',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            });
+        }
+        return attribute.value;
     }
 }
