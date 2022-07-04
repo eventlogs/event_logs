@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { LogParserService } from './services/log-parser.service';
 import { DisplayService } from './services/display.service';
@@ -8,6 +8,8 @@ import { DirectlyFollowsGraphService } from './services/directly-follows-graph/d
 import { EventlogDataService } from './services/eventlog-data.service';
 import { XesParserService } from './services/xes-parser.service';
 import { LogService } from './services/log.service';
+import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
+import { MatSidenavContainer } from '@angular/material/sidenav';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +17,9 @@ import { LogService } from './services/log.service';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnDestroy {
+    @ViewChild('tracesDetailView') tracesDetailView!: TracesDetailViewComponent;
+    @ViewChild('sidenav') sidenav!: MatSidenavContainer;
+
     public textareaFc: FormControl;
     private _sub: Subscription;
     private _subSelectedTraces: Subscription;
@@ -154,5 +159,11 @@ export class AppComponent implements OnDestroy {
             this._eventlogDataService
                 .eventLogWithSelectedOrAllWhenNothingSelected
         );
+
+        if (!this._displayService.selectedTraceCaseIds.length) {
+            this.sidenav?.close();
+        }
+
+        this.tracesDetailView?.refresh();
     }
 }

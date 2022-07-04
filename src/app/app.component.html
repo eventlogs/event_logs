@@ -1,13 +1,20 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
-    <mat-sidenav-container class="sidenav-container">
-        <mat-sidenav
-            mode="side"
-            position="end"
-            opened
-            *ngIf="_selectedTraceCaseIds.length > 0">
-            <app-traces-detail-view></app-traces-detail-view>
+    <mat-sidenav-container class="sidenav-container" autosize>
+        <mat-sidenav #sidenav mode="side" position="end" class="sidenav-bar">
+            <div class="scrollable-when-to-large">
+                <app-traces-detail-view
+                    #tracesDetailView></app-traces-detail-view>
+            </div>
         </mat-sidenav>
         <mat-sidenav-content>
+            <button
+                class="right"
+                mat-icon-button
+                mat-raised-button
+                [disabled]="_selectedTraceCaseIds.length === 0"
+                (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
             <!--  Header  -->
             <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
                 ><h1>I <span class="red">❤</span> Petri Nets</h1></a

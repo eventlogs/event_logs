@@ -21,8 +21,29 @@ export class EventlogDataService {
     }
 
     public get eventLogWithSelectedOrAllWhenNothingSelected() {
+        return this.eventLogWithSelectedOrOtherWhenNothingSelected(
+            thisEventLog => thisEventLog
+        );
+    }
+
+    public get eventLogWithSelectedOrNothingWhenNothingSelected() {
+        return this.eventLogWithSelectedOrOtherWhenNothingSelected(
+            thisEventLog =>
+                new EventLog(
+                    thisEventLog.classifiers,
+                    thisEventLog.globalEventAttributes,
+                    thisEventLog.globalTraceAttributes,
+                    [],
+                    thisEventLog.attributes
+                )
+        );
+    }
+
+    private eventLogWithSelectedOrOtherWhenNothingSelected(
+        extractOtherFunction: (thisEventLog: EventLog) => EventLog
+    ): EventLog {
         if (this._displayService.selectedTraceCaseIds.length === 0) {
-            return this._eventLog;
+            return extractOtherFunction(this._eventLog);
         }
         const filteredTraces = this._eventLog.traces.filter(
             trace =>
