@@ -97,7 +97,6 @@ export class TracesDetailViewComponent implements AfterViewInit {
         let result = '';
         for (let i = 0; i < stringParts.length; i++) {
             const stringPart = stringParts[i];
-            console.log(stringPart);
             if (
                 stringPart.length >
                 this.MAX_LETTERS_TABLE_ENTRY_WITHOUT_WHITE_SPACE
