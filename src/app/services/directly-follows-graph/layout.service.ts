@@ -9,6 +9,17 @@ import { SvgService } from './svg.service';
 })
 //Layout mittels Sugiyama Algorithmus
 export class LayoutService {
+    private _graphWidth: number = 0;
+    private _graphHeight: number = 0;
+
+    public get graphWidth(): number {
+        return this._graphWidth;
+    }
+
+    public get graphHeight(): number {
+        return this._graphHeight;
+    }
+
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
         this.setLayers(graph);
@@ -16,7 +27,6 @@ export class LayoutService {
 
         this.minimizeCrossings(graph);
 
-        //this.setPosition(graph);
         this.correctEdgeDirection(graph.edges);
     }
 
@@ -174,33 +184,10 @@ export class LayoutService {
         return oldEdges;
     }
 
-    // private setPosition(graph: Graph): void {
-    //     let sinks: Vertex[] = graph.getSinks();
-
-    //     let max: number = 0;
-
-    //     sinks.forEach(vertex => {
-    //         max = Math.max(max, vertex.layer);
-    //     });
-
-    //     let positions: number[] = new Array<number>(max);
-
-    //     for (let i = 0; i < max; i++) positions[i] = 1;
-
-    //     graph.vertices.forEach(
-    //         vertex => (vertex.position = positions[vertex.layer - 1]++)
-    //     );
-    // }
-
     private minimizeCrossings(graph: Graph): void {
         let maxLayer: number = this.getMaxLayer(graph.vertices);
-        // let maxVerticesOnLayer: number = this.getMaxVerticesOnLayer(
-        //     graph.vertices,
-        //     maxLayer
-        // );
-        // let maxSize: number =
-        //     maxVerticesOnLayer * this._svgService.positionOffset;
-        let maxSize = this.getMaxSize(graph.vertices, maxLayer);
+        this.calcGraphWidth(graph.vertices, maxLayer);
+        this.calcGraphHeight(maxLayer);
 
         let differentStartingPermutation: number = 0;
         let crossings: number = Number.MAX_VALUE;
@@ -216,30 +203,36 @@ export class LayoutService {
             );
             let crossingsClone: number = Number.MAX_VALUE;
 
-            this.permutateFirstLayerPositions(graphClone.vertices, maxSize);
+            this.permutateFirstLayerPositions(graphClone.vertices);
 
             //Permutiere die Ebenen solange Verbesserungen erzielt werden
             do {
                 improved = false;
 
+                let graphCloneNew: Graph = Object.assign(
+                    new Graph(new Array<Vertex>(), new Array<Edge>()),
+                    graphClone
+                );
+
                 //Betrachte iterativ die zwei aufeinanderfolgenden Ebenen von unten nach oben
                 for (let i = 1; i < maxLayer; i++) {
-                    this.setNextLayerPositions(graphClone, i, i + 1);
-                    this.setPositionOffset(graphClone, i + 1, maxSize);
+                    this.setNextLayerPositions(graphCloneNew, i, i + 1);
+                    this.setPositionOffset(graphCloneNew, i + 1);
                 }
                 //Betrachte iterativ die zwei aufeinanderfolgenden Ebenen von oben nach unten
                 for (let i = maxLayer; i > 1; i--) {
-                    this.setNextLayerPositions(graphClone, i, i - 1);
-                    this.setPositionOffset(graphClone, i - 1, maxSize);
+                    this.setNextLayerPositions(graphCloneNew, i, i - 1);
+                    this.setPositionOffset(graphCloneNew, i - 1);
                 }
 
                 let crossingsCloneNew = this.countCrossings(
-                    graphClone,
+                    graphCloneNew,
                     maxLayer
                 );
 
                 if (crossingsCloneNew < crossingsClone) {
                     crossingsClone = crossingsCloneNew;
+                    graphClone = graphCloneNew;
                     improved = true;
                 }
             } while (crossingsClone != 0 && improved);
@@ -248,14 +241,10 @@ export class LayoutService {
                 graph = graphClone;
                 crossings = crossingsClone;
             }
-        } while (crossings != 0 && differentStartingPermutation < 10);
+        } while (crossings != 0 && differentStartingPermutation < 23);
     }
 
-    private setPositionOffset(
-        graph: Graph,
-        layer: number,
-        maxSize: number
-    ): void {
+    private setPositionOffset(graph: Graph, layer: number): void {
         let vertices: Vertex[] = graph.vertices.filter(
             vertex => vertex.layer === layer
         );
@@ -272,21 +261,38 @@ export class LayoutService {
 
         //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
         for (let i = 1; i < sortedVertices.length; i++) {
-            sortedVertices[i].position = Math.max(
-                sortedVertices[i].position,
-                sortedVertices[i - 1].position + this._svgService.positionOffset
-            );
+            if (!sortedVertices[i - 1].isDummy)
+                sortedVertices[i].position = Math.max(
+                    sortedVertices[i].position,
+                    sortedVertices[i - 1].position +
+                        this._svgService.positionOffset
+                );
+            else
+                sortedVertices[i].position = Math.max(
+                    sortedVertices[i].position,
+                    sortedVertices[i - 1].position + positionOffsetDummy
+                );
         }
 
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
-        if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
-            sortedVertices[sortedVertices.length - 1].position = maxSize;
+        if (
+            sortedVertices[sortedVertices.length - 1].position >
+            this._graphWidth
+        ) {
+            sortedVertices[sortedVertices.length - 1].position =
+                this._graphWidth;
             for (let i = sortedVertices.length - 2; i >= 0; i--) {
-                sortedVertices[i].position = Math.min(
-                    sortedVertices[i].position,
-                    sortedVertices[i + 1].position -
-                        this._svgService.positionOffset
-                );
+                if (!sortedVertices[i + 1].isDummy)
+                    sortedVertices[i].position = Math.min(
+                        sortedVertices[i].position,
+                        sortedVertices[i + 1].position -
+                            this._svgService.positionOffset
+                    );
+                else
+                    sortedVertices[i].position = Math.min(
+                        sortedVertices[i].position,
+                        sortedVertices[i + 1].position - positionOffsetDummy
+                    );
             }
         }
     }
@@ -301,9 +307,7 @@ export class LayoutService {
         return maxLayer;
     }
 
-    private getMaxSize(vertices: Vertex[], maxLayer: number): number {
-        let maxSize: number = 0;
-
+    private calcGraphWidth(vertices: Vertex[], maxLayer: number): void {
         for (let i = 1; i <= maxLayer; i++) {
             let layerVertices: Vertex[] = vertices.filter(
                 vertex => vertex.layer === i
@@ -316,44 +320,22 @@ export class LayoutService {
                         this._svgService.positionOffset -
                         this._svgService.rectWidth;
 
-                maxSize = Math.max(maxSize, size);
+                this._graphWidth = Math.max(this._graphWidth, size);
             });
         }
-
-        return maxSize;
     }
 
-    // private getMaxVerticesOnLayer(
-    //     vertices: Vertex[],
-    //     maxLayer: number
-    // ): number {
-    //     let verticesOnLayer: number[] = new Array<number>(maxLayer);
-    //     let maxVerticesOnLayer = 0;
+    private calcGraphHeight(maxLayer: number): void {
+        this._graphHeight = maxLayer * this._svgService.layerOffset;
+    }
 
-    //     verticesOnLayer.forEach(n => (n = 0));
-    //     for (let i = 0; i < verticesOnLayer.length; i++) verticesOnLayer[i] = 0;
-    //     vertices.forEach(
-    //         vertex =>
-    //             (maxVerticesOnLayer = Math.max(
-    //                 maxVerticesOnLayer,
-    //                 ++verticesOnLayer[vertex.layer - 1]
-    //             ))
-    //     );
-
-    //     return maxVerticesOnLayer;
-    // }
-
-    private permutateFirstLayerPositions(
-        vertices: Vertex[],
-        maxSize: number
-    ): void {
+    private permutateFirstLayerPositions(vertices: Vertex[]): void {
         let firstLayerVertices: Vertex[] = vertices.filter(
             vertex => vertex.layer == 1
         );
 
         for (let i = 0; i < firstLayerVertices.length; i++)
             firstLayerVertices[i].position = i + 1;
-        //((i + 1) / firstLayerVertices.length) * maxSize;
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
             let n: number = Math.floor(
@@ -409,36 +391,22 @@ export class LayoutService {
                 nextVertex.position = value / neighbours.length;
             }
         });
-
-        // let sortedVertices: Vertex[] = nextVertices.sort((v1, v2) => {
-        //     if (v1.position > v2.position) return 1;
-        //     if (v1.position < v2.position || Math.random() < 0.5) return -1;
-        //     else return 0;
-        // });
-        // for (let i = 0; i < sortedVertices.length; i++)
-        //     sortedVertices[i].position = i + 1;
     }
 
     private countCrossings(graph: Graph, maxLayer: number): number {
         let count = 0;
         for (let i = 1; i < maxLayer; i++) {
-            let vertices: Vertex[] = graph.vertices.filter(
-                vertex => vertex.layer == i
-            );
-            let nextVertices: Vertex[] = graph.vertices.filter(
-                vertex => vertex.layer == i + 1
-            );
-            let edges: Edge[] = graph.edges.filter(edge =>
-                graph.vertices.find(vertex => vertex === edge.startVertex)
+            let edges: Edge[] = graph.edges.filter(
+                edge => edge.startVertex.layer === i
             );
 
             edges.forEach(edge =>
                 edges.forEach(e => {
                     if (
-                        (e.startVertex < edge.startVertex &&
-                            e.endVertex > edge.endVertex) ||
-                        (e.startVertex > edge.startVertex &&
-                            e.endVertex < edge.endVertex)
+                        (e.startVertex.position < edge.startVertex.position &&
+                            e.endVertex.position > edge.endVertex.position) ||
+                        (e.startVertex.position > edge.startVertex.position &&
+                            e.endVertex.position < edge.endVertex.position)
                     )
                         count++;
                 })

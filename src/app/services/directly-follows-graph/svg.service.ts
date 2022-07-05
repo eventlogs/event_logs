@@ -9,17 +9,25 @@ import { pathToFileURL } from 'url';
 })
 export class SvgService {
     private _rectWidth: number = 150;
-    private rectHeight: number = 40;
+    private _rectHeight: number = 40;
     private _positionOffset: number = this._rectWidth * 1.5;
-    private layerOffset: number = this.rectHeight * 2.5;
+    private _layerOffset: number = this._rectHeight * 2.5;
     private maxActivityCount = 0;
 
     public get rectWidth(): number {
         return this._rectWidth;
     }
 
+    public get rectHeight(): number {
+        return this._rectHeight;
+    }
+
     public get positionOffset(): number {
         return this._positionOffset;
+    }
+
+    public get layerOffset(): number {
+        return this._layerOffset;
     }
 
     public createSvgElements(graph: Graph): SVGElement[] {

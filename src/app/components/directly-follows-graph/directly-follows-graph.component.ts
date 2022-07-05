@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Input,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
@@ -14,9 +20,13 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
     @ViewChild('directlyFollowsGraph') directlyFollowsGraph:
         | ElementRef<SVGElement>
         | undefined;
+    @Input() clientWidth: number | undefined;
 
     private _subscription: Subscription;
     private _graph: Graph | undefined;
+    public heightPx: number = 390;
+    //public widthPercent: number = 100;
+    public widthPx: number = 100;
 
     constructor(
         private _layoutService: LayoutService,
@@ -29,6 +39,16 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this.draw();
         });
     }
+
+    // private calcWidth(pixelWidth: number) {
+    //     if (this.clientWidth != undefined) {
+    //         let drawingWidth = (pixelWidth / this.clientWidth) * 100;
+    //         drawingWidth < 100
+    //             ? (this.widthPercent = 100)
+    //             : (this.widthPercent = drawingWidth);
+    //     }
+    // }
+
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
     }
@@ -46,6 +66,10 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
         for (const svgElement of svgElements) {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
+
+        this.heightPx = this._layoutService.graphHeight;
+        this.widthPx =
+            this._layoutService.graphWidth + 2 * this._svgService.rectWidth;
     }
 
     private clearDrawingArea() {
