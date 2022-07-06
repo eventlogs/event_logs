@@ -120,7 +120,7 @@ export class LogService {
         caseId: number,
         attributes: string[]
     ): string {
-        const otherAttributes = attributes.map(attributeKey =>
+        const otherAttributes: any[] = attributes.map(attributeKey =>
             event.getAttribute(attributeKey)
         );
         const eventAttributes = [caseId, event.activity].concat(

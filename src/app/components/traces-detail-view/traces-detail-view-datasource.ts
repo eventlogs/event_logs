@@ -129,8 +129,21 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
             switch (this.sort?.active) {
                 case 'activity':
                     return compare(a.activity, b.activity, isAsc);
+                case 'caseId':
+                    return compare(
+                        this._eventlogDataService.getCaseId(a),
+                        this._eventlogDataService.getCaseId(b),
+                        isAsc
+                    );
                 default:
-                    return 0;
+                    if (this.sort?.active === undefined) {
+                        return 0;
+                    }
+                    return compare(
+                        a.getAttribute(this.sort?.active).value.toString(),
+                        b.getAttribute(this.sort?.active).value.toString(),
+                        isAsc
+                    );
             }
         });
     }
