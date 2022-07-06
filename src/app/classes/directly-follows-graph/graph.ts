@@ -82,10 +82,7 @@ export class Graph {
     //Gibt den Knoten zurück, der den maximalen Wert bezüglich ausgehender Kanten minus eingehender Kanten besitzt.
     public getMaxEdgeDifferenceVertex(): Vertex {
         let maxVertex: Vertex = this._vertices[0];
-
-        let maxOutgoingEdges = maxVertex.getOutgoingEdges(this._edges);
-        let maxIncomingEdges = maxVertex.getIncomingEdges(this._edges);
-        let maxDiff = maxOutgoingEdges.length - maxIncomingEdges.length;
+        let maxDiff = Number.MIN_VALUE;
 
         this._vertices.forEach(vertex => {
             let outgoingEdges = vertex.getOutgoingEdges(this._edges);

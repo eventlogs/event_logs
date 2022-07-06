@@ -1,10 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    Input,
-    OnDestroy,
-    ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
@@ -20,7 +14,6 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
     @ViewChild('directlyFollowsGraph') directlyFollowsGraph:
         | ElementRef<SVGElement>
         | undefined;
-    @Input() clientWidth: number | undefined;
 
     private _subscription: Subscription;
     private _graph: Graph | undefined;

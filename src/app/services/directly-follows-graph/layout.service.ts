@@ -44,6 +44,7 @@ export class LayoutService {
         while (vertices.length != 0) {
             let sinks: Vertex[] = newGraph.getSinks();
 
+            //Füge dem Graph alle Senken hinzu
             while (sinks.length != 0) {
                 sinks.forEach(vertex => {
                     let incomingEdges = vertex.getIncomingEdges(edges);
@@ -55,11 +56,13 @@ export class LayoutService {
                 });
             }
 
+            //Füge dem Graph alle isolierten Knoten hinzu
             let isolatedVertices: Vertex[] = newGraph.getIsolatedVertices();
             newGraph.removeVertices(isolatedVertices);
 
             let sources: Vertex[] = newGraph.getSources();
 
+            //Füge dem Graph alle Quellen hinzu
             while (sources.length != 0) {
                 sources.forEach(vertex => {
                     let outgoingEdges = vertex.getOutgoingEdges(edges);
@@ -71,6 +74,7 @@ export class LayoutService {
                 });
             }
 
+            //Füge dem Graph den Knoten hinzu, der den maximalen Wert bezüglich ausgehender Kanten minus eingehender Kanten besitzt
             if (vertices.length != 0) {
                 let vertex = newGraph.getMaxEdgeDifferenceVertex();
 
@@ -93,6 +97,7 @@ export class LayoutService {
         });
     }
 
+    //Setz Knoten auf die niedrigst mögliche Ebene
     private calculateLayer(vertex: Vertex, graph: Graph): number {
         let incomingEdges = vertex.getIncomingEdges(graph.edges);
 
@@ -108,7 +113,8 @@ export class LayoutService {
         return (vertex.layer = layer);
     }
 
-    private createDummyVertices(graph: Graph): Edge[] {
+    //Erzeugt Dummyknoten, damit Kanten nicht über mehrere Ebenen verlaufen
+    private createDummyVertices(graph: Graph): void {
         let oldEdges: Edge[] = [];
 
         graph.edges.forEach(edge => {
@@ -174,14 +180,11 @@ export class LayoutService {
                 );
                 graph.edges.push(newEdge);
 
-                //graph.removeEdge(edge);
                 oldEdges.push(edge);
             }
         });
 
         graph.removeEdges(oldEdges);
-
-        return oldEdges;
     }
 
     private minimizeCrossings(graph: Graph): void {
@@ -296,6 +299,7 @@ export class LayoutService {
         }
     }
 
+    //Setzt Knoten auf das Baryzentrum der Nachbarn der angegebenen Ebene
     private setNextLayerPositions(
         graph: Graph,
         layer: number,
@@ -342,6 +346,7 @@ export class LayoutService {
         });
     }
 
+    //Setze den korrekten Abstand zwischen Knoten
     private setPositionOffset(graph: Graph, layer: number): void {
         let vertices: Vertex[] = graph.vertices.filter(
             vertex => vertex.layer === layer
