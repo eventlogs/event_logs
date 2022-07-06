@@ -4,8 +4,8 @@ import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
-import { DisplayService } from 'src/app/services/display.service';
 import { Event } from 'src/app/classes/EventLog/event';
+import { EventEmitter } from 'stream';
 
 /**
  * Data source for the TracesDetailView view. This class should
@@ -16,14 +16,19 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
     _data: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>([]);
     paginator: MatPaginator | undefined;
     sort: MatSort | undefined;
+    private _filter: string = '';
+    public get filter(): string {
+        return this._filter;
+    }
+    public set filter(value: string) {
+        this._filter = value;
+        this.refreshData();
+    }
     _selectedTraceCaseIds: BehaviorSubject<Number[]> = new BehaviorSubject<
         Number[]
     >([]);
 
-    constructor(
-        private _eventlogDataService: EventlogDataService,
-        private _displayService: DisplayService
-    ) {
+    constructor(private _eventlogDataService: EventlogDataService) {
         super();
     }
 
@@ -74,7 +79,9 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
             ).pipe(
                 map(() => {
                     return this.getPagedData(
-                        this.getSortedData([...this._data.value])
+                        this.getSortedData(
+                            this.getFilteredData([...this._data.value])
+                        )
                     );
                 })
             );
@@ -125,6 +132,36 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
                 default:
                     return 0;
             }
+        });
+    }
+
+    private getFilteredData(data: Event[]): Event[] {
+        if (this._filter === '') {
+            return data;
+        }
+        return data.filter(event => {
+            return (
+                event.activity
+                    .toLowerCase()
+                    .includes(this._filter.toLowerCase()) ||
+                event.attributes.some(attribute =>
+                    attribute.value
+                        .toString()
+                        .toLowerCase()
+                        .includes(this._filter.toLowerCase())
+                ) ||
+                event.attributes.some(attribute =>
+                    attribute.key
+                        .toLowerCase()
+                        .includes(this._filter.toLowerCase())
+                ) ||
+                (parseInt(this._filter) !== NaN &&
+                    this._eventlogDataService
+                        .getCaseId(event)
+                        .toString()
+                        .toLowerCase()
+                        .includes(this._filter))
+            );
         });
     }
 }

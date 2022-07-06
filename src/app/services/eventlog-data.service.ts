@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { DisplayService } from './display.service';
+import { Event } from '../classes/EventLog/event';
 
 @Injectable({
     providedIn: 'root',
@@ -37,6 +38,15 @@ export class EventlogDataService {
                     thisEventLog.attributes
                 )
         );
+    }
+
+    public getCaseId(event: Event): number {
+        for (let trace of this._eventLog.traces) {
+            if (trace.events.includes(event)) {
+                return trace.caseId;
+            }
+        }
+        return 0;
     }
 
     private eventLogWithSelectedOrOtherWhenNothingSelected(
