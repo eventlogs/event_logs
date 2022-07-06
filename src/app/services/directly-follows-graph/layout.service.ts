@@ -244,59 +244,6 @@ export class LayoutService {
         } while (crossings != 0 && differentStartingPermutation < 23);
     }
 
-    private setPositionOffset(graph: Graph, layer: number): void {
-        let vertices: Vertex[] = graph.vertices.filter(
-            vertex => vertex.layer === layer
-        );
-
-        let sortedVertices: Vertex[] = vertices.sort((v1, v2) => {
-            if (v1.position > v2.position) return 1;
-            if (v1.position < v2.position || Math.random() < 0.5) return -1;
-            else return 0;
-        });
-
-        //Kleinerer Abstand für Dummyknoten
-        let positionOffsetDummy: number =
-            this._svgService.positionOffset - this._svgService.rectWidth;
-
-        //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
-        for (let i = 1; i < sortedVertices.length; i++) {
-            if (!sortedVertices[i - 1].isDummy)
-                sortedVertices[i].position = Math.max(
-                    sortedVertices[i].position,
-                    sortedVertices[i - 1].position +
-                        this._svgService.positionOffset
-                );
-            else
-                sortedVertices[i].position = Math.max(
-                    sortedVertices[i].position,
-                    sortedVertices[i - 1].position + positionOffsetDummy
-                );
-        }
-
-        //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
-        if (
-            sortedVertices[sortedVertices.length - 1].position >
-            this._graphWidth
-        ) {
-            sortedVertices[sortedVertices.length - 1].position =
-                this._graphWidth;
-            for (let i = sortedVertices.length - 2; i >= 0; i--) {
-                if (!sortedVertices[i + 1].isDummy)
-                    sortedVertices[i].position = Math.min(
-                        sortedVertices[i].position,
-                        sortedVertices[i + 1].position -
-                            this._svgService.positionOffset
-                    );
-                else
-                    sortedVertices[i].position = Math.min(
-                        sortedVertices[i].position,
-                        sortedVertices[i + 1].position - positionOffsetDummy
-                    );
-            }
-        }
-    }
-
     private getMaxLayer(vertices: Vertex[]): number {
         let maxLayer: number = 0;
 
@@ -326,7 +273,9 @@ export class LayoutService {
     }
 
     private calcGraphHeight(maxLayer: number): void {
-        this._graphHeight = maxLayer * this._svgService.layerOffset;
+        this._graphHeight =
+            maxLayer * this._svgService.layerOffset +
+            this._svgService.rectHeight;
     }
 
     private permutateFirstLayerPositions(vertices: Vertex[]): void {
@@ -391,6 +340,59 @@ export class LayoutService {
                 nextVertex.position = value / neighbours.length;
             }
         });
+    }
+
+    private setPositionOffset(graph: Graph, layer: number): void {
+        let vertices: Vertex[] = graph.vertices.filter(
+            vertex => vertex.layer === layer
+        );
+
+        let sortedVertices: Vertex[] = vertices.sort((v1, v2) => {
+            if (v1.position > v2.position) return 1;
+            if (v1.position < v2.position || Math.random() < 0.5) return -1;
+            else return 0;
+        });
+
+        //Kleinerer Abstand für Dummyknoten
+        let positionOffsetDummy: number =
+            this._svgService.positionOffset - this._svgService.rectWidth;
+
+        //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
+        for (let i = 1; i < sortedVertices.length; i++) {
+            if (!sortedVertices[i - 1].isDummy)
+                sortedVertices[i].position = Math.max(
+                    sortedVertices[i].position,
+                    sortedVertices[i - 1].position +
+                        this._svgService.positionOffset
+                );
+            else
+                sortedVertices[i].position = Math.max(
+                    sortedVertices[i].position,
+                    sortedVertices[i - 1].position + positionOffsetDummy
+                );
+        }
+
+        //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
+        if (
+            sortedVertices[sortedVertices.length - 1].position >
+            this._graphWidth
+        ) {
+            sortedVertices[sortedVertices.length - 1].position =
+                this._graphWidth;
+            for (let i = sortedVertices.length - 2; i >= 0; i--) {
+                if (!sortedVertices[i].isDummy)
+                    sortedVertices[i].position = Math.min(
+                        sortedVertices[i].position,
+                        sortedVertices[i + 1].position -
+                            this._svgService.positionOffset
+                    );
+                else
+                    sortedVertices[i].position = Math.min(
+                        sortedVertices[i].position,
+                        sortedVertices[i + 1].position - positionOffsetDummy
+                    );
+            }
+        }
     }
 
     private countCrossings(graph: Graph, maxLayer: number): number {

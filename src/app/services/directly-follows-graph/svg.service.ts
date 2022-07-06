@@ -247,29 +247,25 @@ export class SvgService {
         endY = edge.endVertex.getSvgElementYValue() + endYOffset;
 
         //Setze Pfadpunkte von Dummyknoten in die Mitte der Knoten
-        if (
-            edge.startVertex.isDummy &&
-            edge.startVertex.layer < edge.endVertex.layer
-        )
-            startY -= this.rectHeight / 2;
+        if (edge.startVertex.isDummy) {
+            startX -= this._rectWidth / 2;
 
-        if (
-            edge.startVertex.isDummy &&
-            edge.startVertex.layer > edge.endVertex.layer
-        )
-            startY += this.rectHeight / 2;
+            if (edge.startVertex.layer < edge.endVertex.layer)
+                startY -= this.rectHeight / 2;
 
-        if (
-            edge.endVertex.isDummy &&
-            edge.startVertex.layer < edge.endVertex.layer
-        )
-            endY += this.rectHeight / 2;
+            if (edge.startVertex.layer > edge.endVertex.layer)
+                startY += this.rectHeight / 2;
+        }
 
-        if (
-            edge.endVertex.isDummy &&
-            edge.startVertex.layer > edge.endVertex.layer
-        )
-            endY -= this.rectHeight / 2;
+        if (edge.endVertex.isDummy) {
+            endX -= this._rectWidth / 2;
+
+            if (edge.startVertex.layer < edge.endVertex.layer)
+                endY += this.rectHeight / 2;
+
+            if (edge.startVertex.layer > edge.endVertex.layer)
+                endY -= this.rectHeight / 2;
+        }
 
         let coordinates =
             'M ' + startX + ' ' + startY + ' L ' + endX + ' ' + endY;
