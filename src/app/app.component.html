@@ -43,7 +43,10 @@
                     "></app-upload-button>
                 <app-delete-button
                     buttonText="Ausgewählte Traces löschen"
-                    buttonIcon="delete"></app-delete-button>
+                    buttonIcon="delete"
+                    (updateTextarea)="
+                        updateTextarea($event)
+                    "></app-delete-button>
                 <mat-form-field appearance="outline" class="textarea">
                     <mat-label>Source file</mat-label>
                     <textarea
