@@ -17,4 +17,84 @@ export class Graph {
         this._vertices = vertices;
         this._edges = edges;
     }
+
+    public addEdges(edges: Edge[]): void {
+        edges.forEach(edge => this.edges.push(edge));
+    }
+
+    public removeVertex(vertex: Vertex): void {
+        let index = this._vertices.findIndex(v => v === vertex);
+        if (index > -1) this._vertices.splice(index, 1);
+    }
+
+    public removeVertices(vertices: Vertex[]): void {
+        vertices.forEach(vertex => this.removeVertex(vertex));
+    }
+
+    public removeEdge(edge: Edge): void {
+        let index = this._edges.findIndex(e => e === edge);
+        if (index > -1) this._edges.splice(index, 1);
+    }
+
+    public removeEdges(edges: Edge[]): void {
+        edges.forEach(edge => this.removeEdge(edge));
+    }
+
+    public getSinks(): Vertex[] {
+        let vertices: Vertex[] = [];
+
+        this._vertices.forEach(vertex => {
+            let outgoingEdges = vertex.getOutgoingEdges(this._edges);
+            let incomingEdges = vertex.getIncomingEdges(this._edges);
+            if (outgoingEdges.length == 0 && incomingEdges.length != 0)
+                vertices.push(vertex);
+        });
+
+        return vertices;
+    }
+
+    public getIsolatedVertices(): Vertex[] {
+        let vertices: Vertex[] = [];
+
+        this._vertices.forEach(vertex => {
+            let outgoingEdges = vertex.getOutgoingEdges(this._edges);
+            let incomingEdges = vertex.getIncomingEdges(this._edges);
+            if (outgoingEdges.length == 0 && incomingEdges.length == 0)
+                vertices.push(vertex);
+        });
+
+        return vertices;
+    }
+
+    public getSources(): Vertex[] {
+        let vertices: Vertex[] = [];
+
+        this._vertices.forEach(vertex => {
+            let outgoingEdges = vertex.getOutgoingEdges(this._edges);
+            let incomingEdges = vertex.getIncomingEdges(this._edges);
+            if (outgoingEdges.length != 0 && incomingEdges.length == 0)
+                vertices.push(vertex);
+        });
+
+        return vertices;
+    }
+
+    //Gibt den Knoten zurück, der den maximalen Wert bezüglich ausgehender Kanten minus eingehender Kanten besitzt.
+    public getMaxEdgeDifferenceVertex(): Vertex {
+        let maxVertex: Vertex = this._vertices[0];
+        let maxDiff = Number.MIN_VALUE;
+
+        this._vertices.forEach(vertex => {
+            let outgoingEdges = vertex.getOutgoingEdges(this._edges);
+            let incomingEdges = vertex.getIncomingEdges(this._edges);
+            let diff = outgoingEdges.length - incomingEdges.length;
+
+            if (diff > maxDiff) {
+                maxVertex = vertex;
+                maxDiff = diff;
+            }
+        });
+
+        return maxVertex;
+    }
 }

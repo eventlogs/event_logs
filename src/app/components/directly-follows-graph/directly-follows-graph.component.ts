@@ -17,6 +17,8 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
 
     private _subscription: Subscription;
     private _graph: Graph | undefined;
+    public heightPx: number = 390;
+    public widthPx: number = 100;
 
     constructor(
         private _layoutService: LayoutService,
@@ -29,6 +31,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this.draw();
         });
     }
+
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
     }
@@ -46,9 +49,16 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
         for (const svgElement of svgElements) {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
+
+        this.heightPx = this._layoutService.graphHeight;
+        this.widthPx =
+            this._layoutService.graphWidth + 2 * this._svgService.rectWidth;
     }
 
     private clearDrawingArea() {
+        this.heightPx = 390;
+        this.widthPx = 100;
+
         const drawingArea = this.directlyFollowsGraph?.nativeElement;
         if (drawingArea?.childElementCount === undefined) {
             return;
