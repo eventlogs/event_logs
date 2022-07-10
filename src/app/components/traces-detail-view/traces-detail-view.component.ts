@@ -31,13 +31,10 @@ export class TracesDetailViewComponent implements AfterViewInit {
     displayedColumns: string[] = [];
 
     constructor(
-        private _eventlogDataService: EventlogDataService,
+        public _eventlogDataService: EventlogDataService,
         private _displayService: DisplayService
     ) {
-        this.dataSource = new TracesDetailViewDataSource(
-            _eventlogDataService,
-            _displayService
-        );
+        this.dataSource = new TracesDetailViewDataSource(_eventlogDataService);
         this.displayedColumns = this.dataSource.getColumns();
         this.subscription =
             this._displayService.selectedTraceCaseIds$.subscribe(value => {
@@ -54,15 +51,6 @@ export class TracesDetailViewComponent implements AfterViewInit {
     public refresh(): void {
         this.displayedColumns = this.dataSource.getColumns();
         this.dataSource.refreshData();
-    }
-
-    public getCaseId(event: Event): number {
-        for (let trace of this._eventlogDataService.eventLog.traces) {
-            if (trace.events.includes(event)) {
-                return trace.caseId;
-            }
-        }
-        return 0;
     }
 
     public getAttributeValue(
@@ -119,5 +107,11 @@ export class TracesDetailViewComponent implements AfterViewInit {
         }
 
         return result;
+    }
+
+    applyFilter(filterValue: string) {
+        filterValue = filterValue.trim(); // Remove whitespace
+        filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+        this.dataSource.filter = filterValue;
     }
 }

@@ -19,7 +19,7 @@ export class Event {
         this._activity = value;
     }
 
-    public getAttribute(key: string): any {
+    public getAttribute(key: string): EventLogAttribute {
         return this._attributes.filter(
             attribute => key === attribute.key.toString()
         )[0];
