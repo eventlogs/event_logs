@@ -203,6 +203,7 @@ export class SvgService {
         let endYOffset: number = 0;
 
         //Setze Koordinaten basierend auf den Ebenen
+        //Kante verläuft von oben nach unten
         if (edge.startVertex.layer < edge.endVertex.layer) {
             let upperLayerEdges = edge.startVertex.getUpperLayerEdges(
                 graph.edges
@@ -221,7 +222,8 @@ export class SvgService {
             endXOffset *= this.rectWidth;
 
             startYOffset = this.rectHeight;
-        } else {
+            //Kante verläuft von unten nach oben
+        } else if (edge.startVertex.layer > edge.endVertex.layer) {
             let lowerLayerEdges = edge.startVertex.getLowerLayerEdges(
                 graph.edges
             );
@@ -239,6 +241,12 @@ export class SvgService {
             endXOffset *= this.rectWidth;
 
             endYOffset = this.rectHeight;
+            //Start- und Endknoten der Kante sind gleich
+        } else {
+            startXOffset = this._rectWidth;
+            endXOffset = this.rectWidth;
+            startYOffset = this._rectHeight * 0.75;
+            endYOffset = this.rectHeight * 0.25;
         }
 
         startX = edge.startVertex.getSvgElementXValue() + startXOffset;
@@ -267,8 +275,21 @@ export class SvgService {
                 endY -= this.rectHeight / 2;
         }
 
-        let coordinates =
-            'M ' + startX + ' ' + startY + ' L ' + endX + ' ' + endY;
+        let coordinates = 'M ' + startX + ' ' + startY;
+
+        if (edge.isTargetingSelf())
+            coordinates +=
+                ' Q ' +
+                (startX + 25) +
+                ' ' +
+                (startY + endY) / 2 +
+                ' ' +
+                endX +
+                ' ' +
+                endY;
+        else coordinates += ' L ' + endX + ' ' + endY;
+
+        console.log(coordinates);
 
         return coordinates;
     }
@@ -280,12 +301,12 @@ export class SvgService {
         if (d != undefined) {
             let startX: number = +d[1];
             let endX: number = +d[d.length - 2];
-            let x = (startX + endX + 20) / 2;
+            let x = (startX + endX + 25) / 2;
             text.setAttribute('x', x.toString());
 
             let startY: number = +d[2];
             let endY: number = +d[d.length - 1];
-            let y = (startY + endY + 20) / 2;
+            let y = (startY + endY + 25) / 2;
             text.setAttribute('y', y.toString());
         }
 
