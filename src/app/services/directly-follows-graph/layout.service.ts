@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
+import { DirectlyFollowsGraphService } from './display.service';
 import { SvgService } from './svg.service';
 
 @Injectable({
@@ -30,7 +31,10 @@ export class LayoutService {
         this.correctEdgeDirection(graph.edges);
     }
 
-    constructor(private _svgService: SvgService) {}
+    constructor(
+        private _displayService: DirectlyFollowsGraphService,
+        private _svgService: SvgService
+    ) {}
 
     private makeGraphAcyclic(graph: Graph): void {
         let edges: Edge[] = [];
@@ -190,7 +194,7 @@ export class LayoutService {
     private minimizeCrossings(graph: Graph): void {
         let maxLayer: number = this.getMaxLayer(graph.vertices);
         this.calcGraphWidth(graph.vertices, maxLayer);
-        this.calcGraphHeight(maxLayer);
+        this.calcGraphHeight(graph.vertices, maxLayer);
 
         let differentStartingPermutation: number = 0;
         let crossings: number = Number.MAX_VALUE;
@@ -258,27 +262,56 @@ export class LayoutService {
     }
 
     private calcGraphWidth(vertices: Vertex[], maxLayer: number): void {
-        for (let i = 1; i <= maxLayer; i++) {
-            let layerVertices: Vertex[] = vertices.filter(
-                vertex => vertex.layer === i
-            );
-            let size: number = 0;
-            layerVertices.forEach(vertex => {
-                if (!vertex.isDummy) size += this._svgService.positionOffset;
-                else
-                    size +=
-                        this._svgService.positionOffset -
-                        this._svgService.rectWidth;
+        this._graphWidth = 0;
 
-                this._graphWidth = Math.max(this._graphWidth, size);
-            });
+        if (this._displayService.verticalDirection) {
+            for (let i = 1; i <= maxLayer; i++) {
+                let layerVertices: Vertex[] = vertices.filter(
+                    vertex => vertex.layer === i
+                );
+                let size: number = 0;
+                layerVertices.forEach(vertex => {
+                    if (!vertex.isDummy) size += this._svgService.offsetXValue;
+                    else
+                        size +=
+                            this._svgService.offsetXValue -
+                            this._svgService.rectWidth;
+
+                    this._graphWidth = Math.max(this._graphWidth, size);
+                });
+            }
+        } else {
+            this._graphWidth =
+                maxLayer * this._svgService.offsetXValue +
+                this._svgService.rectWidth;
         }
     }
 
-    private calcGraphHeight(maxLayer: number): void {
-        this._graphHeight =
-            maxLayer * this._svgService.layerOffset +
-            this._svgService.rectHeight;
+    private calcGraphHeight(vertices: Vertex[], maxLayer: number): void {
+        this._graphHeight = 0;
+
+        if (this._displayService.verticalDirection) {
+            this._graphHeight =
+                maxLayer * this._svgService.offsetYValue +
+                this._svgService.rectHeight;
+        } else {
+            for (let i = 1; i <= maxLayer; i++) {
+                let layerVertices: Vertex[] = vertices.filter(
+                    vertex => vertex.layer === i
+                );
+                let size: number = 0;
+                layerVertices.forEach(vertex => {
+                    if (!vertex.isDummy) size += this._svgService.offsetYValue;
+                    else
+                        size +=
+                            this._svgService.offsetYValue -
+                            this._svgService.rectHeight;
+
+                    this._graphHeight = Math.max(this._graphHeight, size);
+                });
+            }
+        }
+        console.log(this._graphHeight);
     }
 
     private permutateFirstLayerPositions(vertices: Vertex[]): void {
@@ -358,17 +391,26 @@ export class LayoutService {
             else return 0;
         });
 
+        //Setze Abstand basierend auf der Ausrichtung
+        let positionOffset: number;
         //Kleinerer Abstand für Dummyknoten
-        let positionOffsetDummy: number =
-            this._svgService.positionOffset - this._svgService.rectWidth;
+        let positionOffsetDummy: number;
+        if (this._displayService.verticalDirection) {
+            positionOffset = this._svgService.offsetXValue;
+            positionOffsetDummy =
+                this._svgService.offsetXValue - this._svgService.rectWidth;
+        } else {
+            positionOffset = this._svgService.offsetYValue;
+            positionOffsetDummy =
+                this._svgService.offsetYValue - this._svgService.rectHeight;
+        }
 
         //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
         for (let i = 1; i < sortedVertices.length; i++) {
             if (!sortedVertices[i - 1].isDummy)
                 sortedVertices[i].position = Math.max(
                     sortedVertices[i].position,
-                    sortedVertices[i - 1].position +
-                        this._svgService.positionOffset
+                    sortedVertices[i - 1].position + positionOffset
                 );
             else
                 sortedVertices[i].position = Math.max(
@@ -377,19 +419,18 @@ export class LayoutService {
                 );
         }
 
+        let maxSize: number = 0;
+        if (this._displayService.verticalDirection) maxSize = this._graphWidth;
+        else maxSize = this._graphHeight;
+
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
-        if (
-            sortedVertices[sortedVertices.length - 1].position >
-            this._graphWidth
-        ) {
-            sortedVertices[sortedVertices.length - 1].position =
-                this._graphWidth;
+        if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
+            sortedVertices[sortedVertices.length - 1].position = maxSize;
             for (let i = sortedVertices.length - 2; i >= 0; i--) {
                 if (!sortedVertices[i].isDummy)
                     sortedVertices[i].position = Math.min(
                         sortedVertices[i].position,
-                        sortedVertices[i + 1].position -
-                            this._svgService.positionOffset
+                        sortedVertices[i + 1].position - positionOffset
                     );
                 else
                     sortedVertices[i].position = Math.min(

@@ -5,6 +5,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import { DisplayService } from 'src/app/services/display.service';
+import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 
 @Component({
     selector: 'app-drawing-area',
@@ -17,12 +18,19 @@ export class DrawingAreaComponent implements AfterContentChecked {
     wertschoepfungsketteHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
 
-    constructor(private _displayService: DisplayService) {}
+    constructor(
+        private _displayService: DisplayService,
+        private _directyFollowsGraphService: DirectlyFollowsGraphService
+    ) {}
 
     ngAfterContentChecked() {
         if (this.drawingArea != undefined) {
             this.canvasWidth = this.drawingArea?.nativeElement.clientWidth;
         }
+    }
+
+    switchDirection() {
+        this._directyFollowsGraphService.switchDirection();
     }
 
     switchView() {

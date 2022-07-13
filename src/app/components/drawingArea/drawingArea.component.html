@@ -1,5 +1,8 @@
 <app-switch-view-button
-    (switchViewEvent)="switchView()"></app-switch-view-button>
+    (switchViewEvent)="switchView()"></app-switch-view-button
+><app-switch-direction-button
+    *ngIf="!direktfolgegraphHidden"
+    (switchDirectionEvent)="switchDirection()"></app-switch-direction-button>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
     <app-wertschoepfungskette
         [clientWidth]="canvasWidth"
