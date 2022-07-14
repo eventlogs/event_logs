@@ -310,8 +310,14 @@ export class LayoutService {
             vertex => vertex.layer == 1
         );
 
-        for (let i = 0; i < firstLayerVertices.length; i++)
-            firstLayerVertices[i].position = i + 1;
+        for (let i = 0; i < firstLayerVertices.length; i++) {
+            if (this._displayService.verticalDirection)
+                firstLayerVertices[i].position =
+                    i * this._svgService.offsetXValue;
+            else
+                firstLayerVertices[i].position =
+                    i * this._svgService.offsetYValue;
+        }
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
             let n: number = Math.floor(
@@ -388,6 +394,33 @@ export class LayoutService {
         if (this._displayService.verticalDirection)
             positionOffset = this._svgService.offsetXValue;
         else positionOffset = this._svgService.offsetYValue;
+
+        //Setze Knoten mit gleicher Position verteilt um die Position
+        for (let i = 0; i < sortedVertices.length; i++) {
+            let sameValue: number = 1;
+
+            while (
+                i + sameValue < sortedVertices.length &&
+                sortedVertices[i].position ==
+                    sortedVertices[i + sameValue].position
+            )
+                sameValue++;
+
+            //Ausgleich damit alle Positionen positiv sind
+            let zeroOffset = Math.min(
+                sortedVertices[i].position -
+                    (sameValue - 1) * (positionOffset / 2),
+                0
+            );
+
+            for (let j = i; j <= i + sameValue - 1; j++) {
+                sortedVertices[j].position =
+                    sortedVertices[j].position -
+                    (sameValue - 1) * (positionOffset / 2) +
+                    (j - i) * positionOffset -
+                    zeroOffset;
+            }
+        }
 
         //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
         for (let i = 1; i < sortedVertices.length; i++)
