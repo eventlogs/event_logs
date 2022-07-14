@@ -6,22 +6,21 @@ import { Vertex } from '../../classes/directly-follows-graph/vertex';
 import { Event } from '../../classes/EventLog/event';
 import { EventLog } from '../../classes/EventLog/eventlog';
 import { Trace } from '../../classes/EventLog/trace';
+import { EventlogDataService } from '../eventlog-data.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DirectlyFollowsGraphService implements OnDestroy {
     private _graph: BehaviorSubject<Graph>;
-    private _verticalDirection: BehaviorSubject<boolean>;
+    private _verticalDirection: boolean = true;
 
-    constructor() {
+    constructor(private _eventLogDataService: EventlogDataService) {
         this._graph = new BehaviorSubject<Graph>(new Graph([], []));
-        this._verticalDirection = new BehaviorSubject<boolean>(true);
     }
 
     ngOnDestroy(): void {
         this._graph.complete();
-        this._verticalDirection.complete();
     }
 
     public get graph$(): Observable<Graph> {
@@ -32,12 +31,8 @@ export class DirectlyFollowsGraphService implements OnDestroy {
         return this._graph.getValue();
     }
 
-    public get verticalDirection$(): Observable<boolean> {
-        return this._verticalDirection.asObservable();
-    }
-
     public get verticalDirection(): boolean {
-        return this._verticalDirection.getValue();
+        return this._verticalDirection;
     }
 
     private convertEventLogToDirectlyFollowsGraph(eventLog: EventLog): Graph {
@@ -97,6 +92,10 @@ export class DirectlyFollowsGraphService implements OnDestroy {
     }
 
     public switchDirection() {
-        this._verticalDirection.next(!this._verticalDirection.value);
+        this._verticalDirection = !this._verticalDirection;
+        let net = this.convertEventLogToDirectlyFollowsGraph(
+            this._eventLogDataService.eventLog
+        );
+        this._graph.next(net);
     }
 }

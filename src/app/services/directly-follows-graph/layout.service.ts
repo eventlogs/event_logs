@@ -94,6 +94,8 @@ export class LayoutService {
     }
 
     private setLayers(graph: Graph): void {
+        graph.vertices.forEach(vertex => (vertex.layer = 1));
+
         let sinks: Vertex[] = graph.getSinks();
 
         sinks.forEach(vertex => {
@@ -105,16 +107,14 @@ export class LayoutService {
     private calculateLayer(vertex: Vertex, graph: Graph): number {
         let incomingEdges = vertex.getIncomingEdges(graph.edges);
 
-        let layer: number = 1;
-
         incomingEdges.forEach(edge => {
-            layer = Math.max(
-                layer,
+            vertex.layer = Math.max(
+                vertex.layer,
                 this.calculateLayer(edge.startVertex, graph) + 1
             );
         });
 
-        return (vertex.layer = layer);
+        return vertex.layer;
     }
 
     //Erzeugt Dummyknoten, damit Kanten nicht über mehrere Ebenen verlaufen
@@ -271,11 +271,7 @@ export class LayoutService {
                 );
                 let size: number = 0;
                 layerVertices.forEach(vertex => {
-                    if (!vertex.isDummy) size += this._svgService.offsetXValue;
-                    else
-                        size +=
-                            this._svgService.offsetXValue -
-                            this._svgService.rectWidth;
+                    size += this._svgService.offsetXValue;
 
                     this._graphWidth = Math.max(this._graphWidth, size);
                 });
@@ -301,17 +297,12 @@ export class LayoutService {
                 );
                 let size: number = 0;
                 layerVertices.forEach(vertex => {
-                    if (!vertex.isDummy) size += this._svgService.offsetYValue;
-                    else
-                        size +=
-                            this._svgService.offsetYValue -
-                            this._svgService.rectHeight;
+                    size += this._svgService.offsetYValue;
 
                     this._graphHeight = Math.max(this._graphHeight, size);
                 });
             }
         }
-        console.log(this._graphHeight);
     }
 
     private permutateFirstLayerPositions(vertices: Vertex[]): void {
@@ -393,31 +384,17 @@ export class LayoutService {
 
         //Setze Abstand basierend auf der Ausrichtung
         let positionOffset: number;
-        //Kleinerer Abstand für Dummyknoten
-        let positionOffsetDummy: number;
-        if (this._displayService.verticalDirection) {
+
+        if (this._displayService.verticalDirection)
             positionOffset = this._svgService.offsetXValue;
-            positionOffsetDummy =
-                this._svgService.offsetXValue - this._svgService.rectWidth;
-        } else {
-            positionOffset = this._svgService.offsetYValue;
-            positionOffsetDummy =
-                this._svgService.offsetYValue - this._svgService.rectHeight;
-        }
+        else positionOffset = this._svgService.offsetYValue;
 
         //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
-        for (let i = 1; i < sortedVertices.length; i++) {
-            if (!sortedVertices[i - 1].isDummy)
-                sortedVertices[i].position = Math.max(
-                    sortedVertices[i].position,
-                    sortedVertices[i - 1].position + positionOffset
-                );
-            else
-                sortedVertices[i].position = Math.max(
-                    sortedVertices[i].position,
-                    sortedVertices[i - 1].position + positionOffsetDummy
-                );
-        }
+        for (let i = 1; i < sortedVertices.length; i++)
+            sortedVertices[i].position = Math.max(
+                sortedVertices[i].position,
+                sortedVertices[i - 1].position + positionOffset
+            );
 
         let maxSize: number = 0;
         if (this._displayService.verticalDirection) maxSize = this._graphWidth;
@@ -426,18 +403,11 @@ export class LayoutService {
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
         if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
             sortedVertices[sortedVertices.length - 1].position = maxSize;
-            for (let i = sortedVertices.length - 2; i >= 0; i--) {
-                if (!sortedVertices[i].isDummy)
-                    sortedVertices[i].position = Math.min(
-                        sortedVertices[i].position,
-                        sortedVertices[i + 1].position - positionOffset
-                    );
-                else
-                    sortedVertices[i].position = Math.min(
-                        sortedVertices[i].position,
-                        sortedVertices[i + 1].position - positionOffsetDummy
-                    );
-            }
+            for (let i = sortedVertices.length - 2; i >= 0; i--)
+                sortedVertices[i].position = Math.min(
+                    sortedVertices[i].position,
+                    sortedVertices[i + 1].position - positionOffset
+                );
         }
     }
 

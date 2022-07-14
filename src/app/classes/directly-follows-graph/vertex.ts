@@ -164,20 +164,20 @@ export class Vertex {
                 if (
                     //Bei vertikaler Ausrichtung überprüfe X Werte
                     (verticalDirection &&
-                        this === e.startVertex &&
-                        edge.startVertex.getSvgElementXValue() >=
-                            e.endVertex.getSvgElementXValue()) ||
-                    (this === e.endVertex &&
-                        edge.endVertex.getSvgElementXValue() >=
-                            e.startVertex.getSvgElementXValue()) ||
+                        ((this === e.startVertex &&
+                            edge.startVertex.getSvgElementXValue() >=
+                                e.endVertex.getSvgElementXValue()) ||
+                            (this === e.endVertex &&
+                                edge.endVertex.getSvgElementXValue() >=
+                                    e.startVertex.getSvgElementXValue()))) ||
                     //Bei horizontaler Ausrichtung überprüfe Y Werte
                     (!verticalDirection &&
-                        this === e.startVertex &&
-                        edge.startVertex.getSvgElementYValue() >=
-                            e.endVertex.getSvgElementYValue()) ||
-                    (this === e.endVertex &&
-                        edge.endVertex.getSvgElementYValue() >=
-                            e.startVertex.getSvgElementYValue())
+                        ((this === e.startVertex &&
+                            edge.startVertex.getSvgElementYValue() >=
+                                e.endVertex.getSvgElementYValue()) ||
+                            (this === e.endVertex &&
+                                edge.endVertex.getSvgElementYValue() >=
+                                    e.startVertex.getSvgElementYValue())))
                 )
                     position++;
             }

@@ -46,6 +46,9 @@ export class SvgService {
                 //Mache Box und Text zu Kindern, damit sie gemeinsam manipuliert werden können.
                 container.append(box);
                 container.append(text);
+            } else {
+                let path = this.createPathForDummyVertex(vertex);
+                container.append(path);
             }
 
             vertex.svgElement = container;
@@ -101,6 +104,39 @@ export class SvgService {
         vertex.svgElement = svg;
 
         return svg;
+    }
+
+    private createPathForDummyVertex(vertex: Vertex): SVGElement {
+        let path = this.createSvgElement('path');
+
+        // let startX: number = vertex.getSvgElementXValue();
+        // let startY: number = vertex.getSvgElementXValue();
+        // let endX: number = vertex.getSvgElementYValue();
+        // let endY: number = vertex.getSvgElementYValue();
+        let startX: number = 0;
+        let startY: number = 0;
+        let endX: number = 0;
+        let endY: number = 0;
+
+        if (this._displayService.verticalDirection) {
+            startX += this.rectWidth / 2;
+            endX += this.rectWidth / 2;
+            endY += this.rectHeight;
+        } else {
+            startY += this.rectHeight / 2;
+            endX += this.rectWidth;
+            endY += this.rectHeight / 2;
+        }
+
+        let coordinates =
+            'M ' + startX + ' ' + startY + ' L ' + endX + ' ' + endY;
+
+        path.setAttribute('d', coordinates);
+        path.setAttribute('stroke-width', '1');
+        path.setAttribute('stroke', 'black');
+        path.setAttribute('fill', 'none');
+
+        return path;
     }
 
     private createRect(vertex: Vertex): SVGElement {
@@ -336,27 +372,6 @@ export class SvgService {
         startY = edge.startVertex.getSvgElementYValue() + startYOffset;
         endY = edge.endVertex.getSvgElementYValue() + endYOffset;
 
-        //Setze Pfadpunkte von Dummyknoten in die Mitte der Knoten
-        if (edge.startVertex.isDummy) {
-            startX -= this._rectWidth / 2;
-
-            if (edge.startVertex.layer < edge.endVertex.layer)
-                startY -= this.rectHeight / 2;
-
-            if (edge.startVertex.layer > edge.endVertex.layer)
-                startY += this.rectHeight / 2;
-        }
-
-        if (edge.endVertex.isDummy) {
-            endX -= this._rectWidth / 2;
-
-            if (edge.startVertex.layer < edge.endVertex.layer)
-                endY += this.rectHeight / 2;
-
-            if (edge.startVertex.layer > edge.endVertex.layer)
-                endY -= this.rectHeight / 2;
-        }
-
         let coordinates = 'M ' + startX + ' ' + startY;
 
         if (this._displayService.verticalDirection && edge.isTargetingSelf())
@@ -370,7 +385,7 @@ export class SvgService {
                 ' ' +
                 endY;
         else if (
-            this._displayService.verticalDirection &&
+            !this._displayService.verticalDirection &&
             edge.isTargetingSelf()
         )
             coordinates +=

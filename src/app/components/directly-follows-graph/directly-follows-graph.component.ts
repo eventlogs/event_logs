@@ -16,7 +16,6 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
         | undefined;
 
     private _graphSubscription: Subscription;
-    private _directionSubscription: Subscription;
     private _graph: Graph | undefined;
     public heightPx: number = 390;
     public widthPx: number = 100;
@@ -33,20 +32,10 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
                 this.draw();
             }
         );
-        this._directionSubscription =
-            this._displayService.verticalDirection$.subscribe(
-                verticalDirection => {
-                    if (this._graph != undefined) {
-                        this._layoutService.layout(this._graph);
-                        this.draw();
-                    }
-                }
-            );
     }
 
     ngOnDestroy(): void {
         this._graphSubscription.unsubscribe();
-        this._directionSubscription.unsubscribe();
     }
 
     private draw() {
