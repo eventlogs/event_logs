@@ -26,6 +26,8 @@ export class LayoutService {
         this.setLayers(graph);
         this.createDummyVertices(graph);
 
+        this.calcGraphWidth(graph);
+        this.calcGraphHeight(graph);
         this.minimizeCrossings(graph);
 
         this.correctEdgeDirection(graph.edges);
