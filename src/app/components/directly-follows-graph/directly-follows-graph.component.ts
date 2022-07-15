@@ -52,15 +52,14 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
 
-        if (this._displayService.verticalDirection) {
-            this.heightPx = this._layoutService.graphHeight;
-            this.widthPx =
-                this._layoutService.graphWidth + this._svgService.offsetXValue;
-        } else {
-            this.heightPx =
-                this._layoutService.graphHeight + this._svgService.offsetYValue;
-            this.widthPx = this._layoutService.graphWidth;
-        }
+        this.widthPx =
+            this._layoutService.graphWidth + this._svgService.offsetXValue;
+        this.heightPx =
+            this._layoutService.graphHeight + this._svgService.offsetYValue;
+
+        if (this._displayService.verticalDirection)
+            this.widthPx += this._svgService.offsetXValue;
+        else this.heightPx += this._svgService.offsetYValue;
     }
 
     private clearDrawingArea() {

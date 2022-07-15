@@ -97,4 +97,35 @@ export class Graph {
 
         return maxVertex;
     }
+
+    public getMaxVerticesOnLayer(): number {
+        let max: number = 0;
+
+        for (let layer = 1; layer <= this.getMaxLayer(); layer++)
+            max = Math.max(max, this.getVerticesByLayer(layer).length);
+
+        return max;
+    }
+
+    public getMaxLayer(): number {
+        let maxLayer: number = 0;
+
+        this.vertices.forEach(
+            vertex => (maxLayer = Math.max(maxLayer, vertex.layer))
+        );
+
+        return maxLayer;
+    }
+
+    public getVerticesByLayer(layer: number): Vertex[] {
+        return this.vertices.filter(vertex => vertex.layer === layer);
+    }
+
+    public getVerticesSortedByPosition(layer: number): Vertex[] {
+        return this.getVerticesByLayer(layer).sort((v1, v2) => {
+            if (v1.position > v2.position) return 1;
+            if (v1.position < v2.position || Math.random() < 0.5) return -1;
+            else return 0;
+        });
+    }
 }
