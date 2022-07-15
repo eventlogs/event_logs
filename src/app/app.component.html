@@ -70,6 +70,20 @@
                     fileType="text/plain;charset=utf-8"
                     fileName="event.xes"
                     [datePrefix]="true"></app-export-button>
+                <app-export-button
+                    buttonText="Export .svg Value Chain"
+                    buttonIcon="file_download"
+                    [fileContent]="getSvgValueChainExportValue()"
+                    fileType="text/plain;charset=utf-8"
+                    fileName="event.svg"
+                    [datePrefix]="true"></app-export-button>
+                <app-export-button
+                    buttonText="Export .svg Directly-Follows-Graph"
+                    buttonIcon="file_download"
+                    [fileContent]="getSvgDirectlyFollowsGraphExportValue()"
+                    fileType="text/plain;charset=utf-8"
+                    fileName="event.svg"
+                    [datePrefix]="true"></app-export-button>
             </div>
         </mat-sidenav-content>
     </mat-sidenav-container>

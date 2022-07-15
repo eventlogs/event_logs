@@ -10,6 +10,8 @@ import { XesParserService } from './services/xes-parser.service';
 import { LogService } from './services/log.service';
 import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
 import { MatSidenavContainer } from '@angular/material/sidenav';
+import { SvgService as ValueChainSvgService } from './services/svg.service';
+import { SvgService as DirectlyFollowsGraphSvgService } from './services/directly-follows-graph/svg.service';
 
 @Component({
     selector: 'app-root',
@@ -32,7 +34,9 @@ export class AppComponent implements OnDestroy {
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService,
-        private _eventlogDataService: EventlogDataService
+        private _eventlogDataService: EventlogDataService,
+        private _valueChainSvgService: ValueChainSvgService,
+        private _directlyFollowsGraphSvgService: DirectlyFollowsGraphSvgService
     ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
@@ -149,6 +153,33 @@ export class AppComponent implements OnDestroy {
             this._eventlogDataService
                 .eventLogWithSelectedOrAllWhenNothingSelected
         );
+    }
+
+    getSvgValueChainExportValue() {
+        const elements = this._valueChainSvgService.createSvgElements(
+            this._displayService.diagram,
+            this._selectedTraceCaseIds
+        );
+        let svg =
+            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
+        elements.forEach(element => {
+            svg += element.outerHTML;
+        });
+        svg += '</svg>';
+        return svg;
+    }
+
+    getSvgDirectlyFollowsGraphExportValue() {
+        const elements = this._directlyFollowsGraphSvgService.createSvgElements(
+            this._directlyFollowsGraphService.graph
+        );
+        let svg =
+            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
+        elements.forEach(element => {
+            svg += element.outerHTML;
+        });
+        svg += '</svg>';
+        return svg;
     }
 
     updateViews() {
