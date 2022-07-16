@@ -289,8 +289,6 @@ export class SvgService {
                 endY;
         else coordinates += ' L ' + endX + ' ' + endY;
 
-        console.log(coordinates);
-
         return coordinates;
     }
 
