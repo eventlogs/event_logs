@@ -1,4 +1,3 @@
-import { Element } from './element';
 import { GraphTrace } from './GraphTrace';
 
 export class Diagram {

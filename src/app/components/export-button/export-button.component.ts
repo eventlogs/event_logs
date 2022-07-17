@@ -1,5 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { saveAs } from 'file-saver';
+import { Component } from '@angular/core';
+import { EventLog } from '../../classes/EventLog/eventlog';
+import { DisplayService } from '../../services/display.service';
+import { LogService } from '../../services/log.service';
+import { DirectlyFollowsGraphService } from '../../services/directly-follows-graph/display.service';
+import { XesService } from '../../services/xes.service';
+import { EventlogDataService } from '../../services/eventlog-data.service';
+import { SvgService as ValueChainSvgService } from '../../services/svg.service';
+import { SvgService as DirectlyFollowsGraphSvgService } from '../../services/directly-follows-graph/svg.service';
 
 @Component({
     selector: 'app-export-button',
@@ -7,20 +14,56 @@ import { saveAs } from 'file-saver';
     styleUrls: ['./export-button.component.scss'],
 })
 export class ExportButtonComponent {
-    @Input() buttonText: string | undefined;
-    @Input() buttonIcon: string | undefined;
-    @Input() fileContent: string = '';
-    @Input() fileType: string = '';
-    @Input() fileName: string = '';
-    @Input() datePrefix: boolean = false;
+    public _selectedTraceCaseIds: Array<number> = [];
 
-    constructor() {}
-
-    processMouseClick(e: MouseEvent) {
-        saveAs(
-            new Blob([this.fileContent], { type: this.fileType }),
-            (this.datePrefix ? new Date().toLocaleString() + '_' : '') +
-                this.fileName
+    constructor(
+        public _eventLogDataService: EventlogDataService,
+        private _displayService: DisplayService,
+        private _logService: LogService,
+        private _directlyFollowsGraphService: DirectlyFollowsGraphService,
+        private _xesService: XesService,
+        private _valueChainSvgService: ValueChainSvgService,
+        private _directlyFollowsGraphSvgService: DirectlyFollowsGraphSvgService
+    ) {
+        this._displayService.selectedTraceCaseIds$.subscribe(
+            selectedTraceCaseIds => {
+                this._selectedTraceCaseIds = selectedTraceCaseIds;
+            }
         );
+    }
+
+    getLogExportValue(eventLog: EventLog) {
+        return this._logService.generate(eventLog);
+    }
+
+    getXesExportValue(eventLog: EventLog) {
+        return this._xesService.generate(eventLog);
+    }
+
+    getSvgValueChainExportValue() {
+        const elements = this._valueChainSvgService.createSvgElements(
+            this._displayService.diagram,
+            this._selectedTraceCaseIds
+        );
+        let svg =
+            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
+        elements.forEach(element => {
+            svg += element.outerHTML;
+        });
+        svg += '</svg>';
+        return svg;
+    }
+
+    getSvgDirectlyFollowsGraphExportValue() {
+        const elements = this._directlyFollowsGraphSvgService.createSvgElements(
+            this._directlyFollowsGraphService.graph
+        );
+        let svg =
+            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
+        elements.forEach(element => {
+            svg += element.outerHTML;
+        });
+        svg += '</svg>';
+        return svg;
     }
 }

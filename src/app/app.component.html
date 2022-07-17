@@ -20,7 +20,7 @@
                 ><h1>I <span class="red">❤</span> Petri Nets</h1></a
             >
             <h2>
-                Show an event log as a Value Chain or Directly-Follows Graph.
+                Show an event log as a Value-Chain or Directly-Follows-Graph.
             </h2>
 
             <!--    Main content    -->
@@ -28,21 +28,14 @@
             <app-drawing-area></app-drawing-area>
             <div fxLayout="row" fxLayoutAlign="space-evenly start">
                 <app-upload-button
-                    buttonText="Import .xes"
+                    buttonText="Import File with Eventlog"
                     buttonIcon="file_upload"
-                    [permittedFileExtensions]="['xes']"
-                    (newFileUploadedEvent)="
-                        processXesImport($event)
-                    "></app-upload-button>
-                <app-upload-button
-                    buttonText="Import .log"
-                    buttonIcon="file_upload"
-                    [permittedFileExtensions]="['log', 'txt']"
-                    (newFileUploadedEvent)="
-                        updateTextarea($event)
+                    [permittedFileExtensions]="['xes', 'log', 'txt']"
+                    (newFileUploadedEventExtensionContent)="
+                        processImport($event)
                     "></app-upload-button>
                 <app-delete-button
-                    buttonText="Ausgewählte Traces löschen"
+                    buttonText="Delete Selected"
                     buttonIcon="delete"
                     (updateTextarea)="
                         updateTextarea($event)
@@ -56,38 +49,11 @@
                         cdkAutosizeMaxRows="20"
                         [formControl]="textareaFc"></textarea>
                 </mat-form-field>
-                <app-export-button
-                    buttonText="Export .log"
-                    buttonIcon="file_download"
-                    [fileContent]="getLogExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.log"
-                    [datePrefix]="true"></app-export-button>
-                <app-export-button
-                    buttonText="Export .xes"
-                    buttonIcon="file_download"
-                    [fileContent]="getXesExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.xes"
-                    [datePrefix]="true"></app-export-button>
-                <app-export-button
-                    buttonText="Export .svg Value Chain"
-                    buttonIcon="file_download"
-                    [fileContent]="getSvgValueChainExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.svg"
-                    [datePrefix]="true"></app-export-button>
-                <app-export-button
-                    buttonText="Export .svg Directly-Follows-Graph"
-                    buttonIcon="file_download"
-                    [fileContent]="getSvgDirectlyFollowsGraphExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.svg"
-                    [datePrefix]="true"></app-export-button>
+                <app-export-button></app-export-button>
             </div>
+            <!--  Footer  -->
+            <hr />
+            <app-footer></app-footer>
         </mat-sidenav-content>
     </mat-sidenav-container>
-    <!--  Footer  -->
-    <hr />
-    <app-footer></app-footer>
 </div>

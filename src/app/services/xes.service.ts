@@ -47,13 +47,15 @@ export class XesService {
         eventString +=
             '<string key="activity" value="' + event.activity + '" />';
         event.attributes.forEach(attribute => {
-            eventString += this.getAttributeRepresentation(attribute);
+            eventString += XesService.getAttributeRepresentation(attribute);
         });
         eventString += '</event>';
         return eventString;
     }
 
-    private getAttributeRepresentation(attribute: EventLogAttribute): string {
+    private static getAttributeRepresentation(
+        attribute: EventLogAttribute
+    ): string {
         if (attribute instanceof StringAttribute) {
             return (
                 '<string key="' +

@@ -14,7 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-drop-file-upload.directive';
-import { ExportButtonComponent } from './components/export-button/export-button.component';
+import { ExportMenuItemComponent } from './components/export-button/export-menu-item/export-menu-item.component';
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { SwitchViewButtonComponent } from './components/switch-view-button/switch-view-button.component';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
@@ -23,6 +23,8 @@ import { TracesDetailViewComponent } from './components/traces-detail-view/trace
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatMenuModule } from '@angular/material/menu';
+import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { SwitchDirectionButtonComponent } from './components/switch-direction-button/switch-direction-button.component';
 
 @NgModule({
@@ -33,11 +35,12 @@ import { SwitchDirectionButtonComponent } from './components/switch-direction-bu
         FooterComponent,
         UploadButtonComponent,
         DragDropFileUploadDirective,
-        ExportButtonComponent,
+        ExportMenuItemComponent,
         DirectlyFollowsGraphComponent,
         DeleteButtonComponent,
         SwitchViewButtonComponent,
         TracesDetailViewComponent,
+        ExportButtonComponent,
         SwitchDirectionButtonComponent,
     ],
     imports: [
@@ -53,6 +56,7 @@ import { SwitchDirectionButtonComponent } from './components/switch-direction-bu
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
+        MatMenuModule,
     ],
     providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
     bootstrap: [AppComponent],

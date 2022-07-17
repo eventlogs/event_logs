@@ -30,7 +30,7 @@ export class LayoutService {
         this.calcGraphHeight(graph);
         this.minimizeCrossings(graph);
 
-        this.correctEdgeDirection(graph.edges);
+        LayoutService.correctEdgeDirection(graph.edges);
     }
 
     constructor(
@@ -208,7 +208,7 @@ export class LayoutService {
             );
             let crossingsClone: number = Number.MAX_VALUE;
 
-            this.permutateFirstLayerPositions(graphClone.vertices);
+            LayoutService.permutateFirstLayerPositions(graphClone.vertices);
 
             //Permutiere die Ebenen solange Verbesserungen erzielt werden
             do {
@@ -270,7 +270,7 @@ export class LayoutService {
         }
     }
 
-    private permutateFirstLayerPositions(vertices: Vertex[]): void {
+    private static permutateFirstLayerPositions(vertices: Vertex[]): void {
         let firstLayerVertices: Vertex[] = vertices.filter(
             vertex => vertex.layer == 1
         );
@@ -425,7 +425,7 @@ export class LayoutService {
         return count;
     }
 
-    private correctEdgeDirection(edges: Edge[]): void {
+    private static correctEdgeDirection(edges: Edge[]): void {
         edges.forEach(edge => {
             if (edge.isReversed) edge.reverse();
         });

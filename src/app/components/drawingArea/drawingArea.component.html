@@ -1,6 +1,8 @@
 <app-switch-view-button
-    (switchViewEvent)="switchView()"></app-switch-view-button
-><app-switch-direction-button
+    initialText="Display as Directly-Follows-Graph"
+    switchedText="Display as Value-Chain"
+    (switchViewEvent)="switchView()"></app-switch-view-button>
+<app-switch-direction-button
     *ngIf="!direktfolgegraphHidden"
     (switchDirectionEvent)="switchDirection()"></app-switch-direction-button>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
