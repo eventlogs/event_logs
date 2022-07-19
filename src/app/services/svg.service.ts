@@ -31,11 +31,11 @@ export class SvgService {
     private readonly widthTraceBorderOffset = 70;
 
     private readonly midPointOfHeight = 0;
-    private readonly boxWidth = LayoutService.XSTEP - LayoutService.XOFFSET / 2;
+    private readonly boxWidth = 125;
     private readonly boxHeight = LayoutService.YSTEP - 10;
     private readonly peakOffset = 10;
     private readonly topXCoordinate = 0 - (this.boxHeight / 2);
-    private readonly leftXCoordinate = 0;
+    private readonly leftXCoordinate = -20;
 
     private activityColorMap = new Map<String, number>();
 
