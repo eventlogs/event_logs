@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Diagram } from '../classes/diagram/diagram';
 import { Element, ElementType } from '../classes/diagram/element';
-import { LayoutService } from "./layout.service";
+import { LayoutService } from './layout.service';
 
 @Injectable({
     providedIn: 'root',
@@ -34,7 +34,7 @@ export class SvgService {
     private readonly boxWidth = 125;
     private readonly boxHeight = LayoutService.YSTEP - 10;
     private readonly peakOffset = 10;
-    private readonly topXCoordinate = 0 - (this.boxHeight / 2);
+    private readonly topXCoordinate = 0 - this.boxHeight / 2;
     private readonly leftXCoordinate = -20;
 
     private activityColorMap = new Map<String, number>();
@@ -64,7 +64,7 @@ export class SvgService {
             const textNumber = this.createSvgForTraceCountLabel(
                 trace.svgElements[0],
                 trace.count.toString() +
-                    (trace.count == 1 ? " trace" : " traces")
+                    (trace.count == 1 ? ' trace' : ' traces')
             );
             result.push(textNumber);
             trace.events.forEach(ev => {
@@ -96,7 +96,11 @@ export class SvgService {
         return result;
     }
 
-    private static createSelectedTraceBorder(x: number, y: number, width: number) {
+    private static createSelectedTraceBorder(
+        x: number,
+        y: number,
+        width: number
+    ) {
         const svg = SvgService.createSvgElement('rect');
         svg.setAttribute('x', `${x}`);
         svg.setAttribute('y', `${y}`);
@@ -111,12 +115,27 @@ export class SvgService {
     private createBoxForElement(element: Element, fill: number): SVGElement {
         const svg = SvgService.createSvgElement('polygon');
         svg.setAttribute('transform', `translate( ${element.x} ${element.y} )`);
-        svg.setAttribute('points', `${this.leftXCoordinate},${this.topXCoordinate}
-                                                     ${this.boxWidth},${this.topXCoordinate}
-                                                     ${this.boxWidth + this.peakOffset},${this.midPointOfHeight}
-                                                     ${this.boxWidth},${this.boxHeight/2}
-                                                     ${this.leftXCoordinate},${this.boxHeight/2}
-                                                     ${this.leftXCoordinate + this.peakOffset},${this.midPointOfHeight}`);
+        svg.setAttribute(
+            'points',
+            `${this.leftXCoordinate},${this.topXCoordinate}
+                                                     ${this.boxWidth},${
+                this.topXCoordinate
+            }
+                                                     ${
+                                                         this.boxWidth +
+                                                         this.peakOffset
+                                                     },${this.midPointOfHeight}
+                                                     ${this.boxWidth},${
+                this.boxHeight / 2
+            }
+                                                     ${this.leftXCoordinate},${
+                this.boxHeight / 2
+            }
+                                                     ${
+                                                         this.leftXCoordinate +
+                                                         this.peakOffset
+                                                     },${this.midPointOfHeight}`
+        );
         svg.setAttribute(
             'fill',
             this.backgroundColors[fill % this.backgroundColors.length]
@@ -148,7 +167,10 @@ export class SvgService {
         return [text, ''];
     }
 
-    private createSvgForTraceCountLabel(element: Element, text: String): SVGElement {
+    private createSvgForTraceCountLabel(
+        element: Element,
+        text: String
+    ): SVGElement {
         const svg = SvgService.createSvgElement('text');
         svg.setAttribute('x', `${element.x}`);
         svg.setAttribute('y', `${element.y}`);
