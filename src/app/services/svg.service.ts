@@ -55,7 +55,8 @@ export class SvgService {
 
             const textNumber = this.createSvgForText(
                 trace.svgElements[0],
-                trace.count.toString()
+                trace.count.toString() +
+                    (trace.count == 1 ? " trace" : " traces")
             );
             result.push(textNumber);
             trace.events.forEach(ev => {
