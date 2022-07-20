@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Diagram } from '../classes/diagram/diagram';
+import { Element } from '../classes/diagram/element';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LayoutService {
-    private static readonly XOFFSET = 10;
+    public static readonly XOFFSET = 10;
     private static readonly YOFFSET = 50;
-    private static readonly XSTEP = 150;
-    private static readonly YSTEP = 50;
+    public static readonly XSTEP = 150;
+    public static readonly YSTEP = 50;
 
     // Ordnet die Elemente des Diagrams an und gibt die maximalen Ausmaße der Zeichnung zurück
     public layout(diagram: Diagram): [number, number] {
@@ -16,26 +17,24 @@ export class LayoutService {
         let y = 0;
         let xMax = 0;
 
-        diagram.traces.forEach(trace => {
-            trace.svgElements[0].x =
-                trace.svgElements[0].x +
-                LayoutService.XOFFSET +
-                x * LayoutService.XSTEP;
-            trace.svgElements[0].y =
-                trace.svgElements[0].y +
-                LayoutService.YOFFSET +
-                y * LayoutService.YSTEP;
-            x++;
-            trace.events.forEach(el => {
-                el.svgElements.forEach(svg => {
-                    svg.x =
-                        svg.x +
-                        LayoutService.XOFFSET +
-                        (x - 0.5) * LayoutService.XSTEP;
-                    svg.y =
-                        svg.y + LayoutService.YOFFSET + y * LayoutService.YSTEP;
-                });
+        let layoutTraceLabel = function (element: Element) {
+            element.x += LayoutService.XOFFSET;
+            element.y += LayoutService.YOFFSET + y * LayoutService.YSTEP;
+        };
 
+        let layoutEventElements = function (elements: Element[]) {
+            elements.forEach(svg => {
+                svg.x +=
+                    LayoutService.XOFFSET + (x - 0.5) * LayoutService.XSTEP;
+                svg.y += LayoutService.YOFFSET + y * LayoutService.YSTEP;
+            });
+        };
+
+        diagram.traces.forEach(trace => {
+            layoutTraceLabel(trace.svgElements[0]);
+            x++;
+            trace.events.forEach(event => {
+                layoutEventElements(event.svgElements);
                 x++;
             });
             if (x > xMax) {
@@ -45,10 +44,13 @@ export class LayoutService {
             y++;
         });
 
-        return this.calculateLayoutSize(xMax, y);
+        return LayoutService.calculateLayoutSize(xMax, y);
     }
 
-    private calculateLayoutSize(xMax: number, y: number): [number, number] {
+    private static calculateLayoutSize(
+        xMax: number,
+        y: number
+    ): [number, number] {
         // Halbe Stepsize wird wieder abgezogen da die Elemente in der Zeichnug ihren Nullpunkt in der Mitte haben
         return [
             LayoutService.XOFFSET +

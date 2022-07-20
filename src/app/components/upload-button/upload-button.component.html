@@ -4,6 +4,7 @@
         type="file"
         class="file-input"
         (change)="handleFileInput($event)"
+        onclick="this.value = null"
         #fileUpload />
     <div
         class="interactive-square"
