@@ -21,7 +21,7 @@ export class SvgService {
     ];
     private readonly FONT = '15px sans-Serif';
     private readonly MAXFONTWIDTH = 120;
-    private readonly XTEXTOFFSET = 12.5;
+    private readonly XTEXTOFFSET = 5;
     private readonly YTEXTOFFSET = 4;
     private readonly YNEXTROWOFFSET = 20;
 
@@ -182,7 +182,7 @@ export class SvgService {
 
     private createSvgForText(element: Element, text: String): SVGElement {
         const svg = SvgService.createSvgElement('text');
-        svg.setAttribute('x', `${element.x + this.XTEXTOFFSET}`);
+        svg.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
         svg.setAttribute('y', `${element.y - this.YTEXTOFFSET}`);
         let stringWidth = this.GetStringWidth(text);
         if (stringWidth > this.MAXFONTWIDTH) {
@@ -193,7 +193,7 @@ export class SvgService {
             const svg2 = SvgService.createSvgElement('tspan');
             svg2.setAttribute('font', this.FONT);
             svg2.textContent = subStrings[1].toString();
-            svg2.setAttribute('x', `${element.x + this.XTEXTOFFSET}`);
+            svg2.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
             svg2.setAttribute('dy', `${this.YNEXTROWOFFSET}` + 'px');
             svg.appendChild(svg1);
             svg.appendChild(svg2);
