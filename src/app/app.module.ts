@@ -23,6 +23,7 @@ import { TracesDetailViewComponent } from './components/traces-detail-view/trace
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { SwitchDirectionButtonComponent } from './components/switch-direction-button/switch-direction-button.component';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { MatSortModule } from '@angular/material/sort';
         DeleteButtonComponent,
         SwitchViewButtonComponent,
         TracesDetailViewComponent,
+        SwitchDirectionButtonComponent,
     ],
     imports: [
         BrowserModule,

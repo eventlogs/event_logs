@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
-import { pathToFileURL } from 'url';
+import { DirectlyFollowsGraphService } from './display.service';
 
 @Injectable({
     providedIn: 'root',
@@ -10,8 +10,8 @@ import { pathToFileURL } from 'url';
 export class SvgService {
     private _rectWidth: number = 150;
     private _rectHeight: number = 40;
-    private _positionOffset: number = this._rectWidth * 1.5;
-    private _layerOffset: number = this._rectHeight * 2.5;
+    private _offsetXValue: number = this._rectWidth * 1.5;
+    private _offsetYValue: number = this._rectHeight * 2.5;
     private maxActivityCount = 0;
 
     public get rectWidth(): number {
@@ -22,13 +22,15 @@ export class SvgService {
         return this._rectHeight;
     }
 
-    public get positionOffset(): number {
-        return this._positionOffset;
+    public get offsetXValue(): number {
+        return this._offsetXValue;
     }
 
-    public get layerOffset(): number {
-        return this._layerOffset;
+    public get offsetYValue(): number {
+        return this._offsetYValue;
     }
+
+    constructor(private _displayService: DirectlyFollowsGraphService) {}
 
     public createSvgElements(graph: Graph): SVGElement[] {
         let result: SVGElement[] = [];
@@ -44,6 +46,9 @@ export class SvgService {
                 //Mache Box und Text zu Kindern, damit sie gemeinsam manipuliert werden können.
                 container.append(box);
                 container.append(text);
+            } else {
+                let path = this.createPathForDummyVertex(vertex);
+                container.append(path);
             }
 
             vertex.svgElement = container;
@@ -79,11 +84,19 @@ export class SvgService {
     private createContainer(vertex: Vertex): SVGElement {
         let svg = this.createSvgElement('svg');
 
-        //Setze Abstand zwischen den Positionen
-        let x = 50 + vertex.position;
+        let x: number = 50;
+        let y: number = 50;
+
+        //Setze Abstand zwischen Positionen und Ebenen basierend auf der Ausrichtung
+        if (this._displayService.verticalDirection) {
+            x += vertex.position;
+            y += this.offsetYValue * (vertex.layer - 1);
+        } else {
+            x += this.offsetXValue * (vertex.layer - 1);
+            y += vertex.position;
+        }
+
         svg.setAttribute('x', x.toString());
-        //Setze Abstand zwischen den Ebenen
-        let y = 50 + this.layerOffset * (vertex.layer - 1);
         svg.setAttribute('y', y.toString());
         svg.setAttribute('width', this.rectWidth.toString());
         svg.setAttribute('height', this.rectHeight.toString());
@@ -91,6 +104,39 @@ export class SvgService {
         vertex.svgElement = svg;
 
         return svg;
+    }
+
+    private createPathForDummyVertex(vertex: Vertex): SVGElement {
+        let path = this.createSvgElement('path');
+
+        // let startX: number = vertex.getSvgElementXValue();
+        // let startY: number = vertex.getSvgElementXValue();
+        // let endX: number = vertex.getSvgElementYValue();
+        // let endY: number = vertex.getSvgElementYValue();
+        let startX: number = 0;
+        let startY: number = 0;
+        let endX: number = 0;
+        let endY: number = 0;
+
+        if (this._displayService.verticalDirection) {
+            startX += this.rectWidth / 2;
+            endX += this.rectWidth / 2;
+            endY += this.rectHeight;
+        } else {
+            startY += this.rectHeight / 2;
+            endX += this.rectWidth;
+            endY += this.rectHeight / 2;
+        }
+
+        let coordinates =
+            'M ' + startX + ' ' + startY + ' L ' + endX + ' ' + endY;
+
+        path.setAttribute('d', coordinates);
+        path.setAttribute('stroke-width', '1');
+        path.setAttribute('stroke', 'black');
+        path.setAttribute('fill', 'none');
+
+        return path;
     }
 
     private createRect(vertex: Vertex): SVGElement {
@@ -202,51 +248,123 @@ export class SvgService {
         let startYOffset: number = 0;
         let endYOffset: number = 0;
 
-        //Setze Koordinaten basierend auf den Ebenen
-        //Kante verläuft von oben nach unten
+        //Setze Koordinaten basierend auf Ausrichtung und den Ebenen
+        //Kante verläuft von niedriger Ebene zu hoher Ebene
         if (edge.startVertex.layer < edge.endVertex.layer) {
             let upperLayerEdges = edge.startVertex.getUpperLayerEdges(
                 graph.edges
             );
-            startXOffset =
-                edge.startVertex.calculateEdgePosition(edge, upperLayerEdges) /
-                (upperLayerEdges.length + 1);
-            startXOffset *= this.rectWidth;
 
             let lowerLayerEdges = edge.endVertex.getLowerLayerEdges(
                 graph.edges
             );
-            endXOffset =
-                edge.endVertex.calculateEdgePosition(edge, lowerLayerEdges) /
-                (lowerLayerEdges.length + 1);
-            endXOffset *= this.rectWidth;
 
-            startYOffset = this.rectHeight;
-            //Kante verläuft von unten nach oben
+            if (this._displayService.verticalDirection) {
+                startXOffset =
+                    edge.startVertex.calculateEdgePosition(
+                        edge,
+                        upperLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (upperLayerEdges.length + 1);
+                startXOffset *= this.rectWidth;
+
+                startYOffset = this.rectHeight;
+
+                endXOffset =
+                    edge.endVertex.calculateEdgePosition(
+                        edge,
+                        lowerLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (lowerLayerEdges.length + 1);
+                endXOffset *= this.rectWidth;
+            } else {
+                startXOffset = this.rectWidth;
+
+                startYOffset =
+                    edge.startVertex.calculateEdgePosition(
+                        edge,
+                        upperLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (upperLayerEdges.length + 1);
+                startYOffset *= this.rectHeight;
+
+                endYOffset =
+                    edge.endVertex.calculateEdgePosition(
+                        edge,
+                        lowerLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (lowerLayerEdges.length + 1);
+                endYOffset *= this.rectHeight;
+            }
+            //Kante verläuft von hoher Ebene zu niedriger Ebene
         } else if (edge.startVertex.layer > edge.endVertex.layer) {
             let lowerLayerEdges = edge.startVertex.getLowerLayerEdges(
                 graph.edges
             );
-            startXOffset =
-                edge.startVertex.calculateEdgePosition(edge, lowerLayerEdges) /
-                (lowerLayerEdges.length + 1);
-            startXOffset *= this.rectWidth;
 
             let upperLayerEdges = edge.endVertex.getUpperLayerEdges(
                 graph.edges
             );
-            endXOffset =
-                edge.endVertex.calculateEdgePosition(edge, upperLayerEdges) /
-                (upperLayerEdges.length + 1);
-            endXOffset *= this.rectWidth;
 
-            endYOffset = this.rectHeight;
+            if (this._displayService.verticalDirection) {
+                startXOffset =
+                    edge.startVertex.calculateEdgePosition(
+                        edge,
+                        lowerLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (lowerLayerEdges.length + 1);
+
+                startXOffset *= this.rectWidth;
+
+                endXOffset =
+                    edge.endVertex.calculateEdgePosition(
+                        edge,
+                        upperLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (upperLayerEdges.length + 1);
+                endXOffset *= this.rectWidth;
+
+                endYOffset = this.rectHeight;
+            } else {
+                startYOffset =
+                    edge.startVertex.calculateEdgePosition(
+                        edge,
+                        lowerLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (lowerLayerEdges.length + 1);
+                startYOffset *= this.rectHeight;
+
+                endXOffset = this.rectWidth;
+
+                endYOffset =
+                    edge.endVertex.calculateEdgePosition(
+                        edge,
+                        upperLayerEdges,
+                        this._displayService.verticalDirection
+                    ) /
+                    (upperLayerEdges.length + 1);
+                endYOffset *= this.rectHeight;
+            }
             //Start- und Endknoten der Kante sind gleich
         } else {
-            startXOffset = this._rectWidth;
-            endXOffset = this.rectWidth;
-            startYOffset = this._rectHeight * 0.75;
-            endYOffset = this.rectHeight * 0.25;
+            if (this._displayService.verticalDirection) {
+                startXOffset = this._rectWidth;
+                endXOffset = this.rectWidth;
+                startYOffset = this._rectHeight * 0.75;
+                endYOffset = this.rectHeight * 0.25;
+            } else {
+                startXOffset = this._rectWidth * 0.75;
+                startYOffset = this._rectHeight;
+                endXOffset = this.rectWidth * 0.25;
+                endYOffset = this.rectHeight;
+            }
         }
 
         startX = edge.startVertex.getSvgElementXValue() + startXOffset;
@@ -254,35 +372,27 @@ export class SvgService {
         startY = edge.startVertex.getSvgElementYValue() + startYOffset;
         endY = edge.endVertex.getSvgElementYValue() + endYOffset;
 
-        //Setze Pfadpunkte von Dummyknoten in die Mitte der Knoten
-        if (edge.startVertex.isDummy) {
-            startX -= this._rectWidth / 2;
-
-            if (edge.startVertex.layer < edge.endVertex.layer)
-                startY -= this.rectHeight / 2;
-
-            if (edge.startVertex.layer > edge.endVertex.layer)
-                startY += this.rectHeight / 2;
-        }
-
-        if (edge.endVertex.isDummy) {
-            endX -= this._rectWidth / 2;
-
-            if (edge.startVertex.layer < edge.endVertex.layer)
-                endY += this.rectHeight / 2;
-
-            if (edge.startVertex.layer > edge.endVertex.layer)
-                endY -= this.rectHeight / 2;
-        }
-
         let coordinates = 'M ' + startX + ' ' + startY;
 
-        if (edge.isTargetingSelf())
+        if (this._displayService.verticalDirection && edge.isTargetingSelf())
             coordinates +=
                 ' Q ' +
                 (startX + 25) +
                 ' ' +
                 (startY + endY) / 2 +
+                ' ' +
+                endX +
+                ' ' +
+                endY;
+        else if (
+            !this._displayService.verticalDirection &&
+            edge.isTargetingSelf()
+        )
+            coordinates +=
+                ' Q ' +
+                (startX + endX) / 2 +
+                ' ' +
+                (startY + 25) +
                 ' ' +
                 endX +
                 ' ' +

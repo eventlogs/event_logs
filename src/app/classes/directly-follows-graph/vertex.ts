@@ -1,3 +1,4 @@
+import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { Edge } from './edge';
 
 export class Vertex {
@@ -125,7 +126,11 @@ export class Vertex {
     }
 
     //Berechnet die Position einer Kante zu den anderen Kanten
-    public calculateEdgePosition(edge: Edge, edges: Edge[]): number {
+    public calculateEdgePosition(
+        edge: Edge,
+        edges: Edge[],
+        verticalDirection: boolean
+    ): number {
         let position = 1;
 
         edges.forEach(e => {
@@ -135,24 +140,44 @@ export class Vertex {
                 e.startVertex.layer < e.endVertex.layer
             ) {
                 if (
-                    (this === e.startVertex &&
-                        edge.endVertex.getSvgElementXValue() >
-                            e.endVertex.getSvgElementXValue()) ||
-                    (this === e.endVertex &&
-                        edge.startVertex.getSvgElementXValue() >
-                            e.startVertex.getSvgElementXValue())
+                    //Bei vertikaler Ausrichtung überprüfe X Werte
+                    (verticalDirection &&
+                        ((this === e.startVertex &&
+                            edge.endVertex.getSvgElementXValue() >
+                                e.endVertex.getSvgElementXValue()) ||
+                            (this === e.endVertex &&
+                                edge.startVertex.getSvgElementXValue() >
+                                    e.startVertex.getSvgElementXValue()))) ||
+                    //Bei horizontaler Ausrichtung überprüfe Y Werte
+                    (!verticalDirection &&
+                        ((this === e.startVertex &&
+                            edge.endVertex.getSvgElementYValue() >
+                                e.endVertex.getSvgElementYValue()) ||
+                            (this === e.endVertex &&
+                                edge.startVertex.getSvgElementYValue() >
+                                    e.startVertex.getSvgElementYValue())))
                 )
                     position++;
             }
             //Kanten verlaufen in gegengesetzte Richtungen
             else {
                 if (
-                    (this === e.startVertex &&
-                        edge.startVertex.getSvgElementXValue() >=
-                            e.endVertex.getSvgElementXValue()) ||
-                    (this === e.endVertex &&
-                        edge.endVertex.getSvgElementXValue() >=
-                            e.startVertex.getSvgElementXValue())
+                    //Bei vertikaler Ausrichtung überprüfe X Werte
+                    (verticalDirection &&
+                        ((this === e.startVertex &&
+                            edge.startVertex.getSvgElementXValue() >=
+                                e.endVertex.getSvgElementXValue()) ||
+                            (this === e.endVertex &&
+                                edge.endVertex.getSvgElementXValue() >=
+                                    e.startVertex.getSvgElementXValue()))) ||
+                    //Bei horizontaler Ausrichtung überprüfe Y Werte
+                    (!verticalDirection &&
+                        ((this === e.startVertex &&
+                            edge.startVertex.getSvgElementYValue() >=
+                                e.endVertex.getSvgElementYValue()) ||
+                            (this === e.endVertex &&
+                                edge.endVertex.getSvgElementYValue() >=
+                                    e.startVertex.getSvgElementYValue())))
                 )
                     position++;
             }

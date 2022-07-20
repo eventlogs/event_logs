@@ -6,14 +6,16 @@ import { Vertex } from '../../classes/directly-follows-graph/vertex';
 import { Event } from '../../classes/EventLog/event';
 import { EventLog } from '../../classes/EventLog/eventlog';
 import { Trace } from '../../classes/EventLog/trace';
+import { EventlogDataService } from '../eventlog-data.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DirectlyFollowsGraphService implements OnDestroy {
     private _graph: BehaviorSubject<Graph>;
+    private _verticalDirection: boolean = true;
 
-    constructor() {
+    constructor(private _eventLogDataService: EventlogDataService) {
         this._graph = new BehaviorSubject<Graph>(new Graph([], []));
     }
 
@@ -27,6 +29,10 @@ export class DirectlyFollowsGraphService implements OnDestroy {
 
     public get graph(): Graph {
         return this._graph.getValue();
+    }
+
+    public get verticalDirection(): boolean {
+        return this._verticalDirection;
     }
 
     private convertEventLogToDirectlyFollowsGraph(eventLog: EventLog): Graph {
@@ -82,6 +88,14 @@ export class DirectlyFollowsGraphService implements OnDestroy {
 
     public displayDirectlyFollowsGraph(eventLog: EventLog) {
         let net = this.convertEventLogToDirectlyFollowsGraph(eventLog);
+        this._graph.next(net);
+    }
+
+    public switchDirection() {
+        this._verticalDirection = !this._verticalDirection;
+        let net = this.convertEventLogToDirectlyFollowsGraph(
+            this._eventLogDataService.eventLog
+        );
         this._graph.next(net);
     }
 }

@@ -15,7 +15,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
         | ElementRef<SVGElement>
         | undefined;
 
-    private _subscription: Subscription;
+    private _graphSubscription: Subscription;
     private _graph: Graph | undefined;
     public heightPx: number = 390;
     public widthPx: number = 100;
@@ -25,15 +25,17 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
         private _svgService: SvgService,
         private _displayService: DirectlyFollowsGraphService
     ) {
-        this._subscription = this._displayService.graph$.subscribe(graph => {
-            this._graph = graph;
-            this._layoutService.layout(this._graph);
-            this.draw();
-        });
+        this._graphSubscription = this._displayService.graph$.subscribe(
+            graph => {
+                this._graph = graph;
+                this._layoutService.layout(this._graph);
+                this.draw();
+            }
+        );
     }
 
     ngOnDestroy(): void {
-        this._subscription.unsubscribe();
+        this._graphSubscription.unsubscribe();
     }
 
     private draw() {
@@ -50,9 +52,14 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
 
-        this.heightPx = this._layoutService.graphHeight;
         this.widthPx =
-            this._layoutService.graphWidth + 2 * this._svgService.rectWidth;
+            this._layoutService.graphWidth + this._svgService.offsetXValue;
+        this.heightPx =
+            this._layoutService.graphHeight + this._svgService.offsetYValue;
+
+        if (this._displayService.verticalDirection)
+            this.widthPx += this._svgService.offsetXValue;
+        else this.heightPx += this._svgService.offsetYValue;
     }
 
     private clearDrawingArea() {
