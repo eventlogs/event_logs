@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Diagram } from '../classes/diagram/diagram';
 import { Element, ElementType } from '../classes/diagram/element';
+import { LayoutService } from './layout.service';
 
 @Injectable({
     providedIn: 'root',
@@ -29,6 +30,13 @@ export class SvgService {
     private readonly widthTraceBorderPerElement = 150;
     private readonly widthTraceBorderOffset = 70;
 
+    private readonly midPointOfHeight = 0;
+    private readonly boxWidth = 125;
+    private readonly boxHeight = LayoutService.YSTEP - 10;
+    private readonly peakOffset = 10;
+    private readonly topXCoordinate = 0 - this.boxHeight / 2;
+    private readonly leftXCoordinate = -20;
+
     private activityColorMap = new Map<String, number>();
 
     /// Erstellt alle benötigten SVGElemente für ein gegebenes Diagram
@@ -44,7 +52,7 @@ export class SvgService {
             if (
                 trace.caseIds.every(val => selectedTraceCaseIds.includes(val))
             ) {
-                let traceBorder = this.createSelectedTraceBorder(
+                let traceBorder = SvgService.createSelectedTraceBorder(
                     trace.svgElements[0].x + this.xTraceBorderOffset,
                     trace.svgElements[0].y + this.yTraceBorderOffset,
                     trace.events.length * this.widthTraceBorderPerElement +
@@ -53,9 +61,10 @@ export class SvgService {
                 result.push(traceBorder);
             }
 
-            const textNumber = this.createSvgForText(
+            const textNumber = this.createSvgForTraceCountLabel(
                 trace.svgElements[0],
-                trace.count.toString()
+                trace.count.toString() +
+                    (trace.count == 1 ? ' trace' : ' traces')
             );
             result.push(textNumber);
             trace.events.forEach(ev => {
@@ -87,8 +96,12 @@ export class SvgService {
         return result;
     }
 
-    private createSelectedTraceBorder(x: number, y: number, width: number) {
-        const svg = this.createSvgElement('rect');
+    private static createSelectedTraceBorder(
+        x: number,
+        y: number,
+        width: number
+    ) {
+        const svg = SvgService.createSvgElement('rect');
         svg.setAttribute('x', `${x}`);
         svg.setAttribute('y', `${y}`);
         svg.setAttribute('width', `${width}`);
@@ -100,9 +113,29 @@ export class SvgService {
     }
 
     private createBoxForElement(element: Element, fill: number): SVGElement {
-        const svg = this.createSvgElement('polygon');
+        const svg = SvgService.createSvgElement('polygon');
         svg.setAttribute('transform', `translate( ${element.x} ${element.y} )`);
-        svg.setAttribute('points', '-20,-20 125,-20 135,0 125,20 -20,20 -10,0');
+        svg.setAttribute(
+            'points',
+            `${this.leftXCoordinate},${this.topXCoordinate}
+                                                     ${this.boxWidth},${
+                this.topXCoordinate
+            }
+                                                     ${
+                                                         this.boxWidth +
+                                                         this.peakOffset
+                                                     },${this.midPointOfHeight}
+                                                     ${this.boxWidth},${
+                this.boxHeight / 2
+            }
+                                                     ${this.leftXCoordinate},${
+                this.boxHeight / 2
+            }
+                                                     ${
+                                                         this.leftXCoordinate +
+                                                         this.peakOffset
+                                                     },${this.midPointOfHeight}`
+        );
         svg.setAttribute(
             'fill',
             this.backgroundColors[fill % this.backgroundColors.length]
@@ -134,17 +167,30 @@ export class SvgService {
         return [text, ''];
     }
 
+    private createSvgForTraceCountLabel(
+        element: Element,
+        text: String
+    ): SVGElement {
+        const svg = SvgService.createSvgElement('text');
+        svg.setAttribute('x', `${element.x}`);
+        svg.setAttribute('y', `${element.y}`);
+        svg.setAttribute('font', this.FONT);
+        svg.textContent = text.toString();
+        element.registerSvg(svg);
+        return svg;
+    }
+
     private createSvgForText(element: Element, text: String): SVGElement {
-        const svg = this.createSvgElement('text');
+        const svg = SvgService.createSvgElement('text');
         svg.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
         svg.setAttribute('y', `${element.y - this.YTEXTOFFSET}`);
         let stringWidth = this.GetStringWidth(text);
         if (stringWidth > this.MAXFONTWIDTH) {
             let subStrings = this.getSubStrings(text);
-            const svg1 = this.createSvgElement('tspan');
+            const svg1 = SvgService.createSvgElement('tspan');
             svg1.setAttribute('font', this.FONT);
             svg1.textContent = subStrings[0].toString();
-            const svg2 = this.createSvgElement('tspan');
+            const svg2 = SvgService.createSvgElement('tspan');
             svg2.setAttribute('font', this.FONT);
             svg2.textContent = subStrings[1].toString();
             svg2.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
@@ -165,11 +211,10 @@ export class SvgService {
         canvas.setAttribute('height', '380px');
         var ctx = canvas.getContext('2d');
         ctx!.font = this.FONT;
-        var strWidth = ctx!.measureText(text.toString()).width;
-        return strWidth;
+        return ctx!.measureText(text.toString()).width;
     }
 
-    private createSvgElement(name: string): SVGElement {
+    private static createSvgElement(name: string): SVGElement {
         return document.createElementNS('http://www.w3.org/2000/svg', name);
     }
 }
