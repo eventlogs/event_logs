@@ -107,7 +107,7 @@ export class SvgService {
     }
 
     private createPathForDummyVertex(vertex: Vertex): SVGElement {
-        let path = this.createSvgElement('path');
+        let path = SvgService.createSvgElement('path');
 
         // let startX: number = vertex.getSvgElementXValue();
         // let startY: number = vertex.getSvgElementXValue();
@@ -243,8 +243,8 @@ export class SvgService {
         let startY: number;
         let endX: number;
         let endY: number;
-        let startXOffset: number;
-        let endXOffset: number;
+        let startXOffset: number = 0;
+        let endXOffset: number = 0;
         let startYOffset: number = 0;
         let endYOffset: number = 0;
 

@@ -208,7 +208,7 @@ export class LayoutService {
             );
             let crossingsClone: number = Number.MAX_VALUE;
 
-            LayoutService.permutateFirstLayerPositions(graphClone.vertices);
+            this.permutateFirstLayerPositions(graphClone.vertices);
 
             //Permutiere die Ebenen solange Verbesserungen erzielt werden
             do {
@@ -270,7 +270,7 @@ export class LayoutService {
         }
     }
 
-    private static permutateFirstLayerPositions(vertices: Vertex[]): void {
+    private permutateFirstLayerPositions(vertices: Vertex[]): void {
         let firstLayerVertices: Vertex[] = vertices.filter(
             vertex => vertex.layer == 1
         );
@@ -388,7 +388,7 @@ export class LayoutService {
                 sortedVertices[i - 1].position + positionOffset
             );
 
-        let maxSize: number = 0;
+        let maxSize: number;
         if (this._displayService.verticalDirection) maxSize = this._graphWidth;
         else maxSize = this._graphHeight;
 
