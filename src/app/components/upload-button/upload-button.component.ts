@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
     selector: 'app-upload-button',
@@ -9,7 +9,9 @@ export class UploadButtonComponent {
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
     @Input() permittedFileExtensions: string[] | undefined;
-    @Output() newFileUploadedEvent = new EventEmitter<string>();
+    @Output() newFileUploadedEventExtensionContent = new EventEmitter<
+        [string, string]
+    >();
 
     constructor() {}
 
@@ -37,23 +39,24 @@ export class UploadButtonComponent {
     }
 
     readAndEmitFile(file: File) {
-        let actualFileExtension = file.name.split('.').pop() as string;
-        if (
-            this.permittedFileExtensions?.indexOf(
-                actualFileExtension.toLowerCase()
-            ) == -1
-        ) {
+        let actualFileExtension = (
+            file.name.split('.').pop() as string
+        ).toLowerCase();
+        if (this.permittedFileExtensions?.indexOf(actualFileExtension) == -1) {
             alert(
-                'Nur Dateien vom Typ ' +
+                'Only file types ' +
                     this.permittedFileExtensions.map(ext => '.' + ext) +
-                    ' sind hier erlaubt'
+                    ' are currently supported'
             );
             return;
         }
         let fileReader = new FileReader();
         fileReader.onload = () => {
             let fileContent = fileReader.result as string;
-            this.newFileUploadedEvent.emit(fileContent);
+            this.newFileUploadedEventExtensionContent.emit([
+                actualFileExtension,
+                fileContent,
+            ]);
         };
         fileReader.readAsText(file);
     }

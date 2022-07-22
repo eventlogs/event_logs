@@ -1,21 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIcon } from '@angular/material/icon';
-import { ExportButtonComponent } from './export-button.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { ExportMenuItemComponent } from './export-menu-item.component';
 
 describe('ExportButtonComponent', () => {
-    let component: ExportButtonComponent;
-    let fixture: ComponentFixture<ExportButtonComponent>;
+    let component: ExportMenuItemComponent;
+    let fixture: ComponentFixture<ExportMenuItemComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [MatMenuModule],
-            declarations: [ExportButtonComponent, MatIcon],
+            declarations: [ExportMenuItemComponent, MatIcon],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ExportButtonComponent);
+        fixture = TestBed.createComponent(ExportMenuItemComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

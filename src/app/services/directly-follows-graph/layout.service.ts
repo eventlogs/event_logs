@@ -30,7 +30,7 @@ export class LayoutService {
         this.calcGraphHeight(graph);
         this.minimizeCrossings(graph);
 
-        this.correctEdgeDirection(graph.edges);
+        LayoutService.correctEdgeDirection(graph.edges);
     }
 
     constructor(
@@ -388,7 +388,7 @@ export class LayoutService {
                 sortedVertices[i - 1].position + positionOffset
             );
 
-        let maxSize: number = 0;
+        let maxSize: number;
         if (this._displayService.verticalDirection) maxSize = this._graphWidth;
         else maxSize = this._graphHeight;
 
@@ -425,7 +425,7 @@ export class LayoutService {
         return count;
     }
 
-    private correctEdgeDirection(edges: Edge[]): void {
+    private static correctEdgeDirection(edges: Edge[]): void {
         edges.forEach(edge => {
             if (edge.isReversed) edge.reverse();
         });

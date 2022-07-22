@@ -32,16 +32,19 @@ describe('UploadButtonComponent', () => {
         expect(component.handleFileInput).toHaveBeenCalled();
     });
 
-    it('should emit event with file content', () => {
+    it('should emit event with file extension and content', () => {
         const element = fixture.nativeElement;
         const input = element.querySelector('.file-input');
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(new File([exampleFileContent], 'test-file.txt'));
         input.files = dataTransfer.files;
 
-        component.newFileUploadedEvent.subscribe((fileContent: string) => {
-            expect(fileContent).toBe(exampleFileContent);
-        });
+        component.newFileUploadedEventExtensionContent.subscribe(
+            ([fileExtension, fileContent]: [string, string]) => {
+                expect(fileExtension).toBe('txt');
+                expect(fileContent).toBe(exampleFileContent);
+            }
+        );
         input.dispatchEvent(new Event('change'));
     });
 
@@ -60,7 +63,7 @@ describe('UploadButtonComponent', () => {
         input.dispatchEvent(new InputEvent('change'));
 
         expect(window.alert).toHaveBeenCalledWith(
-            'Nur Dateien vom Typ .log,.txt sind hier erlaubt'
+            'Only file types .log,.txt are currently supported'
         );
     });
 

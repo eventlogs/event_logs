@@ -4,7 +4,6 @@ import { GraphEvent } from '../classes/diagram/GraphEvent';
 import { GraphTrace } from '../classes/diagram/GraphTrace';
 import { LayoutService } from './layout.service';
 import { Element, ElementType } from '../classes/diagram/element';
-import { Trace } from '../classes/EventLog/trace';
 
 describe('LayoutService', () => {
     let service: LayoutService;

@@ -4,7 +4,6 @@ import { Diagram } from '../classes/diagram/diagram';
 import { GraphTrace } from '../classes/diagram/GraphTrace';
 import { GraphEvent } from '../classes/diagram/GraphEvent';
 import { EventLog } from '../classes/EventLog/eventlog';
-import { Event } from '../classes/EventLog/event';
 import { Element, ElementType } from '../classes/diagram/element';
 import { Trace } from '../classes/EventLog/trace';
 
@@ -17,7 +16,7 @@ export class DisplayService implements OnDestroy {
 
     constructor() {
         this._diagram$ = new BehaviorSubject<Diagram>(new Diagram([]));
-        this._selectedTraceCaseIds$ = new BehaviorSubject(new Array());
+        this._selectedTraceCaseIds$ = new BehaviorSubject(new Array<number>());
     }
 
     ngOnDestroy(): void {

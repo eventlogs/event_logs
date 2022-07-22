@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { Event } from 'src/app/classes/EventLog/event';
-import { EventEmitter } from 'stream';
 
 /**
  * Data source for the TracesDetailView view. This class should
@@ -168,7 +167,7 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
                         .toLowerCase()
                         .includes(this._filter.toLowerCase())
                 ) ||
-                (parseInt(this._filter) !== NaN &&
+                (!isNaN(parseInt(this._filter)) &&
                     this._eventlogDataService
                         .getCaseId(event)
                         .toString()

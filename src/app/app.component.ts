@@ -3,15 +3,12 @@ import { FormControl } from '@angular/forms';
 import { LogParserService } from './services/log-parser.service';
 import { DisplayService } from './services/display.service';
 import { debounceTime, Subscription } from 'rxjs';
-import { XesService } from './services/xes.service';
 import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
 import { EventlogDataService } from './services/eventlog-data.service';
 import { XesParserService } from './services/xes-parser.service';
 import { LogService } from './services/log.service';
 import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
 import { MatSidenavContainer } from '@angular/material/sidenav';
-import { SvgService as ValueChainSvgService } from './services/svg.service';
-import { SvgService as DirectlyFollowsGraphSvgService } from './services/directly-follows-graph/svg.service';
 
 @Component({
     selector: 'app-root',
@@ -33,10 +30,7 @@ export class AppComponent implements OnDestroy {
         private _displayService: DisplayService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
-        private _xesService: XesService,
-        private _eventlogDataService: EventlogDataService,
-        private _valueChainSvgService: ValueChainSvgService,
-        private _directlyFollowsGraphSvgService: DirectlyFollowsGraphSvgService
+        public _eventlogDataService: EventlogDataService
     ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
@@ -94,6 +88,24 @@ export class AppComponent implements OnDestroy {
         }
     }
 
+    processImport([fileExtension, fileContent]: [string, string]) {
+        if (['log', 'txt'].includes(fileExtension)) {
+            this.processLogImport(fileContent);
+        } else if ('xes' === fileExtension) {
+            this.processXesImport(fileContent);
+        } else {
+            alert(
+                'The current filetype ' +
+                    fileExtension +
+                    ' can not be imported!'
+            );
+        }
+    }
+
+    processLogImport(fileContent: string) {
+        this.updateTextarea(fileContent);
+    }
+
     processXesImport(fileContent: string) {
         try {
             const result = this._xesParserService.parse(fileContent);
@@ -105,8 +117,8 @@ export class AppComponent implements OnDestroy {
         } catch (e) {
             if (e === XesParserService.PARSING_ERROR) {
                 alert(
-                    'Die hochgeladenen XES-Datei konnte nicht geparsed werden.\n' +
-                        'Prüfe die Datei auf einen valide XES-Syntax und versuche es erneut.'
+                    'The uploaded XES file could not be parsed.\n' +
+                        'Check the file for valid XES syntax and try again.'
                 );
             } else {
                 throw e;
@@ -139,47 +151,6 @@ export class AppComponent implements OnDestroy {
             '2 BusBus false 3 4.5 2020-01-31 adsf\n' +
             '2 Bus false 4 6.7 2020-01-31 adfd'
         );
-    }
-
-    getLogExportValue() {
-        return this._logService.generate(
-            this._eventlogDataService
-                .eventLogWithSelectedOrAllWhenNothingSelected
-        );
-    }
-
-    getXesExportValue() {
-        return this._xesService.generate(
-            this._eventlogDataService
-                .eventLogWithSelectedOrAllWhenNothingSelected
-        );
-    }
-
-    getSvgValueChainExportValue() {
-        const elements = this._valueChainSvgService.createSvgElements(
-            this._displayService.diagram,
-            this._selectedTraceCaseIds
-        );
-        let svg =
-            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
-        elements.forEach(element => {
-            svg += element.outerHTML;
-        });
-        svg += '</svg>';
-        return svg;
-    }
-
-    getSvgDirectlyFollowsGraphExportValue() {
-        const elements = this._directlyFollowsGraphSvgService.createSvgElements(
-            this._directlyFollowsGraphService.graph
-        );
-        let svg =
-            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
-        elements.forEach(element => {
-            svg += element.outerHTML;
-        });
-        svg += '</svg>';
-        return svg;
     }
 
     updateViews() {
