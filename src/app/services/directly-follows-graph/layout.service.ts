@@ -10,33 +10,25 @@ import { SvgService } from './svg.service';
 })
 //Layout mittels Sugiyama Algorithmus
 export class LayoutService {
-    private _graphWidth: number = 0;
-    private _graphHeight: number = 0;
-
-    public get graphWidth(): number {
-        return this._graphWidth;
-    }
-
-    public get graphHeight(): number {
-        return this._graphHeight;
-    }
-
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
         this.setLayers(graph);
         this.createDummyVertices(graph);
 
-        this.calcGraphWidth(graph);
-        this.calcGraphHeight(graph);
         this.minimizeCrossings(graph);
+
+        this.setPositions(graph);
 
         this.correctEdgeDirection(graph.edges);
     }
 
-    constructor(
-        private _displayService: DirectlyFollowsGraphService,
-        private _svgService: SvgService
-    ) {}
+    private setPositions(graph: Graph): void {
+        let minPosition = graph.getMinPosition();
+        if (minPosition < 1)
+            graph.vertices.forEach(
+                vertex => (vertex.position += -minPosition + 1)
+            );
+    }
 
     private makeGraphAcyclic(graph: Graph): void {
         let edges: Edge[] = [];
@@ -246,43 +238,13 @@ export class LayoutService {
         } while (crossings != 0 && differentStartingPermutation < 23);
     }
 
-    private calcGraphWidth(graph: Graph): void {
-        if (this._displayService.verticalDirection) {
-            this._graphWidth =
-                (graph.getMaxVerticesOnLayer() - 1) *
-                this._svgService.offsetXValue;
-        } else {
-            this._graphWidth =
-                graph.getMaxLayer() * this._svgService.offsetXValue +
-                this._svgService.rectWidth;
-        }
-    }
-
-    private calcGraphHeight(graph: Graph): void {
-        if (this._displayService.verticalDirection) {
-            this._graphHeight =
-                graph.getMaxLayer() * this._svgService.offsetYValue +
-                this._svgService.rectHeight;
-        } else {
-            this._graphHeight =
-                (graph.getMaxVerticesOnLayer() - 1) *
-                this._svgService.offsetYValue;
-        }
-    }
-
     private permutateFirstLayerPositions(vertices: Vertex[]): void {
         let firstLayerVertices: Vertex[] = vertices.filter(
             vertex => vertex.layer == 1
         );
 
-        for (let i = 0; i < firstLayerVertices.length; i++) {
-            if (this._displayService.verticalDirection)
-                firstLayerVertices[i].position =
-                    i * this._svgService.offsetXValue;
-            else
-                firstLayerVertices[i].position =
-                    i * this._svgService.offsetYValue;
-        }
+        for (let i = 0; i < firstLayerVertices.length; i++)
+            firstLayerVertices[i].position = i + 1;
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
             let n: number = Math.floor(
@@ -345,39 +307,22 @@ export class LayoutService {
     private setPositionOffset(graph: Graph, layer: number): void {
         let sortedVertices: Vertex[] = graph.getVerticesSortedByPosition(layer);
 
-        //Setze Abstand basierend auf der Ausrichtung
-        let positionOffset: number;
-
-        if (this._displayService.verticalDirection)
-            positionOffset = this._svgService.offsetXValue;
-        else positionOffset = this._svgService.offsetYValue;
-
         for (let i = 0; i < sortedVertices.length; i++) {}
 
         //Setze Knoten mit gleicher Position verteilt um die Position
         for (let i = 0; i < sortedVertices.length; i++) {
-            let sameValue: number = 1;
+            let sameValue: number = 0;
 
             while (
-                i + sameValue < sortedVertices.length &&
+                i + sameValue + 1 < sortedVertices.length &&
                 sortedVertices[i].position ==
-                    sortedVertices[i + sameValue].position
+                    sortedVertices[i + sameValue + 1].position
             )
                 sameValue++;
 
-            //Ausgleich damit alle Positionen positiv sind
-            let zeroOffset = Math.min(
-                sortedVertices[i].position -
-                    (sameValue - 1) * (positionOffset / 2),
-                0
-            );
-
-            for (let j = i; j <= i + sameValue - 1; j++) {
+            for (let j = i; j <= i + sameValue; j++) {
                 sortedVertices[j].position =
-                    sortedVertices[j].position -
-                    (sameValue - 1) * (positionOffset / 2) +
-                    (j - i) * positionOffset -
-                    zeroOffset;
+                    sortedVertices[j].position - sameValue * 0.5 + j - i;
             }
         }
 
@@ -385,12 +330,10 @@ export class LayoutService {
         for (let i = 1; i < sortedVertices.length; i++)
             sortedVertices[i].position = Math.max(
                 sortedVertices[i].position,
-                sortedVertices[i - 1].position + positionOffset
+                sortedVertices[i - 1].position + 1
             );
 
-        let maxSize: number = 0;
-        if (this._displayService.verticalDirection) maxSize = this._graphWidth;
-        else maxSize = this._graphHeight;
+        let maxSize: number = graph.getMaxVerticesOnLayer();
 
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
         if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
@@ -398,7 +341,7 @@ export class LayoutService {
             for (let i = sortedVertices.length - 2; i >= 0; i--)
                 sortedVertices[i].position = Math.min(
                     sortedVertices[i].position,
-                    sortedVertices[i + 1].position - positionOffset
+                    sortedVertices[i + 1].position - 1
                 );
         }
     }

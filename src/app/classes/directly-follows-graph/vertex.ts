@@ -1,3 +1,4 @@
+import { ElementRef, ViewChild } from '@angular/core';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { Edge } from './edge';
 
@@ -8,6 +9,7 @@ export class Vertex {
     private _position: number;
     private _svgElement: SVGElement | undefined;
     private _isDummy: boolean;
+    private _isDragging: boolean = false;
 
     public get activityName(): String {
         return this._activityName;
@@ -51,6 +53,9 @@ export class Vertex {
             this._svgElement.onmousedown = event => {
                 this.processMouseDown(event);
             };
+            this._svgElement.onmousemove = event => {
+                this.processMouseMove(event);
+            };
             this._svgElement.onmouseup = event => {
                 this.processMouseUp(event);
             };
@@ -73,9 +78,34 @@ export class Vertex {
         this._isDummy = isDummy;
     }
 
-    private processMouseDown(event: MouseEvent) {}
+    private processMouseDown(event: MouseEvent) {
+        if (this._svgElement === undefined) {
+            return;
+        }
 
-    private processMouseUp(event: MouseEvent) {}
+        this._isDragging = true;
+        this._svgElement?.setAttribute('x', '500');
+    }
+
+    private processMouseMove(event: MouseEvent) {
+        if (this._svgElement === undefined) {
+            return;
+        }
+
+        if (this._isDragging) {
+            event.preventDefault();
+            let x: number = this.getSvgElementXValue() + 100;
+            this._svgElement?.setAttribute('x', x.toString());
+        }
+    }
+
+    private processMouseUp(event: MouseEvent) {
+        if (this._svgElement === undefined) {
+            return;
+        }
+
+        this._isDragging = false;
+    }
 
     public getSvgElementXValue(): number {
         let xString = this.svgElement?.getAttribute('x');

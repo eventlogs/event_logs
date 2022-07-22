@@ -89,13 +89,14 @@ export class SvgService {
 
         //Setze Abstand zwischen Positionen und Ebenen basierend auf der Ausrichtung
         if (this._displayService.verticalDirection) {
-            x += vertex.position;
+            x += this.offsetXValue * (vertex.position - 1);
             y += this.offsetYValue * (vertex.layer - 1);
         } else {
             x += this.offsetXValue * (vertex.layer - 1);
-            y += vertex.position;
+            y += this.offsetYValue * (vertex.position - 1);
         }
 
+        svg.setAttribute('name', vertex.activityName.toString());
         svg.setAttribute('x', x.toString());
         svg.setAttribute('y', y.toString());
         svg.setAttribute('width', this.rectWidth.toString());
@@ -109,10 +110,6 @@ export class SvgService {
     private createPathForDummyVertex(vertex: Vertex): SVGElement {
         let path = this.createSvgElement('path');
 
-        // let startX: number = vertex.getSvgElementXValue();
-        // let startY: number = vertex.getSvgElementXValue();
-        // let endX: number = vertex.getSvgElementYValue();
-        // let endY: number = vertex.getSvgElementYValue();
         let startX: number = 0;
         let startY: number = 0;
         let endX: number = 0;

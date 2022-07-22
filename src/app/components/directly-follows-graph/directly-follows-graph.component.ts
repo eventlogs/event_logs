@@ -17,6 +17,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
 
     private _graphSubscription: Subscription;
     private _graph: Graph | undefined;
+    private _directionSubscription: Subscription;
     public heightPx: number = 390;
     public widthPx: number = 100;
 
@@ -32,6 +33,10 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
                 this.draw();
             }
         );
+        this._directionSubscription =
+            this._displayService.verticalDirection$.subscribe(direction =>
+                this.draw()
+            );
     }
 
     ngOnDestroy(): void {
@@ -52,14 +57,10 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
 
-        this.widthPx =
-            this._layoutService.graphWidth + this._svgService.offsetXValue;
-        this.heightPx =
-            this._layoutService.graphHeight + this._svgService.offsetYValue;
-
-        if (this._displayService.verticalDirection)
-            this.widthPx += this._svgService.offsetXValue;
-        else this.heightPx += this._svgService.offsetYValue;
+        if (this._graph != undefined) {
+            this.calcGraphWidth(this._graph);
+            this.calcGraphHeight(this._graph);
+        }
     }
 
     private clearDrawingArea() {
@@ -73,6 +74,24 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
 
         while (drawingArea?.childElementCount > 0) {
             drawingArea.removeChild(drawingArea.lastChild as ChildNode);
+        }
+    }
+
+    private calcGraphWidth(graph: Graph): void {
+        if (this._displayService.verticalDirection) {
+            this.widthPx =
+                (graph.getMaxPosition() + 1) * this._svgService.offsetXValue;
+        } else {
+            this.widthPx = graph.getMaxLayer() * this._svgService.offsetXValue;
+        }
+    }
+
+    private calcGraphHeight(graph: Graph): void {
+        if (this._displayService.verticalDirection) {
+            this.heightPx = graph.getMaxLayer() * this._svgService.offsetYValue;
+        } else {
+            this.heightPx =
+                (graph.getMaxPosition() + 1) * this._svgService.offsetYValue;
         }
     }
 }
