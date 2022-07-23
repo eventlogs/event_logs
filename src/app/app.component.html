@@ -49,7 +49,8 @@
                         cdkAutosizeMaxRows="20"
                         [formControl]="textareaFc"></textarea>
                 </mat-form-field>
-                <app-export-button></app-export-button>
+                <app-export-button
+                    (processImport)="processImport($event)"></app-export-button>
             </div>
             <!--  Footer  -->
             <hr />

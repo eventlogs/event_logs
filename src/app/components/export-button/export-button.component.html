@@ -21,7 +21,10 @@
         [fileContent]="getLogExportValue(_eventLogDataService.eventLog)"
         fileType="text/plain;charset=utf-8"
         fileName="event.log"
-        [datePrefix]="true"></app-export-menu-item>
+        [datePrefix]="true"
+        [disabled]="false"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Selected Traces"
         [fileContent]="
@@ -31,7 +34,23 @@
         "
         fileType="text/plain;charset=utf-8"
         fileName="event.log"
-        [datePrefix]="true"></app-export-menu-item>
+        [datePrefix]="true"
+        [disabled]="_selectedTraceCaseIds.length === 0"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Selected Traces and Reimport"
+        [fileContent]="
+            getLogExportValue(
+                _eventLogDataService.eventLogWithSelectedOrNothingWhenNothingSelected
+            )
+        "
+        fileType="text/plain;charset=utf-8"
+        fileName="event.log"
+        [datePrefix]="true"
+        [disabled]="_selectedTraceCaseIds.length === 0"
+        [reimport]="true"
+        (processReimport)="processReimport()"></app-export-menu-item>
 </mat-menu>
 
 <mat-menu #exportAsXes="matMenu">
@@ -40,7 +59,10 @@
         [fileContent]="getXesExportValue(_eventLogDataService.eventLog)"
         fileType="text/plain;charset=utf-8"
         fileName="event.xes"
-        [datePrefix]="true"></app-export-menu-item>
+        [datePrefix]="true"
+        [disabled]="false"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Selected Traces"
         [fileContent]="
@@ -50,7 +72,23 @@
         "
         fileType="text/plain;charset=utf-8"
         fileName="event.xes"
-        [datePrefix]="true"></app-export-menu-item>
+        [datePrefix]="true"
+        [disabled]="_selectedTraceCaseIds.length === 0"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Selected Traces and Reimport"
+        [fileContent]="
+            getXesExportValue(
+                _eventLogDataService.eventLogWithSelectedOrNothingWhenNothingSelected
+            )
+        "
+        fileType="text/plain;charset=utf-8"
+        fileName="event.xes"
+        [datePrefix]="true"
+        [disabled]="_selectedTraceCaseIds.length === 0"
+        [reimport]="true"
+        (processReimport)="processReimport()"></app-export-menu-item>
 </mat-menu>
 
 <mat-menu #exportAsSvg="matMenu">
@@ -59,11 +97,17 @@
         [fileContent]="getSvgValueChainExportValue()"
         fileType="text/plain;charset=utf-8"
         fileName="event.svg"
-        [datePrefix]="true"></app-export-menu-item>
+        [datePrefix]="true"
+        [disabled]="false"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Directly-Follows-Graph"
         [fileContent]="getSvgDirectlyFollowsGraphExportValue()"
         fileType="text/plain;charset=utf-8"
         fileName="event.svg"
-        [datePrefix]="true"></app-export-menu-item>
+        [datePrefix]="true"
+        [disabled]="false"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
 </mat-menu>

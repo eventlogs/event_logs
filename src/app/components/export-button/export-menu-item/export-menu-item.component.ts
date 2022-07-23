@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { saveAs } from 'file-saver';
 
 @Component({
@@ -12,6 +12,9 @@ export class ExportMenuItemComponent {
     @Input() fileType: string = '';
     @Input() fileName: string = '';
     @Input() datePrefix: boolean = false;
+    @Input() disabled: boolean = false;
+    @Input() reimport: boolean = false;
+    @Output() processReimport = new EventEmitter();
 
     constructor() {}
 
@@ -21,5 +24,8 @@ export class ExportMenuItemComponent {
             (this.datePrefix ? new Date().toLocaleString() + '_' : '') +
                 this.fileName
         );
+        if (this.reimport) {
+            this.processReimport.emit();
+        }
     }
 }
