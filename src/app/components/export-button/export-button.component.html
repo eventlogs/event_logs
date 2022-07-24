@@ -22,7 +22,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.log"
         [datePrefix]="true"
-        [disabled]="false"
+        [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
@@ -35,7 +35,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.log"
         [datePrefix]="true"
-        [disabled]="_selectedTraceCaseIds.length === 0"
+        [disabled]="shouldDisableExport(true)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
@@ -48,7 +48,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.log"
         [datePrefix]="true"
-        [disabled]="_selectedTraceCaseIds.length === 0"
+        [disabled]="shouldDisableExport(true)"
         [reimport]="true"
         (processReimport)="processReimport()"></app-export-menu-item>
 </mat-menu>
@@ -60,7 +60,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.xes"
         [datePrefix]="true"
-        [disabled]="false"
+        [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
@@ -73,7 +73,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.xes"
         [datePrefix]="true"
-        [disabled]="_selectedTraceCaseIds.length === 0"
+        [disabled]="shouldDisableExport(true)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
@@ -86,7 +86,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.xes"
         [datePrefix]="true"
-        [disabled]="_selectedTraceCaseIds.length === 0"
+        [disabled]="shouldDisableExport(true)"
         [reimport]="true"
         (processReimport)="processReimport()"></app-export-menu-item>
 </mat-menu>
@@ -98,7 +98,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.svg"
         [datePrefix]="true"
-        [disabled]="false"
+        [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
@@ -107,7 +107,7 @@
         fileType="text/plain;charset=utf-8"
         fileName="event.svg"
         [datePrefix]="true"
-        [disabled]="false"
+        [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
 </mat-menu>

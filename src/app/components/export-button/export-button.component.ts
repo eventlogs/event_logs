@@ -78,4 +78,14 @@ export class ExportButtonComponent {
         svg += '</svg>';
         return svg;
     }
+
+    shouldDisableExport(selectedOnly: boolean) {
+        if (this._eventLogDataService.eventLog.traces.length === 0) {
+            return true;
+        }
+        if (selectedOnly && this._selectedTraceCaseIds.length === 0) {
+            return true;
+        }
+        return false;
+    }
 }
