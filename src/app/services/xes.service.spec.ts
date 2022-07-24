@@ -12,6 +12,7 @@ import {
 import { Event } from '../classes/EventLog/event';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Trace } from '../classes/EventLog/trace';
+import { MatFormField } from '@angular/material/form-field';
 var format = require('xml-formatter');
 
 class RandomAttribute extends EventLogAttribute {
@@ -27,7 +28,7 @@ describe('XesService', () => {
     let service: XesService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ declarations: [MatFormField] });
         service = TestBed.inject(XesService);
     });
 

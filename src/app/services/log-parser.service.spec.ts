@@ -11,12 +11,15 @@ import {
 } from '../classes/EventLog/eventlogattribute';
 import { Trace } from '../classes/EventLog/trace';
 import { EventLog } from '../classes/EventLog/eventlog';
+import { DrawingAreaComponent } from '../components/drawingArea/drawingArea.component';
 
 describe('LogParserService', () => {
     let service: LogParserService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            declarations: [DrawingAreaComponent],
+        });
         service = TestBed.inject(LogParserService);
     });
 
