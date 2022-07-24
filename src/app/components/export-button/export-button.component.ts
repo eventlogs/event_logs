@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { EventLog } from '../../classes/EventLog/eventlog';
 import { DisplayService } from '../../services/display.service';
 import { LogService } from '../../services/log.service';
@@ -14,6 +14,7 @@ import { SvgService as DirectlyFollowsGraphSvgService } from '../../services/dir
     styleUrls: ['./export-button.component.scss'],
 })
 export class ExportButtonComponent {
+    @Output() processImport = new EventEmitter<[string, string]>();
     public _selectedTraceCaseIds: Array<number> = [];
 
     constructor(
@@ -38,6 +39,17 @@ export class ExportButtonComponent {
 
     getXesExportValue(eventLog: EventLog) {
         return this._xesService.generate(eventLog);
+    }
+
+    processReimport() {
+        this.processImport.emit([
+            'log',
+            this.getLogExportValue(
+                this._eventLogDataService
+                    .eventLogWithSelectedOrNothingWhenNothingSelected
+            ),
+        ]);
+        this._displayService.selectTraceCaseIds([]);
     }
 
     getSvgValueChainExportValue() {
@@ -65,5 +77,15 @@ export class ExportButtonComponent {
         });
         svg += '</svg>';
         return svg;
+    }
+
+    shouldDisableExport(selectedOnly: boolean) {
+        if (this._eventLogDataService.eventLog.traces.length === 0) {
+            return true;
+        }
+        if (selectedOnly && this._selectedTraceCaseIds.length === 0) {
+            return true;
+        }
+        return false;
     }
 }

@@ -70,18 +70,23 @@ export class AppComponent implements OnDestroy {
         if (event.key == 'Escape') {
             this._displayService.selectTraceCaseIds([]);
         }
-        if (event.key == 'Delete') {
-            let eventLog = this._eventlogDataService.eventLog;
-            eventLog.deleteTraceByCaseIds(
-                this._displayService.selectedTraceCaseIds
-            );
-            this._displayService.selectTraceCaseIds([]);
-            this.updateTextarea(this._logService.generate(eventLog));
-        }
     }
 
     private processSourceChange(newSource: string) {
         const result = this._logParserService.parse(newSource);
+
+        // Ausgewählte Traces zurücksetzen, wenn mindestens eine Case Id nicht mehr vorhanden ist
+        for (const caseId of this._selectedTraceCaseIds) {
+            const caseIdStillExists =
+                result.traces.filter(
+                    trace => [caseId].indexOf(trace.caseId) !== -1
+                ).length > 0;
+            if (!caseIdStillExists) {
+                this._displayService.selectTraceCaseIds([]);
+                break;
+            }
+        }
+
         if (result !== undefined) {
             this._eventlogDataService.eventLog = result;
             this.updateViews();

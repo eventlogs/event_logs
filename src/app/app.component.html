@@ -33,27 +33,22 @@
                         (newFileUploadedEventExtensionContent)="
                             processImport($event)
                         "></app-upload-button>
-                    <app-delete-button
-                        buttonText="Delete Selected"
-                        buttonIcon="delete"
-                        (updateTextarea)="
-                            updateTextarea($event)
-                        "></app-delete-button>
                     <mat-form-field appearance="outline" class="textarea">
                         <mat-label>Source file</mat-label>
                         <textarea
                             matInput
                             cdkTextareaAutosize
-                            cdkAutosizeMinRows="6"
-                            cdkAutosizeMaxRows="6"
+                            cdkAutosizeMinRows="10"
+                            cdkAutosizeMaxRows="20"
                             [formControl]="textareaFc"></textarea>
                     </mat-form-field>
-                    <app-export-button></app-export-button>
+                    <app-export-button
+                        (processImport)="processImport($event)"></app-export-button>
                 </div>
                 <app-drawing-area class="drawing-area"></app-drawing-area>
             </div>
-            <hr />
         </mat-sidenav-content>
     </mat-sidenav-container>
+    <hr />
     <app-footer></app-footer>
 </div>
