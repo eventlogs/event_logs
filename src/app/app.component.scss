@@ -51,15 +51,9 @@ hr.header-divider {
 }
 
 .menubar {
-    width: 15%;
-    display: inline-block;
+    padding-top: 15px;
 }
 
 .textarea {
-    width: 90%;
-}
-
-.drawing-area {
-    display: inline-block;
-    width: 80%;
+    resize: both;
 }

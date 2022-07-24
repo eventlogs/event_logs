@@ -24,28 +24,24 @@
                 (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <div class="main-app-body" fxLayout="row">
-                <div class="menubar" fxLayout="column" fxLayoutAlign="center">
-                    <app-upload-button
-                        buttonText="Import File with Eventlog"
-                        buttonIcon="file_upload"
+            <div class="main-app-body">
+                <app-drawing-area class="drawing-area"></app-drawing-area>
+                <div class="menubar" fxLayout="row" fxLayoutAlign="start start">
+                    <app-upload-button fxFlex
                         [permittedFileExtensions]="['xes', 'log', 'txt']"
                         (newFileUploadedEventExtensionContent)="
                             processImport($event)
                         "></app-upload-button>
-                    <mat-form-field appearance="outline" class="textarea">
+                    <mat-form-field appearance="outline" class="textarea" fxFlex="3 1 0">
                         <mat-label>Source file</mat-label>
-                        <textarea
+                        <textarea class="source-file"
                             matInput
-                            cdkTextareaAutosize
-                            cdkAutosizeMinRows="10"
-                            cdkAutosizeMaxRows="20"
                             [formControl]="textareaFc"></textarea>
                     </mat-form-field>
-                    <app-export-button
+                    <app-export-button fxFlex class="menu-button"
                         (processImport)="processImport($event)"></app-export-button>
                 </div>
-                <app-drawing-area class="drawing-area"></app-drawing-area>
+
             </div>
         </mat-sidenav-content>
     </mat-sidenav-container>
