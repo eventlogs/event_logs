@@ -26,8 +26,8 @@
             </button>
             <div class="main-app-body">
                 <app-drawing-area class="drawing-area"></app-drawing-area>
-                <div class="menubar" fxLayoutAlign="center" fxLayoutGap="20px">
-                    <div class="menu-buttons" fxLayoutGap="20px">
+                <div class="menubar" fxLayoutGap="20px">
+                    <div class="menu-buttons" fxLayoutGap="20px" fxFlex="1 0 auto">
                         <app-upload-button
                             [permittedFileExtensions]="['xes', 'log', 'txt']"
                             (newFileUploadedEventExtensionContent)="
@@ -36,17 +36,15 @@
                         <app-export-button
                             (processImport)="processImport($event)"></app-export-button>
                     </div>
-                    <form class="source-file-input" fxFlex="1.5 1 auto">
-                        <mat-form-field appearance="outline" class="textarea">
-                            <mat-label>Source file</mat-label>
-                            <textarea
-                                matInput
-                                cdkTextareaAutosize
-                                cdkAutosizeMinRows="10"
-                                cdkAutosizeMaxRows="30"
-                                [formControl]="textareaFc"></textarea>
-                        </mat-form-field>
-                    </form>
+                    <mat-form-field appearance="outline" class="input-form-field" fxFlex="1 1 100%">
+                        <mat-label>Source file</mat-label>
+                        <textarea class="textarea"
+                            matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="10"
+                            cdkAutosizeMaxRows="20"
+                            [formControl]="textareaFc"></textarea>
+                    </mat-form-field>
                 </div>
             </div>
         </mat-sidenav-content>
