@@ -17,7 +17,6 @@ import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-dr
 import { ExportMenuItemComponent } from './components/export-button/export-menu-item/export-menu-item.component';
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { SwitchViewButtonComponent } from './components/switch-view-button/switch-view-button.component';
-import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 import { APP_BASE_HREF } from '@angular/common';
 import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
 import { MatTableModule } from '@angular/material/table';
@@ -37,7 +36,6 @@ import { SwitchDirectionButtonComponent } from './components/switch-direction-bu
         DragDropFileUploadDirective,
         ExportMenuItemComponent,
         DirectlyFollowsGraphComponent,
-        DeleteButtonComponent,
         SwitchViewButtonComponent,
         TracesDetailViewComponent,
         ExportButtonComponent,

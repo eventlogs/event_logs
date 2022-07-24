@@ -70,14 +70,6 @@ export class AppComponent implements OnDestroy {
         if (event.key == 'Escape') {
             this._displayService.selectTraceCaseIds([]);
         }
-        if (event.key == 'Delete') {
-            let eventLog = this._eventlogDataService.eventLog;
-            eventLog.deleteTraceByCaseIds(
-                this._displayService.selectedTraceCaseIds
-            );
-            this._displayService.selectTraceCaseIds([]);
-            this.updateTextarea(this._logService.generate(eventLog));
-        }
     }
 
     private processSourceChange(newSource: string) {
