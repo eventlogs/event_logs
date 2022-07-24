@@ -16,7 +16,7 @@ import { UploadButtonComponent } from './components/upload-button/upload-button.
 import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-drop-file-upload.directive';
 import { ExportMenuItemComponent } from './components/export-button/export-menu-item/export-menu-item.component';
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
-import { SwitchViewButtonComponent } from './components/switch-view-button/switch-view-button.component';
+import { ChangeViewButtonComponent } from './components/change-view-button/change-view-button.component';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 import { APP_BASE_HREF } from '@angular/common';
 import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
@@ -38,7 +38,7 @@ import { SwitchDirectionButtonComponent } from './components/switch-direction-bu
         ExportMenuItemComponent,
         DirectlyFollowsGraphComponent,
         DeleteButtonComponent,
-        SwitchViewButtonComponent,
+        ChangeViewButtonComponent,
         TracesDetailViewComponent,
         ExportButtonComponent,
         SwitchDirectionButtonComponent,

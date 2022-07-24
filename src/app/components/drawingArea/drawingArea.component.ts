@@ -6,6 +6,8 @@ import {
 } from '@angular/core';
 import { DisplayService } from 'src/app/services/display.service';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
+import {ChangeViewButtonComponent} from "../change-view-button/change-view-button.component";
+import {TracesDetailViewComponent} from "../traces-detail-view/traces-detail-view.component";
 
 @Component({
     selector: 'app-drawing-area',
@@ -14,9 +16,11 @@ import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-g
 })
 export class DrawingAreaComponent implements AfterContentChecked {
     @ViewChild('drawingArea') drawingArea!: ElementRef;
+    @ViewChild('tracesDetailView') tracesDetailView? : TracesDetailViewComponent;
     public canvasWidth: number = 0;
     wertschoepfungsketteHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
+    logInformationHidden: boolean = true;
 
     constructor(
         private _displayService: DisplayService,
@@ -33,12 +37,31 @@ export class DrawingAreaComponent implements AfterContentChecked {
         this._directyFollowsGraphService.switchDirection();
     }
 
-    switchView() {
-        this.direktfolgegraphHidden = !this.direktfolgegraphHidden;
-        this.wertschoepfungsketteHidden = !this.wertschoepfungsketteHidden;
+    changeView(nextView : string) {
+        switch (nextView) {
+            case ChangeViewButtonComponent.valueChainView:
+                this.wertschoepfungsketteHidden = false;
+                this.direktfolgegraphHidden = true;
+                this.logInformationHidden = true;
+                break
+            case ChangeViewButtonComponent.directlyFollowsGraphView:
+                this.wertschoepfungsketteHidden = true;
+                this.direktfolgegraphHidden = false;
+                this.logInformationHidden = true;
+                break
+            case ChangeViewButtonComponent.logInformationView:
+                this.direktfolgegraphHidden = true;
+                this.wertschoepfungsketteHidden = true;
+                this.logInformationHidden = false;
+                break
+        }
     }
 
     clickDrawArea() {
         this._displayService.selectTraceCaseIds([]);
+    }
+
+    refresh() {
+        this.tracesDetailView?.refresh()
     }
 }

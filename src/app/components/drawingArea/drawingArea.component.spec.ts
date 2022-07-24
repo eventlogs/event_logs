@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingAreaComponent } from './drawingArea.component';
 import { WertschoepfungsketteComponent } from '../wertschoepfungskette/wertschoepfungskette.component';
-import { SwitchViewButtonComponent } from '../switch-view-button/switch-view-button.component';
+import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { DirectlyFollowsGraphComponent } from '../directly-follows-graph/directly-follows-graph.component';
 
 describe('DrawingAreaComponent', () => {
@@ -12,7 +12,7 @@ describe('DrawingAreaComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [
                 DrawingAreaComponent,
-                SwitchViewButtonComponent,
+                ChangeViewButtonComponent,
                 WertschoepfungsketteComponent,
                 DirectlyFollowsGraphComponent,
             ],
