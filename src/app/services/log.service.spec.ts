@@ -74,7 +74,7 @@ describe('Log.ServiceService', () => {
             '.type log\n' +
             '.attributes\n' +
             'case-id\n' +
-            'activity\n' +
+            'concept:name\n' +
             'org:group\n' +
             'org:name\n' +
             'org:role\n' +

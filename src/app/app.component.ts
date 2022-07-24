@@ -23,6 +23,7 @@ export class AppComponent implements OnDestroy {
     private _sub: Subscription;
     private _subSelectedTraces: Subscription;
     public _selectedTraceCaseIds: Array<number> = [];
+    private _xesImport: boolean = false;
 
     constructor(
         private _logParserService: LogParserService,
@@ -83,9 +84,12 @@ export class AppComponent implements OnDestroy {
     private processSourceChange(newSource: string) {
         const result = this._logParserService.parse(newSource);
         if (result !== undefined) {
-            this._eventlogDataService.eventLog = result;
+            if (!this._xesImport) {
+                this._eventlogDataService.eventLog = result;
+            }
             this.updateViews();
         }
+        this._xesImport = false;
     }
 
     processImport([fileExtension, fileContent]: [string, string]) {
@@ -109,12 +113,14 @@ export class AppComponent implements OnDestroy {
     processXesImport(fileContent: string) {
         try {
             const result = this._xesParserService.parse(fileContent);
+            this._xesImport = true;
             if (result !== undefined) {
                 this._eventlogDataService.eventLog = result;
                 this.updateTextarea(this._logService.generate(result));
                 this.updateViews();
             }
         } catch (e) {
+            this._xesImport = false;
             if (e === XesParserService.PARSING_ERROR) {
                 alert(
                     'The uploaded XES file could not be parsed.\n' +
@@ -139,7 +145,7 @@ export class AppComponent implements OnDestroy {
             '.type log\n' +
             '.attributes\n' +
             'case-id\n' +
-            'activity\n' +
+            'concept:name\n' +
             'booleanValue\n' +
             'intValue\n' +
             'floatValue\n' +
