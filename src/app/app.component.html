@@ -26,22 +26,28 @@
             </button>
             <div class="main-app-body">
                 <app-drawing-area class="drawing-area"></app-drawing-area>
-                <div class="menubar" fxLayout="row" fxLayoutAlign="start start">
-                    <app-upload-button fxFlex
-                        [permittedFileExtensions]="['xes', 'log', 'txt']"
-                        (newFileUploadedEventExtensionContent)="
+                <div class="menubar" fxLayoutAlign="center" fxLayoutGap="20px">
+                    <div class="menu-buttons" fxLayoutGap="20px">
+                        <app-upload-button
+                            [permittedFileExtensions]="['xes', 'log', 'txt']"
+                            (newFileUploadedEventExtensionContent)="
                             processImport($event)
                         "></app-upload-button>
-                    <mat-form-field appearance="outline" class="textarea" fxFlex="3 1 0">
-                        <mat-label>Source file</mat-label>
-                        <textarea class="source-file"
-                            matInput
-                            [formControl]="textareaFc"></textarea>
-                    </mat-form-field>
-                    <app-export-button fxFlex class="menu-button"
-                        (processImport)="processImport($event)"></app-export-button>
+                        <app-export-button
+                            (processImport)="processImport($event)"></app-export-button>
+                    </div>
+                    <form class="source-file-input" fxFlex="1.5 1 auto">
+                        <mat-form-field appearance="outline" class="textarea">
+                            <mat-label>Source file</mat-label>
+                            <textarea
+                                matInput
+                                cdkTextareaAutosize
+                                cdkAutosizeMinRows="10"
+                                cdkAutosizeMaxRows="30"
+                                [formControl]="textareaFc"></textarea>
+                        </mat-form-field>
+                    </form>
                 </div>
-
             </div>
         </mat-sidenav-content>
     </mat-sidenav-container>

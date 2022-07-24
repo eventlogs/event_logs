@@ -1,7 +1,7 @@
 .drawingArea {
     height: 350px;
-    border-style: dotted;
-    border-color: lightgrey;
+    border: dotted lightgrey;
     overflow: auto;
     resize: vertical;
+    margin-top: 15px;
 }
