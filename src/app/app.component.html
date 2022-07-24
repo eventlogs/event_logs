@@ -7,6 +7,7 @@
             Show an event log as a Value-Chain or Directly-Follows-Graph.
         </h2>
     </div>
+    <hr class="header-divider"/>
     <mat-sidenav-container class="sidenav-container" autosize>
         <mat-sidenav #sidenav mode="side" position="end" class="sidenav-bar">
             <div class="scrollable-when-too-large">
@@ -23,9 +24,8 @@
                 (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <div class="main-app-body">
-                <app-drawing-area></app-drawing-area>
-                <div class="menubar" fxLayout="row" fxLayoutAlign="space-evenly start">
+            <div class="main-app-body" fxLayout="row">
+                <div class="menubar" fxLayout="column" fxLayoutAlign="center">
                     <app-upload-button
                         buttonText="Import File with Eventlog"
                         buttonIcon="file_upload"
@@ -44,16 +44,16 @@
                         <textarea
                             matInput
                             cdkTextareaAutosize
-                            cdkAutosizeMinRows="10"
-                            cdkAutosizeMaxRows="20"
+                            cdkAutosizeMinRows="6"
+                            cdkAutosizeMaxRows="6"
                             [formControl]="textareaFc"></textarea>
                     </mat-form-field>
                     <app-export-button></app-export-button>
                 </div>
+                <app-drawing-area class="drawing-area"></app-drawing-area>
             </div>
-            <!--  Footer  -->
             <hr />
-            <app-footer></app-footer>
         </mat-sidenav-content>
     </mat-sidenav-container>
+    <app-footer></app-footer>
 </div>

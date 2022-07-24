@@ -32,6 +32,10 @@ hr {
     width: 100%;
 }
 
+hr.header-divider {
+    margin: 0 0 15px 0;
+}
+
 .sidenav-bar {
     max-width: 50%
 }
@@ -44,4 +48,18 @@ hr {
 
 .scrollable-when-too-large {
     overflow: auto;
+}
+
+.menubar {
+    width: 15%;
+    display: inline-block;
+}
+
+.textarea {
+    width: 90%;
+}
+
+.drawing-area {
+    display: inline-block;
+    width: 80%;
 }
