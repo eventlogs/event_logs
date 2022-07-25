@@ -18,36 +18,19 @@
 <mat-menu #exportAsLog="matMenu">
     <app-export-menu-item
         buttonText="Complete Eventlog"
-        [fileContent]="getLogExportValue(_eventLogDataService.eventLog)"
-        fileType="text/plain;charset=utf-8"
-        fileName="event.log"
-        [datePrefix]="true"
+        (exportFile)="exportLog(true)"
         [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Selected Traces"
-        [fileContent]="
-            getLogExportValue(
-                _eventLogDataService.eventLogWithSelectedOrNothingWhenNothingSelected
-            )
-        "
-        fileType="text/plain;charset=utf-8"
-        fileName="event.log"
-        [datePrefix]="true"
+        (exportFile)="exportLog(false)"
         [disabled]="shouldDisableExport(true)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Selected Traces and Reimport"
-        [fileContent]="
-            getLogExportValue(
-                _eventLogDataService.eventLogWithSelectedOrNothingWhenNothingSelected
-            )
-        "
-        fileType="text/plain;charset=utf-8"
-        fileName="event.log"
-        [datePrefix]="true"
+        (exportFile)="exportLog(false)"
         [disabled]="shouldDisableExport(true)"
         [reimport]="true"
         (processReimport)="processReimport()"></app-export-menu-item>
@@ -56,36 +39,19 @@
 <mat-menu #exportAsXes="matMenu">
     <app-export-menu-item
         buttonText="Complete Eventlog"
-        [fileContent]="getXesExportValue(_eventLogDataService.eventLog)"
-        fileType="text/plain;charset=utf-8"
-        fileName="event.xes"
-        [datePrefix]="true"
+        (exportFile)="exportXes(true)"
         [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Selected Traces"
-        [fileContent]="
-            getXesExportValue(
-                _eventLogDataService.eventLogWithSelectedOrNothingWhenNothingSelected
-            )
-        "
-        fileType="text/plain;charset=utf-8"
-        fileName="event.xes"
-        [datePrefix]="true"
+        (exportFile)="exportXes(false)"
         [disabled]="shouldDisableExport(true)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Selected Traces and Reimport"
-        [fileContent]="
-            getXesExportValue(
-                _eventLogDataService.eventLogWithSelectedOrNothingWhenNothingSelected
-            )
-        "
-        fileType="text/plain;charset=utf-8"
-        fileName="event.xes"
-        [datePrefix]="true"
+        (exportFile)="exportXes(false)"
         [disabled]="shouldDisableExport(true)"
         [reimport]="true"
         (processReimport)="processReimport()"></app-export-menu-item>
@@ -94,19 +60,13 @@
 <mat-menu #exportAsSvg="matMenu">
     <app-export-menu-item
         buttonText="Value-Chain"
-        [fileContent]="getSvgValueChainExportValue()"
-        fileType="text/plain;charset=utf-8"
-        fileName="event.svg"
-        [datePrefix]="true"
+        (exportFile)="exportSvgValueChain()"
         [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>
     <app-export-menu-item
         buttonText="Directly-Follows-Graph"
-        [fileContent]="getSvgDirectlyFollowsGraphExportValue()"
-        fileType="text/plain;charset=utf-8"
-        fileName="event.svg"
-        [datePrefix]="true"
+        (exportFile)="exportSvgDirectlyFollowsGraph()"
         [disabled]="shouldDisableExport(false)"
         [reimport]="false"
         (processReimport)="processReimport()"></app-export-menu-item>

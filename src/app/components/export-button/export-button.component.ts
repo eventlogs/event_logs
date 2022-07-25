@@ -7,6 +7,7 @@ import { XesService } from '../../services/xes.service';
 import { EventlogDataService } from '../../services/eventlog-data.service';
 import { SvgService as ValueChainSvgService } from '../../services/svg.service';
 import { SvgService as DirectlyFollowsGraphSvgService } from '../../services/directly-follows-graph/svg.service';
+import { saveAs } from 'file-saver';
 
 @Component({
     selector: 'app-export-button',
@@ -33,18 +34,38 @@ export class ExportButtonComponent {
         );
     }
 
-    getLogExportValue(eventLog: EventLog) {
-        return this._logService.generate(eventLog);
+    exportLog(completeEventLog: boolean) {
+        this.saveFile(
+            this._logService.generate(
+                completeEventLog
+                    ? this._eventLogDataService.eventLog
+                    : this._eventLogDataService
+                          .eventLogWithSelectedOrNothingWhenNothingSelected
+            ),
+            'text/plain;charset=utf-8',
+            true,
+            'event.log'
+        );
     }
 
-    getXesExportValue(eventLog: EventLog) {
-        return this._xesService.generate(eventLog);
+    exportXes(completeEventLog: boolean) {
+        this.saveFile(
+            this._xesService.generate(
+                completeEventLog
+                    ? this._eventLogDataService.eventLog
+                    : this._eventLogDataService
+                          .eventLogWithSelectedOrNothingWhenNothingSelected
+            ),
+            'text/plain;charset=utf-8',
+            true,
+            'event.xes'
+        );
     }
 
     processReimport() {
         this.processImport.emit([
             'log',
-            this.getLogExportValue(
+            this._logService.generate(
                 this._eventLogDataService
                     .eventLogWithSelectedOrNothingWhenNothingSelected
             ),
@@ -52,11 +73,32 @@ export class ExportButtonComponent {
         this._displayService.selectTraceCaseIds([]);
     }
 
-    getSvgValueChainExportValue() {
+    exportSvgValueChain() {
         const elements = this._valueChainSvgService.createSvgElements(
             this._displayService.diagram,
             this._selectedTraceCaseIds
         );
+        this.saveFile(
+            this.getSvg(elements),
+            'text/plain;charset=utf-8',
+            true,
+            'event.svg'
+        );
+    }
+
+    exportSvgDirectlyFollowsGraph() {
+        const elements = this._directlyFollowsGraphSvgService.createSvgElements(
+            this._directlyFollowsGraphService.graph
+        );
+        this.saveFile(
+            this.getSvg(elements),
+            'text/plain;charset=utf-8',
+            true,
+            'event.svg'
+        );
+    }
+
+    getSvg(elements: SVGElement[]) {
         let svg =
             '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
         elements.forEach(element => {
@@ -66,17 +108,16 @@ export class ExportButtonComponent {
         return svg;
     }
 
-    getSvgDirectlyFollowsGraphExportValue() {
-        const elements = this._directlyFollowsGraphSvgService.createSvgElements(
-            this._directlyFollowsGraphService.graph
+    saveFile(
+        fileContent: string,
+        fileType: string,
+        datePrefix: boolean,
+        fileName: string
+    ) {
+        saveAs(
+            new Blob([fileContent], { type: fileType }),
+            (datePrefix ? new Date().toLocaleString() + '_' : '') + fileName
         );
-        let svg =
-            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
-        elements.forEach(element => {
-            svg += element.outerHTML;
-        });
-        svg += '</svg>';
-        return svg;
     }
 
     shouldDisableExport(selectedOnly: boolean) {
