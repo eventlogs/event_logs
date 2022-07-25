@@ -40,7 +40,7 @@ export class XesParserService {
     private readonly _keysToken = 'KEYS';
     private readonly _keyToken = 'KEY';
     private readonly _valueToken = 'VALUE';
-    private readonly _activityEventLogAttributeKey = 'activity';
+    private readonly _activityEventLogAttributeKey = 'concept:name';
     private readonly _eventScopeValue = 'event';
     private readonly _traceScopeValue = 'trace';
 
@@ -191,10 +191,15 @@ export class XesParserService {
             return undefined;
         }
         const attributes = this.extractEventLogAttributes(traceObj);
+        const extractedCaseId = this.extractCaseId(attributes);
         const events: Event[] = this.convertToEvents(
             traceObj[this._eventToken]
         );
-        return new Trace(attributes, events, caseId);
+        return new Trace(
+            attributes,
+            events,
+            extractedCaseId ? extractedCaseId : caseId
+        );
     }
 
     private convertToEvents(eventsObj: any): Event[] {
@@ -303,5 +308,15 @@ export class XesParserService {
                 );
                 return undefined;
         }
+    }
+
+    private extractCaseId(attributes: EventLogAttribute[]): number | undefined {
+        const filterAttributes = attributes.filter(
+            attr => attr.key === 'concept:name' || attr.key === 'case-id'
+        );
+        if (filterAttributes.length > 0) {
+            return parseInt(filterAttributes[0].value);
+        }
+        return undefined;
     }
 }

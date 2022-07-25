@@ -29,7 +29,7 @@ describe('LogParserService', () => {
             '.type log\n' +
             '.attributes\n' +
             'case-id\n' +
-            'activity\n' +
+            'concept:name\n' +
             'booleanValue\n' +
             'intValue\n' +
             'floatValue\n' +
@@ -104,7 +104,7 @@ describe('LogParserService', () => {
             '.type log\n' +
             '.attributes\n' +
             'case-id\n' +
-            'activity\n' +
+            'concept:name\n' +
             'string key\n' +
             'other string key\n' +
             '.events\n' +

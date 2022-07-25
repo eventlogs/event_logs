@@ -11,7 +11,7 @@ import {
 } from '../classes/EventLog/eventlogattribute';
 import { Classifier } from '../classes/EventLog/classifier';
 
-describe('XmlParserService', () => {
+describe('XesParserService', () => {
     let service: XesParserService;
 
     beforeEach(() => {
@@ -47,21 +47,21 @@ describe('XmlParserService', () => {
             '      <float key="10609" value="2.538" />\n' +
             '   </float>\n' +
             '   <trace>\n' +
-            '      <string key="concept:name" value="1-147898401" />\n' +
+            '      <string key="concept:name" value="147898401" />\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Baden gehen" />\n' +
+            '         <string key="concept:name" value="Baden gehen" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="ignoreEmptyValue" value="" />\n' +
             '         <string key="" value="ignoreEmptyKey" />\n' +
             '      </event>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Schwimmen gehen" />\n' +
+            '         <string key="concept:name" value="Schwimmen gehen" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
             '   <trace>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Laufen gehen" />\n' +
+            '         <string key="concept:name" value="Laufen gehen" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
@@ -78,7 +78,7 @@ describe('XmlParserService', () => {
             [new StringAttribute('UNKNOWN', 'concept:name')],
             [
                 new Trace(
-                    [new StringAttribute('1-147898401', 'concept:name')],
+                    [new StringAttribute('147898401', 'concept:name')],
                     [
                         new Event(
                             [new StringAttribute('A2_2', 'org:role')],
@@ -89,7 +89,7 @@ describe('XmlParserService', () => {
                             'Schwimmen gehen'
                         ),
                     ],
-                    0
+                    147898401
                 ),
                 new Trace(
                     [],
@@ -132,10 +132,10 @@ describe('XmlParserService', () => {
             '      <string key="product" value="UNKNOWN" />\n' +
             '      <string key="lifecycle:transition" value="UNKNOWN" />\n' +
             '   </global>\n' +
-            '   <classifier name="Activity classifier" keys="concept:name lifecycle:transition" />\n' +
-            '   <classifier name="Activity classifier" keys="concept:name lifecycle:transition" />\n' +
-            '   <classifier name="Activity classifier activityNameNL" keys="activityNameNL lifecycle:transition" />\n' +
-            '   <classifier name="Activity classifier activityNameEN" keys="activityNameEN lifecycle:transition" />\n' +
+            '   <classifier name="Activity_classifier" keys="concept:name lifecycle:transition" />\n' +
+            '   <classifier name="Activity_classifier" keys="concept:name lifecycle:transition" />\n' +
+            '   <classifier name="Activity_classifier_activityNameNL" keys="activityNameNL lifecycle:transition" />\n' +
+            '   <classifier name="Activity_classifier_activityNameEN" keys="activityNameEN lifecycle:transition" />\n' +
             '   <classifier name="Resource" keys="org:resource" />\n' +
             '   <float key="meta_org:resource_events_standard_deviation" value="19.944">\n' +
             '      <float key="10609" value="2.538" />\n' +
@@ -150,42 +150,38 @@ describe('XmlParserService', () => {
             '      <int key="UNKNOWN" value="262200" />\n' +
             '   </int>\n' +
             '   <trace>\n' +
-            '      <string key="concept:name" value="1-147898401" />\n' +
+            '      <string key="concept:name" value="147898401" />\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
-            '         <string key="concept:name" value="Accepted" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2006-11-07T10:00:36+01:00" />\n' +
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
-            '         <string key="concept:name" value="Accepted" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2006-11-07T13:05:44+01:00" />\n' +
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
-            '         <string key="concept:name" value="Accepted" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2009-12-02T14:24:32+01:00" />\n' +
             '         <string key="lifecycle:transition" value="Wait" />\n' +
             '      </event>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
-            '         <string key="concept:name" value="Accepted" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2011-09-03T07:09:09+02:00" />\n' +
@@ -193,19 +189,18 @@ describe('XmlParserService', () => {
             '      </event>\n' +
             '   </trace>\n' +
             '   <trace>\n' +
-            '      <string key="concept:name" value="1-165554831" />\n' +
+            '      <string key="concept:name" value="165554831" />\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
-            '         <string key="concept:name" value="Accepted" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2007-03-20T09:06:25+01:00" />\n' +
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
@@ -213,7 +208,7 @@ describe('XmlParserService', () => {
             '         <string key="lifecycle:transition" value="Wait" />\n' +
             '      </event>\n' +
             '      <event>\n' +
-            '         <string key="activity" value="Aktivitätswert" />\n' +
+            '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <date key="time:timestamp" value="2011-09-03T07:10:53+02:00" />\n' +
             '         <string key="lifecycle:transition" value="In Progress" />\n' +
