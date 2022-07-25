@@ -314,7 +314,6 @@ export class XesParserService {
         const filterAttributes = attributes.filter(
             attr => attr.key === 'concept:name' || attr.key === 'case-id'
         );
-        console.log(filterAttributes);
         if (filterAttributes.length > 0) {
             return parseInt(filterAttributes[0].value);
         }
