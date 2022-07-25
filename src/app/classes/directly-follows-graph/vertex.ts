@@ -1,5 +1,3 @@
-import { ElementRef, ViewChild } from '@angular/core';
-import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { Edge } from './edge';
 
 export class Vertex {
@@ -9,7 +7,6 @@ export class Vertex {
     private _position: number;
     private _svgElement: SVGElement | undefined;
     private _isDummy: boolean;
-    private _isDragging: boolean = false;
 
     public get activityName(): String {
         return this._activityName;
@@ -47,17 +44,20 @@ export class Vertex {
         return this._svgElement;
     }
 
-    public set svgElement(svgElement: SVGElement | undefined) {
+    public registerSvgElement(
+        svgElement: SVGElement | undefined,
+        updateLayer: Function
+    ) {
         this._svgElement = svgElement;
         if (this._svgElement != undefined) {
             this._svgElement.onmousedown = event => {
-                this.processMouseDown(event);
-            };
-            this._svgElement.onmousemove = event => {
-                this.processMouseMove(event);
+                this.processMouseDown(event, updateLayer);
             };
             this._svgElement.onmouseup = event => {
                 this.processMouseUp(event);
+            };
+            this._svgElement.onmouseleave = event => {
+                this.processMouseLeave(event);
             };
         }
     }
@@ -78,33 +78,43 @@ export class Vertex {
         this._isDummy = isDummy;
     }
 
-    private processMouseDown(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
+    private processMouseDown(event: MouseEvent, updateLayer: Function) {
+        event.preventDefault();
+        if (this._svgElement === undefined) return;
 
-        this._isDragging = true;
-        this._svgElement?.setAttribute('x', '500');
+        let currentX = this._svgElement.getAttribute('x');
+        let mouseStart = event.clientX;
+        this._svgElement.onmousemove = event => {
+            this.processMouseMove(event, currentX, mouseStart, updateLayer);
+        };
     }
 
-    private processMouseMove(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
+    private processMouseMove(
+        event: MouseEvent,
+        currentX: string | null,
+        mouseStart: number,
+        updateLayer: Function
+    ) {
+        event.preventDefault();
+        if (this._svgElement === undefined) return;
 
-        if (this._isDragging) {
-            event.preventDefault();
-            let x: number = this.getSvgElementXValue() + 100;
-            this._svgElement?.setAttribute('x', x.toString());
-        }
+        if (currentX == undefined) return;
+
+        let x: number = +currentX + event.clientX - mouseStart;
+        this._svgElement.setAttribute('x', x.toString());
+        updateLayer();
     }
 
     private processMouseUp(event: MouseEvent) {
-        if (this._svgElement === undefined) {
-            return;
-        }
+        if (this._svgElement === undefined) return;
 
-        this._isDragging = false;
+        this._svgElement.onmousemove = null;
+    }
+
+    private processMouseLeave(event: MouseEvent) {
+        if (this._svgElement === undefined) return;
+
+        this._svgElement.onmousemove = null;
     }
 
     public getSvgElementXValue(): number {
