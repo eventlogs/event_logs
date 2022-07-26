@@ -3,13 +3,14 @@ import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
 import { DirectlyFollowsGraphService } from './display.service';
-import { SvgService } from './svg.service';
 
 @Injectable({
     providedIn: 'root',
 })
 //Layout mittels Sugiyama Algorithmus
 export class LayoutService {
+    constructor(private _displayService: DirectlyFollowsGraphService) {}
+
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
         this.setLayers(graph);
@@ -141,7 +142,12 @@ export class LayoutService {
                             ' ' +
                             i.toString();
 
-                    let vertex: Vertex = new Vertex(vertexName, 0, true);
+                    let vertex: Vertex = new Vertex(
+                        this._displayService,
+                        vertexName,
+                        0,
+                        true
+                    );
                     vertex.layer =
                         Math.min(edge.startVertex.layer, edge.endVertex.layer) +
                         i;

@@ -5,7 +5,8 @@ export class Edge {
     private _startVertex: Vertex;
     private _endVertex: Vertex;
     private _activityCount: number;
-    private _svgElement: SVGElement | undefined;
+    private _pathSvgElement: SVGElement | undefined;
+    private _textSvgElement: SVGElement | undefined;
     private _isReversed: boolean;
 
     public get startVertex(): Vertex {
@@ -29,20 +30,20 @@ export class Edge {
         this._activityCount = value;
     }
 
-    public get svgElement(): SVGElement | undefined {
-        return this._svgElement;
+    public get pathSvgElement(): SVGElement | undefined {
+        return this._pathSvgElement;
     }
 
-    public set svgElement(svgElement: SVGElement | undefined) {
-        this._svgElement = svgElement;
-        if (this._svgElement != undefined) {
-            this._svgElement.onmousedown = event => {
-                this.processMouseDown(event);
-            };
-            this._svgElement.onmouseup = event => {
-                this.processMouseUp(event);
-            };
-        }
+    public set pathSvgElement(svgElement: SVGElement | undefined) {
+        this._pathSvgElement = svgElement;
+    }
+
+    public get textSvgElement(): SVGElement | undefined {
+        return this._textSvgElement;
+    }
+
+    public set textSvgElement(svgElement: SVGElement | undefined) {
+        this._textSvgElement = svgElement;
     }
 
     public get isReversed(): boolean {
@@ -74,8 +75,4 @@ export class Edge {
     public isTargetingSelf(): boolean {
         return this._startVertex == this._endVertex;
     }
-
-    private processMouseDown(event: MouseEvent) {}
-
-    private processMouseUp(event: MouseEvent) {}
 }

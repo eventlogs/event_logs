@@ -1,3 +1,4 @@
+import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { Edge } from './edge';
 
 export class Vertex {
@@ -56,9 +57,6 @@ export class Vertex {
             this._svgElement.onmouseup = event => {
                 this.processMouseUp(event);
             };
-            this._svgElement.onmouseleave = event => {
-                this.processMouseLeave(event);
-            };
         }
     }
 
@@ -67,6 +65,7 @@ export class Vertex {
     }
 
     constructor(
+        private _displayService: DirectlyFollowsGraphService,
         activityName: String,
         activityCount: number = 0,
         isDummy: boolean = false
@@ -82,36 +81,45 @@ export class Vertex {
         event.preventDefault();
         if (this._svgElement === undefined) return;
 
-        let currentX = this._svgElement.getAttribute('x');
-        let mouseStart = event.clientX;
+        let current: string | null;
+        let mouseStart: number;
+
+        if (this._displayService.verticalDirection) {
+            current = this._svgElement.getAttribute('x');
+            mouseStart = event.clientX;
+        } else {
+            current = this._svgElement.getAttribute('y');
+            mouseStart = event.clientY;
+        }
+
         this._svgElement.onmousemove = event => {
-            this.processMouseMove(event, currentX, mouseStart, updateLayer);
+            this.processMouseMove(event, current, mouseStart, updateLayer);
         };
     }
 
     private processMouseMove(
         event: MouseEvent,
-        currentX: string | null,
+        current: string | null,
         mouseStart: number,
         updateLayer: Function
     ) {
         event.preventDefault();
         if (this._svgElement === undefined) return;
 
-        if (currentX == undefined) return;
+        if (current == undefined) return;
 
-        let x: number = +currentX + event.clientX - mouseStart;
-        this._svgElement.setAttribute('x', x.toString());
+        if (this._displayService.verticalDirection) {
+            let x: number = +current + event.clientX - mouseStart;
+            this._svgElement.setAttribute('x', x.toString());
+        } else {
+            let y: number = +current + event.clientY - mouseStart;
+            this._svgElement.setAttribute('y', y.toString());
+        }
+
         updateLayer();
     }
 
     private processMouseUp(event: MouseEvent) {
-        if (this._svgElement === undefined) return;
-
-        this._svgElement.onmousemove = null;
-    }
-
-    private processMouseLeave(event: MouseEvent) {
         if (this._svgElement === undefined) return;
 
         this._svgElement.onmousemove = null;
