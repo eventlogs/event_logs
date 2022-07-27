@@ -50,14 +50,14 @@ export class Vertex {
         updateLayer: Function
     ) {
         this._svgElement = svgElement;
-        if (this._svgElement != undefined) {
-            this._svgElement.onmousedown = event => {
-                this.processMouseDown(event, updateLayer);
-            };
-            this._svgElement.onmouseup = event => {
-                this.processMouseUp(event);
-            };
-        }
+        // if (this._svgElement != undefined) {
+        //     this._svgElement.onmousedown = event => {
+        //         this.processMouseDown(event, updateLayer);
+        //     };
+        //     this._svgElement.onmouseup = event => {
+        //         this.processMouseUp(event);
+        //     };
+        // }
     }
 
     public get isDummy(): boolean {
@@ -77,25 +77,25 @@ export class Vertex {
         this._isDummy = isDummy;
     }
 
-    private processMouseDown(event: MouseEvent, updateLayer: Function) {
-        event.preventDefault();
-        if (this._svgElement === undefined) return;
+    // private processMouseDown(event: MouseEvent, updateLayer: Function) {
+    //     event.preventDefault();
+    //     if (this._svgElement === undefined) return;
 
-        let current: string | null;
-        let mouseStart: number;
+    //     let current: string | null;
+    //     let mouseStart: number;
 
-        if (this._displayService.verticalDirection) {
-            current = this._svgElement.getAttribute('x');
-            mouseStart = event.clientX;
-        } else {
-            current = this._svgElement.getAttribute('y');
-            mouseStart = event.clientY;
-        }
+    //     if (this._displayService.verticalDirection) {
+    //         current = this._svgElement.getAttribute('x');
+    //         mouseStart = event.clientX;
+    //     } else {
+    //         current = this._svgElement.getAttribute('y');
+    //         mouseStart = event.clientY;
+    //     }
 
-        this._svgElement.onmousemove = event => {
-            this.processMouseMove(event, current, mouseStart, updateLayer);
-        };
-    }
+    //     this._svgElement.onmousemove = event => {
+    //         this.processMouseMove(event, current, mouseStart, updateLayer);
+    //     };
+    // }
 
     private processMouseMove(
         event: MouseEvent,
@@ -119,11 +119,11 @@ export class Vertex {
         updateLayer();
     }
 
-    private processMouseUp(event: MouseEvent) {
-        if (this._svgElement === undefined) return;
+    // private processMouseUp(event: MouseEvent) {
+    //     if (this._svgElement === undefined) return;
 
-        this._svgElement.onmousemove = null;
-    }
+    //     this._svgElement.onmousemove = null;
+    // }
 
     public getSvgElementXValue(): number {
         let xString = this.svgElement?.getAttribute('x');

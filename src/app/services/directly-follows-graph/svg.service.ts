@@ -149,6 +149,7 @@ export class SvgService {
     private createRect(vertex: Vertex): SVGElement {
         let rect = this.createSvgElement('rect');
 
+        rect.setAttribute('name', vertex.activityName.toString());
         rect.setAttribute('rx', '15');
         rect.setAttribute('ry', '15');
         rect.setAttribute('width', this.rectWidth.toString());
