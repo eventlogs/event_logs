@@ -23,7 +23,7 @@
                 <mat-icon>menu</mat-icon>
             </button>
             <div class="main-app-body">
-                <app-drawing-area class="drawing-area"></app-drawing-area>
+                <app-drawing-area></app-drawing-area>
                 <div class="menubar" fxLayoutGap="20px">
                     <div
                         class="menu-buttons"
@@ -35,9 +35,7 @@
                                 processImport($event)
                             "></app-upload-button>
                         <app-export-button
-                            (processImport)="
-                                processImport($event)
-                            "></app-export-button>
+                            (processImport)="processImport($event)"></app-export-button>
                     </div>
                     <mat-form-field
                         appearance="outline"

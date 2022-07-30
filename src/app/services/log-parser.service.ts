@@ -26,7 +26,7 @@ export class LogParserService {
     private readonly _eventsElement = '.events';
 
     private readonly _caseIdElement = 'case-id';
-    private readonly _activityElement = 'activity';
+    private readonly _activityElement = 'concept:name';
     private readonly _escapeString = "'";
 
     constructor() {}
