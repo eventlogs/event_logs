@@ -56,10 +56,7 @@ export class DirectlyFollowsGraphService implements OnDestroy {
                 );
 
                 if (vertex !== undefined) vertex.activityCount += traces.length;
-                else
-                    vertices.push(
-                        new Vertex(this, event.activity, traces.length)
-                    );
+                else vertices.push(new Vertex(event.activity, traces.length));
 
                 //Überprüft, ob zwischen den letzten beiden Events bereits eine Kante vorhanden ist, bzw. ob eine neue Kante erstellt werden muss.
                 if (i >= 1) {

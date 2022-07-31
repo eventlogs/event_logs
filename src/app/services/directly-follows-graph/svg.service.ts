@@ -13,7 +13,6 @@ export class SvgService {
     private _offsetXValue: number = this._rectWidth * 1.5;
     private _offsetYValue: number = this._rectHeight * 2.5;
     private minValue: number = 50;
-    private maxValue: number = Number.MAX_VALUE;
     private maxActivityCount: number = 0;
     private _svgElements: SVGElement[] = [];
 
@@ -58,9 +57,7 @@ export class SvgService {
                 container.append(path);
             }
 
-            vertex.registerSvgElement(container, () =>
-                this.updateLayer(vertex, graph)
-            );
+            vertex.svgElement = container;
             this._svgElements.push(container);
         });
 
@@ -452,28 +449,28 @@ export class SvgService {
         return document.createElementNS('http://www.w3.org/2000/svg', name);
     }
 
-    public updateLayer(vertex: Vertex, graph: Graph): void {
+    public updateLayer(vertex: Vertex, graph: Graph, maxValue: number): void {
         if (this._displayService.verticalDirection)
-            this.updateLayerVertical(vertex, graph);
-        else this.updateLayerHorizontal(vertex, graph);
+            this.updateLayerVertical(vertex, graph, maxValue);
+        else this.updateLayerHorizontal(vertex, graph, maxValue);
 
         this.updateEdges(graph);
     }
 
-    private updateLayerVertical(vertex: Vertex, graph: Graph): void {
-        this.maxValue =
-            this.minValue + graph.getMaxVerticesOnLayer() * this._offsetXValue;
-
+    private updateLayerVertical(
+        vertex: Vertex,
+        graph: Graph,
+        maxValue: number
+    ): void {
         if (vertex.getSvgElementXValue() < this.minValue)
             vertex.svgElement?.setAttribute('x', this.minValue.toString());
 
-        if (vertex.getSvgElementXValue() > this.maxValue)
-            vertex.svgElement?.setAttribute('x', this.maxValue.toString());
+        if (vertex.getSvgElementXValue() > maxValue)
+            vertex.svgElement?.setAttribute('x', maxValue.toString());
 
-        let vertices: Vertex[] =
-            this._displayService.graph.getVerticesSortedByPosition(
-                vertex.layer
-            );
+        let vertices: Vertex[] = graph.getVerticesSortedByPosition(
+            vertex.layer
+        );
 
         let index = vertices.findIndex(v => v === vertex);
 
@@ -523,20 +520,20 @@ export class SvgService {
             1;
     }
 
-    private updateLayerHorizontal(vertex: Vertex, graph: Graph): void {
-        this.maxValue =
-            this.minValue + graph.getMaxVerticesOnLayer() * this._offsetYValue;
-
+    private updateLayerHorizontal(
+        vertex: Vertex,
+        graph: Graph,
+        maxValue: number
+    ): void {
         if (vertex.getSvgElementYValue() < this.minValue)
             vertex.svgElement?.setAttribute('y', this.minValue.toString());
 
-        if (vertex.getSvgElementYValue() > this.maxValue)
-            vertex.svgElement?.setAttribute('y', this.maxValue.toString());
+        if (vertex.getSvgElementYValue() > maxValue)
+            vertex.svgElement?.setAttribute('y', maxValue.toString());
 
-        let vertices: Vertex[] =
-            this._displayService.graph.getVerticesSortedByPosition(
-                vertex.layer
-            );
+        let vertices: Vertex[] = graph.getVerticesSortedByPosition(
+            vertex.layer
+        );
 
         let index = vertices.findIndex(v => v === vertex);
 

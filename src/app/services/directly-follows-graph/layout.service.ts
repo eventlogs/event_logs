@@ -142,12 +142,7 @@ export class LayoutService {
                             ' ' +
                             i.toString();
 
-                    let vertex: Vertex = new Vertex(
-                        this._displayService,
-                        vertexName,
-                        0,
-                        true
-                    );
+                    let vertex: Vertex = new Vertex(vertexName, 0, true);
                     vertex.layer =
                         Math.min(edge.startVertex.layer, edge.endVertex.layer) +
                         i;

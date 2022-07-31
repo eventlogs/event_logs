@@ -59,6 +59,11 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
     }
 
     private processMouseDown(event: MouseEvent) {
+        if (this._graph != undefined) {
+            this.calcGraphWidth(this._graph);
+            this.calcGraphHeight(this._graph);
+        }
+
         let target = event.target as SVGElement;
         this._draggingVertex = this._graph?.vertices.find(
             vertex => vertex.activityName === target.getAttribute('name')
@@ -95,15 +100,23 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
 
         if (current == undefined) return;
 
+        let maxValue: number;
+
         if (this._displayService.verticalDirection) {
             let x: number = +current + event.clientX - mouseStart;
             this._draggingVertex.svgElement.setAttribute('x', x.toString());
+            maxValue = this.widthPx - this._svgService.offsetXValue;
         } else {
             let y: number = +current + event.clientY - mouseStart;
             this._draggingVertex.svgElement.setAttribute('y', y.toString());
+            maxValue = this.heightPx - this._svgService.offsetYValue;
         }
 
-        this._svgService.updateLayer(this._draggingVertex, this._graph);
+        this._svgService.updateLayer(
+            this._draggingVertex,
+            this._graph,
+            maxValue
+        );
     }
 
     private processMouseUp(event: MouseEvent) {
@@ -113,6 +126,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
 
     ngOnDestroy(): void {
         this._graphSubscription.unsubscribe();
+        this._directionSubscription.unsubscribe();
     }
 
     private draw() {
@@ -156,6 +170,15 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         } else {
             this.widthPx = graph.getMaxLayer() * this._svgService.offsetXValue;
         }
+
+        if (this.directlyFollowsGraph !== undefined) {
+            let drawingArea = document.getElementsByClassName('drawingArea');
+            if (drawingArea !== undefined)
+                this.widthPx = Math.max(
+                    this.widthPx,
+                    drawingArea[0].getBoundingClientRect().width * 0.95
+                );
+        }
     }
 
     private calcGraphHeight(graph: Graph): void {
@@ -164,6 +187,16 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         } else {
             this.heightPx =
                 (graph.getMaxPosition() + 1) * this._svgService.offsetYValue;
+        }
+
+        if (this.directlyFollowsGraph !== undefined) {
+            let drawingArea = document.getElementsByClassName('drawingArea');
+            console.log(drawingArea[0].getBoundingClientRect());
+            if (drawingArea !== undefined)
+                this.heightPx = Math.max(
+                    this.heightPx,
+                    drawingArea[0].getBoundingClientRect().height * 0.95
+                );
         }
     }
 }

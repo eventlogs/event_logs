@@ -45,19 +45,8 @@ export class Vertex {
         return this._svgElement;
     }
 
-    public registerSvgElement(
-        svgElement: SVGElement | undefined,
-        updateLayer: Function
-    ) {
+    public set svgElement(svgElement: SVGElement | undefined) {
         this._svgElement = svgElement;
-        // if (this._svgElement != undefined) {
-        //     this._svgElement.onmousedown = event => {
-        //         this.processMouseDown(event, updateLayer);
-        //     };
-        //     this._svgElement.onmouseup = event => {
-        //         this.processMouseUp(event);
-        //     };
-        // }
     }
 
     public get isDummy(): boolean {
@@ -65,7 +54,6 @@ export class Vertex {
     }
 
     constructor(
-        private _displayService: DirectlyFollowsGraphService,
         activityName: String,
         activityCount: number = 0,
         isDummy: boolean = false
@@ -76,54 +64,6 @@ export class Vertex {
         this._position = 0;
         this._isDummy = isDummy;
     }
-
-    // private processMouseDown(event: MouseEvent, updateLayer: Function) {
-    //     event.preventDefault();
-    //     if (this._svgElement === undefined) return;
-
-    //     let current: string | null;
-    //     let mouseStart: number;
-
-    //     if (this._displayService.verticalDirection) {
-    //         current = this._svgElement.getAttribute('x');
-    //         mouseStart = event.clientX;
-    //     } else {
-    //         current = this._svgElement.getAttribute('y');
-    //         mouseStart = event.clientY;
-    //     }
-
-    //     this._svgElement.onmousemove = event => {
-    //         this.processMouseMove(event, current, mouseStart, updateLayer);
-    //     };
-    // }
-
-    private processMouseMove(
-        event: MouseEvent,
-        current: string | null,
-        mouseStart: number,
-        updateLayer: Function
-    ) {
-        event.preventDefault();
-        if (this._svgElement === undefined) return;
-
-        if (current == undefined) return;
-
-        if (this._displayService.verticalDirection) {
-            let x: number = +current + event.clientX - mouseStart;
-            this._svgElement.setAttribute('x', x.toString());
-        } else {
-            let y: number = +current + event.clientY - mouseStart;
-            this._svgElement.setAttribute('y', y.toString());
-        }
-
-        updateLayer();
-    }
-
-    // private processMouseUp(event: MouseEvent) {
-    //     if (this._svgElement === undefined) return;
-
-    //     this._svgElement.onmousemove = null;
-    // }
 
     public getSvgElementXValue(): number {
         let xString = this.svgElement?.getAttribute('x');
