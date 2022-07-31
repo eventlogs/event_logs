@@ -1,7 +1,14 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
+    <div class="header">
+        <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
+            ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+        >
+        <h2>Show an event log as a Value-Chain or Directly-Follows-Graph.</h2>
+    </div>
+    <hr class="header-divider" />
     <mat-sidenav-container class="sidenav-container" autosize>
         <mat-sidenav #sidenav mode="side" position="end" class="sidenav-bar">
-            <div class="scrollable-when-to-large">
+            <div class="scrollable-when-too-large">
                 <app-traces-detail-view
                     #tracesDetailView></app-traces-detail-view>
             </div>
@@ -15,40 +22,38 @@
                 (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <!--  Header  -->
-            <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
-                ><h1>I <span class="red">❤</span> Petri Nets</h1></a
-            >
-            <h2>
-                Show an event log as a Value-Chain or Directly-Follows-Graph.
-            </h2>
-
-            <!--    Main content    -->
-
-            <app-drawing-area></app-drawing-area>
-            <div fxLayout="row" fxLayoutAlign="space-evenly start">
-                <app-upload-button
-                    buttonText="Import File with Eventlog"
-                    buttonIcon="file_upload"
-                    [permittedFileExtensions]="['xes', 'log', 'txt']"
-                    (newFileUploadedEventExtensionContent)="
-                        processImport($event)
-                    "></app-upload-button>
-                <mat-form-field appearance="outline" class="textarea">
-                    <mat-label>Source file</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="10"
-                        cdkAutosizeMaxRows="20"
-                        [formControl]="textareaFc"></textarea>
-                </mat-form-field>
-                <app-export-button
-                    (processImport)="processImport($event)"></app-export-button>
+            <div class="main-app-body">
+                <app-drawing-area></app-drawing-area>
+                <div class="menubar" fxLayoutGap="20px">
+                    <div
+                        class="menu-buttons"
+                        fxLayoutGap="20px"
+                        fxFlex="1 0 auto">
+                        <app-upload-button
+                            [permittedFileExtensions]="['xes', 'log', 'txt']"
+                            (newFileUploadedEventExtensionContent)="
+                                processImport($event)
+                            "></app-upload-button>
+                        <app-export-button
+                            (processImport)="
+                                processImport($event)
+                            "></app-export-button>
+                    </div>
+                    <mat-form-field
+                        appearance="outline"
+                        class="input-form-field"
+                        fxFlex="1 1 100%">
+                        <mat-label>Source file</mat-label>
+                        <textarea
+                            class="textarea"
+                            rows="13"
+                            matInput
+                            [formControl]="textareaFc"></textarea>
+                    </mat-form-field>
+                </div>
             </div>
-            <!--  Footer  -->
-            <hr />
-            <app-footer></app-footer>
         </mat-sidenav-content>
     </mat-sidenav-container>
+    <hr />
+    <app-footer></app-footer>
 </div>
