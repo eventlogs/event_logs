@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
     <div class="header">
         <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
-        ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+            ><h1>I <span class="red">❤</span> Petri Nets</h1></a
         >
         <h2>Show an event log as a Value-Chain or Directly-Follows-Graph.</h2>
     </div>
@@ -9,19 +9,14 @@
     <div class="main-app-body">
         <app-drawing-area></app-drawing-area>
         <div class="menubar" fxLayoutGap="20px">
-            <div
-                class="menu-buttons"
-                fxLayoutGap="20px"
-                fxFlex="1 0 auto">
+            <div class="menu-buttons" fxLayoutGap="20px" fxFlex="1 0 auto">
                 <app-upload-button
                     [permittedFileExtensions]="['xes', 'log', 'txt']"
                     (newFileUploadedEventExtensionContent)="
-                                processImport($event)
-                            "></app-upload-button>
+                        processImport($event)
+                    "></app-upload-button>
                 <app-export-button
-                    (processImport)="
-                                processImport($event)
-                            "></app-export-button>
+                    (processImport)="processImport($event)"></app-export-button>
             </div>
             <mat-form-field
                 appearance="outline"
