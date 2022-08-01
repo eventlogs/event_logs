@@ -27,7 +27,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
         private _displayService: DisplayService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _eventlogDataService: EventlogDataService
-    ) { }
+    ) {}
 
     ngAfterContentChecked() {
         if (this.drawingArea != undefined) {
@@ -45,10 +45,6 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     applyFilter(filterValue: string) {
-        // filterValue = filterValue.trim(); // Remove whitespace
-        // filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-        // this.dataSource.filter = filterValue;
-        //console.log(filterValue);
         console.log('Filter: ' + filterValue);
         this._eventlogDataService.changeFilter(filterValue);
         this.filterChanged.emit(filterValue);

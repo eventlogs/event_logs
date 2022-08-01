@@ -103,8 +103,8 @@ export class AppComponent implements OnDestroy {
         } else {
             alert(
                 'The current filetype ' +
-                fileExtension +
-                ' can not be imported!'
+                    fileExtension +
+                    ' can not be imported!'
             );
         }
     }
@@ -127,7 +127,7 @@ export class AppComponent implements OnDestroy {
             if (e === XesParserService.PARSING_ERROR) {
                 alert(
                     'The uploaded XES file could not be parsed.\n' +
-                    'Check the file for valid XES syntax and try again.'
+                        'Check the file for valid XES syntax and try again.'
                 );
             } else {
                 throw e;

@@ -17,7 +17,6 @@ export class EventlogDataService {
     }
 
     public get eventLog(): EventLog {
-        // console.log(this._eventLog);
         if (this._filter === '') {
             return this._eventLog;
         }
@@ -83,24 +82,13 @@ export class EventlogDataService {
         if (str === '') {
             return;
         }
-        console.log(str);
-        //this._filteredEventLog = JSON.parse(JSON.stringify(this._eventLog));
         this._filteredEventLog.traces = [];
-        // for( let trace in this._eventLog.traces) {
-
-        // }
-        console.log('this._eventLog');
-        console.log(this._eventLog);
         this._eventLog.traces.forEach(trace => {
             if (
                 trace.events.some(event => {
-                    console.log('event');
-                    console.log(event);
                     if (event.activity.includes(str)) {
                         return true;
                     }
-                    console.log('attributes');
-                    console.log(event.attributes);
                     return event.attributes.some(attribute => {
                         return attribute.value.toString().includes(str);
                     });
@@ -109,7 +97,5 @@ export class EventlogDataService {
                 this._filteredEventLog.traces.push(trace);
             }
         });
-        console.log('this._filteredEventLog');
-        console.log(this._filteredEventLog);
     }
 }
