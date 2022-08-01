@@ -2,10 +2,13 @@ import {
     AfterContentChecked,
     Component,
     ElementRef,
+    Output,
     ViewChild,
+    EventEmitter,
 } from '@angular/core';
 import { DisplayService } from 'src/app/services/display.service';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
+import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 
 @Component({
     selector: 'app-drawing-area',
@@ -18,10 +21,13 @@ export class DrawingAreaComponent implements AfterContentChecked {
     wertschoepfungsketteHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
 
+    @Output() filterChanged = new EventEmitter();
+
     constructor(
         private _displayService: DisplayService,
-        private _directyFollowsGraphService: DirectlyFollowsGraphService
-    ) {}
+        private _directlyFollowsGraphService: DirectlyFollowsGraphService,
+        private _eventlogDataService: EventlogDataService
+    ) { }
 
     ngAfterContentChecked() {
         if (this.drawingArea != undefined) {
@@ -30,12 +36,22 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     switchDirection() {
-        this._directyFollowsGraphService.switchDirection();
+        this._directlyFollowsGraphService.switchDirection();
     }
 
     switchView() {
         this.direktfolgegraphHidden = !this.direktfolgegraphHidden;
         this.wertschoepfungsketteHidden = !this.wertschoepfungsketteHidden;
+    }
+
+    applyFilter(filterValue: string) {
+        // filterValue = filterValue.trim(); // Remove whitespace
+        // filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+        // this.dataSource.filter = filterValue;
+        //console.log(filterValue);
+        console.log('Filter: ' + filterValue);
+        this._eventlogDataService.changeFilter(filterValue);
+        this.filterChanged.emit(filterValue);
     }
 
     clickDrawArea() {

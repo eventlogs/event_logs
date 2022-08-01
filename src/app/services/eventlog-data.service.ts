@@ -8,17 +8,25 @@ import { Event } from '../classes/EventLog/event';
 })
 export class EventlogDataService {
     private _eventLog: EventLog;
+    private _filteredEventLog: EventLog;
+    private _filter: string = '';
 
     constructor(private _displayService: DisplayService) {
         this._eventLog = new EventLog([], [], [], [], []);
+        this._filteredEventLog = new EventLog([], [], [], [], []);
     }
 
     public get eventLog(): EventLog {
-        return this._eventLog;
+        // console.log(this._eventLog);
+        if (this._filter === '') {
+            return this._eventLog;
+        }
+        return this._filteredEventLog;
     }
 
     public set eventLog(value: EventLog) {
         this._eventLog = value;
+        this.changeFilter(this._filter);
     }
 
     public get eventLogWithSelectedOrAllWhenNothingSelected() {
@@ -68,5 +76,40 @@ export class EventlogDataService {
             filteredTraces,
             this._eventLog.attributes
         );
+    }
+
+    public changeFilter(str: string) {
+        this._filter = str;
+        if (str === '') {
+            return;
+        }
+        console.log(str);
+        //this._filteredEventLog = JSON.parse(JSON.stringify(this._eventLog));
+        this._filteredEventLog.traces = [];
+        // for( let trace in this._eventLog.traces) {
+
+        // }
+        console.log('this._eventLog');
+        console.log(this._eventLog);
+        this._eventLog.traces.forEach(trace => {
+            if (
+                trace.events.some(event => {
+                    console.log('event');
+                    console.log(event);
+                    if (event.activity.includes(str)) {
+                        return true;
+                    }
+                    console.log('attributes');
+                    console.log(event.attributes);
+                    return event.attributes.some(attribute => {
+                        return attribute.value.toString().includes(str);
+                    });
+                })
+            ) {
+                this._filteredEventLog.traces.push(trace);
+            }
+        });
+        console.log('this._filteredEventLog');
+        console.log(this._filteredEventLog);
     }
 }
