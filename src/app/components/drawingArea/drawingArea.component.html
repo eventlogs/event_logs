@@ -1,11 +1,15 @@
-<app-switch-view-button
-    initialText="Display as Directly-Follows-Graph"
-    switchedText="Display as Value-Chain"
-    (switchViewEvent)="switchView()"></app-switch-view-button>
-<app-switch-direction-button
-    *ngIf="!direktfolgegraphHidden"
-    (switchDirectionEvent)="switchDirection()"></app-switch-direction-button>
-<app-filter-area (filterChanged)="applyFilter($event)"></app-filter-area>
+<div fxLayout="row">
+    <app-switch-view-button
+        initialText="Display as Directly-Follows-Graph"
+        switchedText="Display as Value-Chain"
+        (switchViewEvent)="switchView()"></app-switch-view-button>
+    <app-switch-direction-button
+        *ngIf="!direktfolgegraphHidden"
+        (switchDirectionEvent)="
+            switchDirection()
+        "></app-switch-direction-button>
+    <app-filter-area (filterChanged)="applyFilter($event)"></app-filter-area>
+</div>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
     <app-wertschoepfungskette
         [clientWidth]="canvasWidth"
