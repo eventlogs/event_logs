@@ -74,8 +74,10 @@ export class AppComponent implements OnDestroy {
     }
 
     private processSourceChange(newSource: string) {
+        console.log("Parse new source in textfield");
+        const startLogParse = Date.now();
         const result = this._logParserService.parse(newSource);
-
+        console.log("Done parsing new souce - took " + ((Date.now() - startLogParse)/1000) + " seconds");
         // Ausgewählte Traces zurücksetzen, wenn mindestens eine Case Id nicht mehr vorhanden ist
         for (const caseId of this._selectedTraceCaseIds) {
             const caseIdStillExists =
