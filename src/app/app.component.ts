@@ -93,9 +93,9 @@ export class AppComponent implements OnDestroy {
         if (result !== undefined) {
             if (!this._xesImport) {
                 this._eventlogDataService.eventLog = result;
+                console.log("update views source change");
+                this.updateViews();
             }
-            console.log("update views source change");
-            this.updateViews();
         }
         this._xesImport = false;
     }
