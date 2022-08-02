@@ -1,0 +1,7 @@
+<mat-form-field class="full-width-table">
+    <input
+        matInput
+        #filter
+        (keyup)="applyFilter(filter.value)"
+        placeholder="Filter" />
+</mat-form-field>

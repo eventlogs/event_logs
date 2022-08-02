@@ -45,7 +45,6 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     applyFilter(filterValue: string) {
-        console.log('Filter: ' + filterValue);
         this._eventlogDataService.changeFilter(filterValue);
         this.filterChanged.emit(filterValue);
     }

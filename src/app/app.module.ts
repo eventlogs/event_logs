@@ -25,6 +25,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatMenuModule } from '@angular/material/menu';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { SwitchDirectionButtonComponent } from './components/switch-direction-button/switch-direction-button.component';
+import { FilterAreaComponent } from './components/filter-area/filter-area.component';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { SwitchDirectionButtonComponent } from './components/switch-direction-bu
         TracesDetailViewComponent,
         ExportButtonComponent,
         SwitchDirectionButtonComponent,
+        FilterAreaComponent,
     ],
     imports: [
         BrowserModule,

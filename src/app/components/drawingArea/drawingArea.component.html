@@ -2,16 +2,10 @@
     initialText="Display as Directly-Follows-Graph"
     switchedText="Display as Value-Chain"
     (switchViewEvent)="switchView()"></app-switch-view-button>
-<mat-form-field class="full-width-table">
-    <input
-        matInput
-        #filter
-        (keyup)="applyFilter(filter.value)"
-        placeholder="Filter" />
-</mat-form-field>
 <app-switch-direction-button
     *ngIf="!direktfolgegraphHidden"
     (switchDirectionEvent)="switchDirection()"></app-switch-direction-button>
+<app-filter-area (filterChanged)="applyFilter($event)"></app-filter-area>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
     <app-wertschoepfungskette
         [clientWidth]="canvasWidth"
