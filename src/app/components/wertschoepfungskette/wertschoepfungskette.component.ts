@@ -63,13 +63,19 @@ export class WertschoepfungsketteComponent implements OnDestroy {
         }
 
         this.clearDrawingArea();
+        console.log("creating svg elements for value chain");
+        const start = Date.now();
         const elements = this._svgService.createSvgElements(
             this._displayService.diagram,
             this._selectedTraceCaseIds
         );
+        console.log("svg elements ready - took " + ((Date.now() - start)/1000) + " seconds");
+        console.log("draw value chain");
+        const startDrawVc = Date.now();
         for (const element of elements) {
             this.canvas.nativeElement.appendChild(element);
         }
+        console.log("finished drawing VC - took " + ((Date.now() - startDrawVc)/1000) + " seconds");
     }
 
     private clearDrawingArea() {

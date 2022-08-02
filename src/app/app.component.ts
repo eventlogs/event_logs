@@ -44,9 +44,11 @@ export class AppComponent implements OnDestroy {
             this._displayService.selectedTraceCaseIds$.subscribe(
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
+                    console.log("update views sub selected traces");
                     this.updateViews();
                 }
             );
+        console.log("update views constructor");
         this.updateViews();
     }
 
@@ -90,6 +92,7 @@ export class AppComponent implements OnDestroy {
             if (!this._xesImport) {
                 this._eventlogDataService.eventLog = result;
             }
+            console.log("update views source change");
             this.updateViews();
         }
         this._xesImport = false;
@@ -115,11 +118,21 @@ export class AppComponent implements OnDestroy {
 
     processXesImport(fileContent: string) {
         try {
+            console.log("parsing content");
+            const startParsing = Date.now();
             const result = this._xesParserService.parse(fileContent);
+            console.log("done parsing - took " + ((Date.now() - startParsing)/1000) + " seconds");
             this._xesImport = true;
             if (result !== undefined) {
+                console.log("updating event log representation");
+                const startStoreLog = Date.now();
                 this._eventlogDataService.eventLog = result;
+                console.log("done updating log rep - took " + ((Date.now() - startStoreLog)/1000) + " seconds");
+                console.log("updating textarea");
+                const startTextarea = Date.now();
                 this.updateTextarea(this._logService.generate(result));
+                console.log("done updating textarea - took " + ((Date.now() - startTextarea)/1000) + " seconds");
+                console.log("update views xes import");
                 this.updateViews();
             }
         } catch (e) {

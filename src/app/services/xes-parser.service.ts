@@ -61,6 +61,8 @@ export class XesParserService {
     public parse(xmlString: string): EventLog {
         const parser = new xml2js.Parser({ strict: false, trim: true });
         let parsedXmlObj = undefined;
+        console.log("parsing xml string");
+        const start = Date.now();
         parser.parseString(xmlString, (err: Error | null, result: any) => {
             if (err == null) {
                 parsedXmlObj = result;
@@ -68,6 +70,7 @@ export class XesParserService {
                 throw XesParserService.PARSING_ERROR;
             }
         });
+        console.log("done parsing string - took " + ((Date.now() - start)/1000) + " seconds");
         if (parsedXmlObj == null) {
             throw XesParserService.PARSING_ERROR;
         }
@@ -79,11 +82,12 @@ export class XesParserService {
     }
 
     private convertToEventLog(result: any): EventLog {
+        console.log("converting to event log");
+        const start = Date.now();
         if (result == null || result[this._logToken] == null) {
             return new EventLog([], [], [], [], []);
         }
         const logObj = result[this._logToken];
-
         const logElements = this.readElementsOfAttribute(logObj);
         const extensions = this.convertToExtensions(
             logObj[this._extensionToken]
@@ -91,7 +95,6 @@ export class XesParserService {
         if (logElements == null || extensions == null) {
             throw XesParserService.PARSING_ERROR;
         }
-
         const classifiers = this.convertToClassifiers(
             logObj[this._classifierToken]
         );
@@ -104,9 +107,13 @@ export class XesParserService {
             this._traceScopeValue,
             globalAttributes
         );
+        console.log("converting to traces");
+        const startTraces = Date.now();
         const traces = this.convertToTraces(logObj[this._traceToken]);
-        const logAttributes = this.extractEventLogAttributes(logObj);
+        console.log("done converting to traces - took " + ((Date.now() - startTraces)/1000) + " seconds");
 
+        const logAttributes = this.extractEventLogAttributes(logObj);
+        console.log("done converting to event log- took " + ((Date.now() - start)/1000) + " seconds");
         return new EventLog(
             classifiers,
             globalEventAttributes,

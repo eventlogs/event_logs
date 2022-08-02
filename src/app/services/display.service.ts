@@ -100,7 +100,10 @@ export class DisplayService implements OnDestroy {
     }
 
     public displayEventLog(log: EventLog) {
+        console.log("converting log to diagram");
+        const start = Date.now();
         let net = this.convertEventLogToDiagram(log);
         this._diagram$.next(net);
+        console.log("diagram ready - took " + ((Date.now() - start)/1000) + " seconds");
     }
 }

@@ -45,9 +45,12 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
         }
 
         this.clearDrawingArea();
+        console.log("creating svg elements for graph");
+        const start = Date.now();
         const svgElements = this._svgService.createSvgElements(
             this._displayService.graph
         );
+        console.log("svg elements ready - took " + ((Date.now() - start)/1000) + " seconds");
         for (const svgElement of svgElements) {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }

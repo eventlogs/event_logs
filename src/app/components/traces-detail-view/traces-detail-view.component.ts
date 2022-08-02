@@ -53,8 +53,11 @@ export class TracesDetailViewComponent implements AfterViewInit, OnDestroy {
     }
 
     public refresh(): void {
+        console.log("refreshing attributes view");
+        const start = Date.now();
         this.displayedColumns = this.dataSource.getColumns();
         this.dataSource.refreshData();
+        console.log("attributes view ready - took " + ((Date.now() - start)/1000) + " seconds");
     }
 
     public getAttributeValue(
