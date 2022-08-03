@@ -1,14 +1,14 @@
 import { Component, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { LogParserService } from './services/log-parser.service';
-import { DisplayService } from './services/display.service';
+import { DisplayService } from './services/chain/value-chain/display-service/display.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
 import { EventlogDataService } from './services/eventlog-data.service';
 import { XesParserService } from './services/xes-parser.service';
 import { LogService } from './services/log.service';
-import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
-import { MatSidenavContainer } from '@angular/material/sidenav';
+import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
+import { TraceCaseSelectionService } from './services/chain/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-root',
@@ -16,8 +16,7 @@ import { MatSidenavContainer } from '@angular/material/sidenav';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnDestroy {
-    @ViewChild('tracesDetailView') tracesDetailView!: TracesDetailViewComponent;
-    @ViewChild('sidenav') sidenav!: MatSidenavContainer;
+    @ViewChild('drawingArea') drawingArea!: DrawingAreaComponent;
 
     public textareaFc: FormControl;
     private _sub: Subscription;
@@ -29,6 +28,7 @@ export class AppComponent implements OnDestroy {
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
         private _displayService: DisplayService,
+        private traceCaseSelectionService: TraceCaseSelectionService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         public _eventlogDataService: EventlogDataService
@@ -41,7 +41,7 @@ export class AppComponent implements OnDestroy {
         this.processXesImport(this.xesExampleValue());
 
         this._subSelectedTraces =
-            this._displayService.selectedTraceCaseIds$.subscribe(
+            this.traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
                     this.updateViews();
@@ -67,7 +67,7 @@ export class AppComponent implements OnDestroy {
         }
 
         if (event.key == 'Escape') {
-            this._displayService.selectTraceCaseIds([]);
+            this.traceCaseSelectionService.selectTraceCaseIds([]);
         }
     }
 
@@ -81,7 +81,7 @@ export class AppComponent implements OnDestroy {
                     trace => [caseId].indexOf(trace.caseId) !== -1
                 ).length > 0;
             if (!caseIdStillExists) {
-                this._displayService.selectTraceCaseIds([]);
+                this.traceCaseSelectionService.selectTraceCaseIds([]);
                 break;
             }
         }
@@ -148,15 +148,9 @@ export class AppComponent implements OnDestroy {
             this._eventlogDataService.eventLog
         );
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
-            this._eventlogDataService
-                .eventLogWithSelectedOrAllWhenNothingSelected
+            this._eventlogDataService.eventLog
         );
-
-        if (!this._displayService.selectedTraceCaseIds.length) {
-            this.sidenav?.close();
-        }
-
-        this.tracesDetailView?.refresh();
+        this.drawingArea?.refresh();
     }
 
     xesExampleValue() {

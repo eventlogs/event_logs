@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { EventLog } from '../../classes/EventLog/eventlog';
-import { DisplayService } from '../../services/display.service';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { DisplayService } from '../../services/chain/value-chain/display-service/display.service';
 import { LogService } from '../../services/log.service';
 import { DirectlyFollowsGraphService } from '../../services/directly-follows-graph/display.service';
 import { XesService } from '../../services/xes.service';
 import { EventlogDataService } from '../../services/eventlog-data.service';
-import { SvgService as ValueChainSvgService } from '../../services/svg.service';
 import { SvgService as DirectlyFollowsGraphSvgService } from '../../services/directly-follows-graph/svg.service';
 import { saveAs } from 'file-saver';
+import { SvgService } from '../../services/chain/common/svg-service/svg.service';
+import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-export-button',
@@ -21,13 +21,15 @@ export class ExportButtonComponent {
     constructor(
         public _eventLogDataService: EventlogDataService,
         private _displayService: DisplayService,
+        private _traceCaseSelectionService: TraceCaseSelectionService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _xesService: XesService,
-        private _valueChainSvgService: ValueChainSvgService,
+        @Inject(SvgService.VALUE_CHAIN_INSTANCE)
+        private _valueChainSvgService: SvgService,
         private _directlyFollowsGraphSvgService: DirectlyFollowsGraphSvgService
     ) {
-        this._displayService.selectedTraceCaseIds$.subscribe(
+        this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
             selectedTraceCaseIds => {
                 this._selectedTraceCaseIds = selectedTraceCaseIds;
             }
@@ -70,7 +72,7 @@ export class ExportButtonComponent {
                     .eventLogWithSelectedOrNothingWhenNothingSelected
             ),
         ]);
-        this._displayService.selectTraceCaseIds([]);
+        this._traceCaseSelectionService.selectTraceCaseIds([]);
     }
 
     exportSvgValueChain() {

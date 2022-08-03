@@ -1,0 +1,24 @@
+<button class="switch-view-button" [mat-menu-trigger-for]="switchViewMenu">
+    {{ buttonText }}
+</button>
+
+<mat-menu #switchViewMenu="matMenu">
+    <button
+        *ngIf="currentView !== classReference.valueChainView"
+        mat-menu-item
+        (click)="changeView(classReference.valueChainView)">
+        Value-Chain
+    </button>
+    <button
+        *ngIf="currentView !== classReference.directlyFollowsGraphView"
+        mat-menu-item
+        (click)="changeView(classReference.directlyFollowsGraphView)">
+        Directly-Follows-Graph
+    </button>
+    <button
+        *ngIf="currentView !== classReference.logInformationView"
+        mat-menu-item
+        (click)="changeView(classReference.logInformationView)">
+        Log-Information
+    </button>
+</mat-menu>
