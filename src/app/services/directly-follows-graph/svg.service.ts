@@ -498,12 +498,8 @@ export class SvgService {
                     newPositionValue.toString()
                 );
 
-                previousPositionValue = this._displayService.verticalDirection
-                    ? vertices[index - 1].getSvgElementXValue()
-                    : vertices[index - 1].getSvgElementYValue();
-
                 vertices[index - 1].position =
-                    (previousPositionValue - this.minValue) / offsetValue + 1;
+                    (newPositionValue - this.minValue) / offsetValue + 1;
             }
         }
 
@@ -531,12 +527,8 @@ export class SvgService {
                     newPositionValue.toString()
                 );
 
-                nextPositionValue = this._displayService.verticalDirection
-                    ? vertices[index + 1].getSvgElementXValue()
-                    : vertices[index + 1].getSvgElementYValue();
-
                 vertices[index + 1].position =
-                    (nextPositionValue - this.minValue) / this.offsetXValue + 1;
+                    (newPositionValue - this.minValue) / this.offsetXValue + 1;
             }
         }
 

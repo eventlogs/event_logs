@@ -59,10 +59,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
     }
 
     private processMouseDown(event: MouseEvent) {
-        if (this._graph != undefined) {
-            this.calcGraphWidth(this._graph);
-            this.calcGraphHeight(this._graph);
-        }
+        this.calcGraphSize(this._graph);
 
         let target = event.target as SVGElement;
         this._draggingVertex = this._graph?.vertices.find(
@@ -92,36 +89,32 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         current: string | null,
         mouseStart: number
     ) {
-        if (this._draggingVertex == undefined || this._graph == undefined)
+        if (
+            this._draggingVertex == undefined ||
+            this._draggingVertex.svgElement === undefined ||
+            this._graph == undefined ||
+            current == undefined
+        )
             return;
 
         event.preventDefault();
-        if (this._draggingVertex.svgElement === undefined) return;
-
-        if (current == undefined) return;
-
-        let maxValue: number;
 
         if (this._displayService.verticalDirection) {
             let x: number = +current + event.clientX - mouseStart;
             this._draggingVertex.svgElement.setAttribute('x', x.toString());
-            maxValue = this.widthPx - this._svgService.offsetXValue;
         } else {
             let y: number = +current + event.clientY - mouseStart;
             this._draggingVertex.svgElement.setAttribute('y', y.toString());
-            maxValue = this.heightPx - this._svgService.offsetYValue;
         }
 
         this._svgService.updateLayer(this._draggingVertex, this._graph);
 
-        if (this._graph != undefined) {
-            this.calcGraphWidth(this._graph);
-            this.calcGraphHeight(this._graph);
-        }
+        this.calcGraphSize(this._graph);
     }
 
     private processMouseUp(event: MouseEvent) {
         if (this._svg !== undefined) this._svg.onmousemove = null;
+
         this._draggingVertex = undefined;
     }
 
@@ -144,10 +137,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
 
-        if (this._graph != undefined) {
-            this.calcGraphWidth(this._graph);
-            this.calcGraphHeight(this._graph);
-        }
+        this.calcGraphSize(this._graph);
     }
 
     private clearDrawingArea() {
@@ -164,13 +154,18 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         }
     }
 
+    private calcGraphSize(graph: Graph | undefined) {
+        if (this._graph != undefined) {
+            this.calcGraphWidth(this._graph);
+            this.calcGraphHeight(this._graph);
+        }
+    }
+
     private calcGraphWidth(graph: Graph): void {
-        if (this._displayService.verticalDirection) {
+        if (this._displayService.verticalDirection)
             this.widthPx =
                 (graph.getMaxPosition() + 1) * this._svgService.offsetXValue;
-        } else {
-            this.widthPx = graph.getMaxLayer() * this._svgService.offsetXValue;
-        }
+        else this.widthPx = graph.getMaxLayer() * this._svgService.offsetXValue;
 
         if (this.directlyFollowsGraph !== undefined) {
             let drawingArea = document.getElementsByClassName('drawingArea');
@@ -183,12 +178,11 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
     }
 
     private calcGraphHeight(graph: Graph): void {
-        if (this._displayService.verticalDirection) {
+        if (this._displayService.verticalDirection)
             this.heightPx = graph.getMaxLayer() * this._svgService.offsetYValue;
-        } else {
+        else
             this.heightPx =
                 (graph.getMaxPosition() + 1) * this._svgService.offsetYValue;
-        }
 
         if (this.directlyFollowsGraph !== undefined) {
             let drawingArea = document.getElementsByClassName('drawingArea');
