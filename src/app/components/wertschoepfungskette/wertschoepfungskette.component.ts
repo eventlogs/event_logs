@@ -1,15 +1,17 @@
 import {
     Component,
     ElementRef,
+    Inject,
     Input,
     OnDestroy,
     ViewChild,
 } from '@angular/core';
-import { DisplayService } from '../../services/display.service';
+import { DisplayService } from '../../services/chain/value-chain/display-service/display.service';
 import { Subscription } from 'rxjs';
-import { LayoutService } from '../../services/layout.service';
-import { SvgService } from '../../services/svg.service';
 import { Diagram } from '../../classes/diagram/diagram';
+import { LayoutService } from '../../services/chain/common/layout-service/layout.service';
+import { SvgService } from '../../services/chain/common/svg-service/svg.service';
+import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-wertschoepfungskette',
@@ -28,8 +30,11 @@ export class WertschoepfungsketteComponent implements OnDestroy {
     public widthPx: number = 1080;
 
     constructor(
+        @Inject(LayoutService.VALUE_CHAIN_INSTANCE)
         private _layoutService: LayoutService,
+        @Inject(SvgService.VALUE_CHAIN_INSTANCE)
         private _svgService: SvgService,
+        private _traceCaseSelectionService: TraceCaseSelectionService,
         private _displayService: DisplayService
     ) {
         this._sub = this._displayService.diagram$.subscribe(diagram => {
@@ -43,7 +48,7 @@ export class WertschoepfungsketteComponent implements OnDestroy {
             this.draw();
         });
         this._subSelectedTraces =
-            this._displayService.selectedTraceCaseIds$.subscribe(
+            this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
                     this.draw();
@@ -67,7 +72,8 @@ export class WertschoepfungsketteComponent implements OnDestroy {
         const start = Date.now();
         const elements = this._svgService.createSvgElements(
             this._displayService.diagram,
-            this._selectedTraceCaseIds
+            this._selectedTraceCaseIds,
+            false
         );
         console.log("svg elements ready - took " + ((Date.now() - start)/1000) + " seconds");
         console.log("draw value chain");

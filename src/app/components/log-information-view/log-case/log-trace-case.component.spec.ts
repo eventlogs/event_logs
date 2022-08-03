@@ -1,15 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WertschoepfungsketteComponent } from './wertschoepfungskette.component';
-import { AppModule } from '../../app.module';
+
+import { LogTraceCaseComponent } from './log-trace-case.component';
+import { AppModule } from '../../../app.module';
 import { NgModule } from '@angular/core';
 
-describe('WertschoepfungsketteComponent', () => {
-    let component: WertschoepfungsketteComponent;
-    let fixture: ComponentFixture<WertschoepfungsketteComponent>;
+describe('LogCaseComponent', () => {
+    let component: LogTraceCaseComponent;
+    let fixture: ComponentFixture<LogTraceCaseComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [WertschoepfungsketteComponent],
+            declarations: [LogTraceCaseComponent],
             providers: (
                 Reflect.getOwnPropertyDescriptor(AppModule, '__annotations__')
                     ?.value[0] as NgModule
@@ -18,7 +19,7 @@ describe('WertschoepfungsketteComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(WertschoepfungsketteComponent);
+        fixture = TestBed.createComponent(LogTraceCaseComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

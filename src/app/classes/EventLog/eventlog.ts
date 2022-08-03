@@ -40,6 +40,7 @@ export class EventLog {
     public get traces(): Array<Trace> {
         return this._traces;
     }
+
     public set traces(value: Array<Trace>) {
         this._traces = value;
     }
