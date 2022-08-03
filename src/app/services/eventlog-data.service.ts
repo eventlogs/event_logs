@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Event } from '../classes/EventLog/event';
 import { TraceCaseSelectionService } from './chain/common/trace-case-selection-service/trace-case-selection.service';
+import { FilterArgument } from '../components/filter-area/filter-area.component';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +10,7 @@ import { TraceCaseSelectionService } from './chain/common/trace-case-selection-s
 export class EventlogDataService {
     private _eventLog: EventLog;
     private _filteredEventLog: EventLog;
-    private _filter: string = '';
+    private _filter: FilterArgument = new FilterArgument('', false, false);
 
     constructor(private _traceCaseSelectionService: TraceCaseSelectionService) {
         this._eventLog = new EventLog([], [], [], [], []);
@@ -17,7 +18,7 @@ export class EventlogDataService {
     }
 
     public get eventLog(): EventLog {
-        if (this._filter === '') {
+        if (this._filter.filterValue === '') {
             return this._eventLog;
         }
         return this._filteredEventLog;
@@ -77,20 +78,29 @@ export class EventlogDataService {
         );
     }
 
-    public changeFilter(str: string) {
-        this._filter = str;
-        if (str === '') {
+    public changeFilter(arg: FilterArgument) {
+        this._filter = arg;
+        if (arg.filterValue === '') {
             return;
         }
         this._filteredEventLog.traces = [];
         this._eventLog.traces.forEach(trace => {
             if (
                 trace.events.some(event => {
-                    if (event.activity.includes(str)) {
+                    if (
+                        this._filter.filterActivity &&
+                        event.activity.includes(arg.filterValue)
+                    ) {
+                        console.log(event.activity);
                         return true;
                     }
+                    if (!this._filter.filterAttributeValues) {
+                        return false;
+                    }
                     return event.attributes.some(attribute => {
-                        return attribute.value.toString().includes(str);
+                        return attribute.value
+                            .toString()
+                            .includes(arg.filterValue);
                     });
                 })
             ) {

@@ -12,6 +12,7 @@ import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { TracesDetailViewComponent } from '../traces-detail-view/traces-detail-view.component';
 import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { FilterArgument } from '../filter-area/filter-area.component';
 
 @Component({
     selector: 'app-drawing-area',
@@ -66,9 +67,9 @@ export class DrawingAreaComponent implements AfterContentChecked {
         }
     }
 
-    applyFilter(filterValue: string) {
-        this._eventlogDataService.changeFilter(filterValue);
-        this.filterChanged.emit(filterValue);
+    applyFilter(FilterArgument: FilterArgument) {
+        this._eventlogDataService.changeFilter(FilterArgument);
+        this.filterChanged.emit(FilterArgument);
     }
 
     clickDrawArea() {
