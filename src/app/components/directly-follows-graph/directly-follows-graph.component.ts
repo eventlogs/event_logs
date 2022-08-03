@@ -112,11 +112,12 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
             maxValue = this.heightPx - this._svgService.offsetYValue;
         }
 
-        this._svgService.updateLayer(
-            this._draggingVertex,
-            this._graph,
-            maxValue
-        );
+        this._svgService.updateLayer(this._draggingVertex, this._graph);
+
+        if (this._graph != undefined) {
+            this.calcGraphWidth(this._graph);
+            this.calcGraphHeight(this._graph);
+        }
     }
 
     private processMouseUp(event: MouseEvent) {
@@ -191,7 +192,6 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
 
         if (this.directlyFollowsGraph !== undefined) {
             let drawingArea = document.getElementsByClassName('drawingArea');
-            console.log(drawingArea[0].getBoundingClientRect());
             if (drawingArea !== undefined)
                 this.heightPx = Math.max(
                     this.heightPx,

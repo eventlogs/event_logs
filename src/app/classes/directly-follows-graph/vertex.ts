@@ -47,6 +47,26 @@ export class Vertex {
 
     public set svgElement(svgElement: SVGElement | undefined) {
         this._svgElement = svgElement;
+
+        if (this._svgElement != undefined) {
+            let rect: SVGElement = this._svgElement?.children[0] as SVGElement;
+
+            //Anzeige von Dummyknoten, wenn sie ausgewählt werden sollen
+            if (this._isDummy && rect != undefined) {
+                this._svgElement.onmouseenter = event => {
+                    rect.setAttribute('fill', 'rgb(150, 150, 150)');
+                    rect.setAttribute('fill-opacity', '1');
+                    rect.setAttribute('stroke-width', '2');
+                    rect.setAttribute('stroke', 'black');
+                };
+                this._svgElement.onmouseleave = event => {
+                    rect.removeAttribute('fill');
+                    rect.setAttribute('fill-opacity', '0');
+                    rect.removeAttribute('stroke-width');
+                    rect.removeAttribute('stroke');
+                };
+            }
+        }
     }
 
     public get isDummy(): boolean {

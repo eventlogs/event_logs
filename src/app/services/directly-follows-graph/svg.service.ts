@@ -46,11 +46,12 @@ export class SvgService {
         graph.vertices.forEach(vertex => {
             let container = this.createContainer(vertex);
 
+            let box = this.createRect(vertex);
+            //Mache Elemente zu Kindern, damit sie gemeinsam manipuliert werden können.
+            container.append(box);
+
             if (!vertex.isDummy) {
                 let text = this.createTextForGraph(vertex);
-                let box = this.createRect(vertex);
-                //Mache Box und Text zu Kindern, damit sie gemeinsam manipuliert werden können.
-                container.append(box);
                 container.append(text);
             } else {
                 let path = this.createPathForDummyVertex(vertex);
@@ -108,8 +109,6 @@ export class SvgService {
         svg.setAttribute('width', this.rectWidth.toString());
         svg.setAttribute('height', this.rectHeight.toString());
 
-        //vertex.svgElement = svg;
-
         return svg;
     }
 
@@ -151,13 +150,18 @@ export class SvgService {
         rect.setAttribute('ry', '15');
         rect.setAttribute('width', this.rectWidth.toString());
         rect.setAttribute('height', this.rectHeight.toString());
-        rect.setAttribute('fill', 'rgb(150, 150, 150)');
-        //Setze höhere Füllstärke, für häufiger vorkommende Knoten
-        let fillOpacity =
-            0.1 + 0.8 * (vertex.activityCount / this.maxActivityCount);
-        rect.setAttribute('fill-opacity', fillOpacity.toString());
-        rect.setAttribute('stroke-width', '2');
-        rect.setAttribute('stroke', 'black');
+
+        if (!vertex.isDummy) {
+            rect.setAttribute('fill', 'rgb(150, 150, 150)');
+            //Setze höhere Füllstärke, für häufiger vorkommende Knoten
+            let fillOpacity =
+                0.1 + 0.8 * (vertex.activityCount / this.maxActivityCount);
+            rect.setAttribute('fill-opacity', fillOpacity.toString());
+            rect.setAttribute('stroke-width', '2');
+            rect.setAttribute('stroke', 'black');
+        } else {
+            rect.setAttribute('fill-opacity', '0');
+        }
 
         return rect;
     }
@@ -449,138 +453,170 @@ export class SvgService {
         return document.createElementNS('http://www.w3.org/2000/svg', name);
     }
 
-    public updateLayer(vertex: Vertex, graph: Graph, maxValue: number): void {
-        if (this._displayService.verticalDirection)
-            this.updateLayerVertical(vertex, graph, maxValue);
-        else this.updateLayerHorizontal(vertex, graph, maxValue);
+    public updateLayer(vertex: Vertex, graph: Graph): void {
+        let positionValue: number;
+        let offsetValue: number;
+        let axis: string;
+        let rectSize;
+
+        if (this._displayService.verticalDirection) {
+            positionValue = vertex.getSvgElementXValue();
+            offsetValue = this.offsetXValue;
+            axis = 'x';
+            rectSize = this.rectWidth;
+        } else {
+            positionValue = vertex.getSvgElementYValue();
+            offsetValue = this.offsetYValue;
+            axis = 'y';
+            rectSize = this.rectHeight;
+        }
+
+        if (positionValue < this.minValue)
+            vertex.svgElement?.setAttribute(axis, this.minValue.toString());
+
+        let vertices: Vertex[] = graph.getVerticesSortedByPosition(
+            vertex.layer
+        );
+
+        let index: number = vertices.findIndex(v => v === vertex);
+
+        //Knoten wird nach links/oben geschoben
+        if (index > 0) {
+            let previousPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[index - 1].getSvgElementXValue()
+                : vertices[index - 1].getSvgElementYValue();
+
+            if (previousPositionValue + rectSize > positionValue) {
+                let newPositionValue: number = Math.max(
+                    previousPositionValue + offsetValue,
+                    positionValue + rectSize
+                );
+
+                vertices[index - 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
+                );
+
+                previousPositionValue = this._displayService.verticalDirection
+                    ? vertices[index - 1].getSvgElementXValue()
+                    : vertices[index - 1].getSvgElementYValue();
+
+                vertices[index - 1].position =
+                    (previousPositionValue - this.minValue) / offsetValue + 1;
+            }
+        }
+
+        //Knoten wird nach rechts/unten geschoben
+        if (index < vertices.length - 1) {
+            let nextPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[index + 1].getSvgElementXValue()
+                : vertices[index + 1].getSvgElementYValue();
+
+            if (nextPositionValue - rectSize < positionValue) {
+                let newPositionValue: number;
+
+                //Position abhängig davon setzen, ob genügend Platz ist
+                if (positionValue / rectSize > index + 1)
+                    newPositionValue = Math.min(
+                        nextPositionValue - offsetValue,
+                        positionValue - rectSize
+                    );
+                else newPositionValue = positionValue + offsetValue;
+
+                newPositionValue = Math.max(this.minValue, newPositionValue);
+                vertices[index + 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
+                );
+
+                nextPositionValue = this._displayService.verticalDirection
+                    ? vertices[index + 1].getSvgElementXValue()
+                    : vertices[index + 1].getSvgElementYValue();
+
+                vertices[index + 1].position =
+                    (nextPositionValue - this.minValue) / this.offsetXValue + 1;
+            }
+        }
+
+        vertex.position = (positionValue - this.minValue) / offsetValue + 1;
+
+        vertices = graph.getVerticesSortedByPosition(vertex.layer);
+
+        index = vertices.findIndex(v => v === vertex);
+
+        this.updateOffset(vertices, offsetValue, rectSize, axis, index);
 
         this.updateEdges(graph);
     }
 
-    private updateLayerVertical(
-        vertex: Vertex,
-        graph: Graph,
-        maxValue: number
+    private updateOffset(
+        vertices: Vertex[],
+        offsetValue: number,
+        rectSize: number,
+        axis: string,
+        index: number
     ): void {
-        if (vertex.getSvgElementXValue() < this.minValue)
-            vertex.svgElement?.setAttribute('x', this.minValue.toString());
+        for (let i = index - 1; i > 0; i--) {
+            let currentPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i].getSvgElementXValue()
+                : vertices[i].getSvgElementYValue();
 
-        if (vertex.getSvgElementXValue() > maxValue)
-            vertex.svgElement?.setAttribute('x', maxValue.toString());
+            let previousPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i - 1].getSvgElementXValue()
+                : vertices[i - 1].getSvgElementYValue();
 
-        let vertices: Vertex[] = graph.getVerticesSortedByPosition(
-            vertex.layer
-        );
+            if (previousPositionValue + rectSize > currentPositionValue) {
+                let newPositionValue: number = currentPositionValue - rectSize;
 
-        let index = vertices.findIndex(v => v === vertex);
-
-        if (index > 0) {
-            let x: number = vertices[index - 1].getSvgElementXValue();
-
-            if (x + this.rectWidth > vertex.getSvgElementXValue()) {
-                let newX: number = Math.max(
-                    x + this.offsetXValue,
-                    vertex.getSvgElementXValue() + this.rectWidth
+                vertices[i - 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
                 );
-                vertices[index - 1].svgElement?.setAttribute(
-                    'x',
-                    newX.toString()
-                );
-                vertices[index - 1].position =
-                    (vertices[index - 1].getSvgElementXValue() -
-                        this.minValue) /
-                        this.offsetXValue +
-                    1;
+
+                previousPositionValue = this._displayService.verticalDirection
+                    ? vertices[i - 1].getSvgElementXValue()
+                    : vertices[i - 1].getSvgElementYValue();
+
+                vertices[i - 1].position =
+                    (previousPositionValue - this.minValue) / offsetValue + 1;
+            } else {
+                break;
             }
         }
 
-        if (index < vertices.length - 1) {
-            let x: number = vertices[index + 1].getSvgElementXValue();
+        for (let i = index + 1; i < vertices.length - 1; i++) {
+            let currentPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i].getSvgElementXValue()
+                : vertices[i].getSvgElementYValue();
 
-            if (x - this.rectWidth < vertex.getSvgElementXValue()) {
-                let newX: number = Math.min(
-                    x - this.offsetXValue,
-                    vertex.getSvgElementXValue() - this.rectWidth
+            let nextPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i + 1].getSvgElementXValue()
+                : vertices[i + 1].getSvgElementYValue();
+
+            if (currentPositionValue + rectSize > nextPositionValue) {
+                let newPositionValue: number = currentPositionValue + rectSize;
+
+                vertices[i + 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
                 );
-                newX = Math.max(this.minValue, newX);
-                vertices[index + 1].svgElement?.setAttribute(
-                    'x',
-                    newX.toString()
-                );
-                vertices[index + 1].position =
-                    (vertices[index + 1].getSvgElementXValue() -
-                        this.minValue) /
-                        this.offsetXValue +
-                    1;
+
+                nextPositionValue = this._displayService.verticalDirection
+                    ? vertices[i + 1].getSvgElementXValue()
+                    : vertices[i + 1].getSvgElementYValue();
+
+                vertices[i + 1].position =
+                    (nextPositionValue - this.minValue) / offsetValue + 1;
+            } else {
+                break;
             }
         }
-
-        vertex.position =
-            (vertex.getSvgElementXValue() - this.minValue) / this.offsetXValue +
-            1;
-    }
-
-    private updateLayerHorizontal(
-        vertex: Vertex,
-        graph: Graph,
-        maxValue: number
-    ): void {
-        if (vertex.getSvgElementYValue() < this.minValue)
-            vertex.svgElement?.setAttribute('y', this.minValue.toString());
-
-        if (vertex.getSvgElementYValue() > maxValue)
-            vertex.svgElement?.setAttribute('y', maxValue.toString());
-
-        let vertices: Vertex[] = graph.getVerticesSortedByPosition(
-            vertex.layer
-        );
-
-        let index = vertices.findIndex(v => v === vertex);
-
-        if (index > 0) {
-            let y: number = vertices[index - 1].getSvgElementYValue();
-
-            if (y + this.rectHeight > vertex.getSvgElementYValue()) {
-                let newY: number = Math.max(
-                    y + this.offsetYValue,
-                    vertex.getSvgElementYValue() + this.rectHeight
-                );
-                vertices[index - 1].svgElement?.setAttribute(
-                    'y',
-                    newY.toString()
-                );
-                vertices[index - 1].position =
-                    (vertices[index - 1].getSvgElementYValue() -
-                        this.minValue) /
-                        this.offsetYValue +
-                    1;
-            }
-        }
-
-        if (index < vertices.length - 1) {
-            let y: number = vertices[index + 1].getSvgElementYValue();
-
-            if (y - this.rectHeight < vertex.getSvgElementYValue()) {
-                let newY: number = Math.min(
-                    y - this.offsetYValue,
-                    vertex.getSvgElementYValue() - this.rectHeight
-                );
-                newY = Math.max(this.minValue, newY);
-                vertices[index + 1].svgElement?.setAttribute(
-                    'y',
-                    newY.toString()
-                );
-                vertices[index + 1].position =
-                    (vertices[index + 1].getSvgElementYValue() -
-                        this.minValue) /
-                        this.offsetYValue +
-                    1;
-            }
-        }
-
-        vertex.position =
-            (vertex.getSvgElementYValue() - this.minValue) / this.offsetYValue +
-            1;
     }
 
     private updateEdges(graph: Graph): void {
