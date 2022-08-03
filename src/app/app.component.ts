@@ -143,64 +143,6 @@ export class AppComponent implements OnDestroy {
         return this.textareaFc.value;
     }
 
-    textareaExampleValue() {
-        return (
-            '.type log\n' +
-            '.attributes\n' +
-            'case-id\n' +
-            'activity\n' +
-            'booleanValue\n' +
-            'intValue\n' +
-            'floatValue\n' +
-            'dateValue\n' +
-            'stringValue\n' +
-            '.events\n' +
-            '1 Auto true 1 1.3 2020-01-31 basadf\n' +
-            '1 Schiff true 2 2.3 2020-01-31 dasf\n' +
-            '2 BusBus false 3 4.5 2020-01-31 adsf\n' +
-            '2 Bus false 4 6.7 2020-01-31 adfd'
-        );
-    }
-
-    getLogExportValue() {
-        return this._logService.generate(
-            this._eventlogDataService
-                .eventLogWithSelectedOrAllWhenNothingSelected
-        );
-    }
-
-    getXesExportValue() {
-        return this._xesService.generate(
-            this._eventlogDataService
-                .eventLogWithSelectedOrAllWhenNothingSelected
-        );
-    }
-
-    getSvgValueChainExportValue() {
-        const elements = this._valueChainSvgService.createSvgElements(
-            this._displayService.diagram,
-            this._selectedTraceCaseIds
-        );
-        let svg =
-            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
-        elements.forEach(element => {
-            svg += element.outerHTML;
-        });
-        svg += '</svg>';
-        return svg;
-    }
-
-    getSvgDirectlyFollowsGraphExportValue() {
-        const elements = this._directlyFollowsGraphSvgService.svgElements;
-        let svg =
-            '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">';
-        elements.forEach(element => {
-            svg += element.outerHTML;
-        });
-        svg += '</svg>';
-        return svg;
-    }
-
     updateViews() {
         this._displayService.displayEventLog(
             this._eventlogDataService.eventLog

@@ -10,15 +10,16 @@ import { SvgService } from './svg.service';
 })
 //Layout mittels Sugiyama Algorithmus
 export class LayoutService {
-    constructor(private _displayService: DirectlyFollowsGraphService) {}
+    constructor(
+        private _displayService: DirectlyFollowsGraphService,
+        private _svgService: SvgService
+    ) {}
 
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
         this.setLayers(graph);
         this.createDummyVertices(graph);
 
-        this.calcGraphWidth(graph);
-        this.calcGraphHeight(graph);
         this.minimizeCrossings(graph);
 
         this.setPositions(graph);
@@ -378,7 +379,7 @@ export class LayoutService {
         return count;
     }
 
-    private static correctEdgeDirection(edges: Edge[]): void {
+    private correctEdgeDirection(edges: Edge[]): void {
         edges.forEach(edge => {
             if (edge.isReversed) edge.reverse();
         });
