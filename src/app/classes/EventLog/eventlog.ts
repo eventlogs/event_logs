@@ -40,6 +40,7 @@ export class EventLog {
     public get traces(): Array<Trace> {
         return this._traces;
     }
+
     public set traces(value: Array<Trace>) {
         this._traces = value;
     }
@@ -73,12 +74,6 @@ export class EventLog {
             return b.length - a.length;
         });
         return result;
-    }
-
-    public deleteTraceByCaseIds(caseIds: Array<number>) {
-        this.traces = this.traces.filter(trace => {
-            return caseIds.indexOf(trace.caseId) === -1;
-        });
     }
 
     constructor(

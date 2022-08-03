@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EventLog } from '../classes/EventLog/eventlog';
-import { DisplayService } from './display.service';
 import { Event } from '../classes/EventLog/event';
+import { TraceCaseSelectionService } from './chain/common/trace-case-selection-service/trace-case-selection.service';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +9,7 @@ import { Event } from '../classes/EventLog/event';
 export class EventlogDataService {
     private _eventLog: EventLog;
 
-    constructor(private _displayService: DisplayService) {
+    constructor(private _traceCaseSelectionService: TraceCaseSelectionService) {
         this._eventLog = new EventLog([], [], [], [], []);
     }
 
@@ -52,12 +52,12 @@ export class EventlogDataService {
     private eventLogWithSelectedOrOtherWhenNothingSelected(
         extractOtherFunction: (thisEventLog: EventLog) => EventLog
     ): EventLog {
-        if (this._displayService.selectedTraceCaseIds.length === 0) {
+        if (this._traceCaseSelectionService.selectedTraceCaseIds.length === 0) {
             return extractOtherFunction(this._eventLog);
         }
         const filteredTraces = this._eventLog.traces.filter(
             trace =>
-                this._displayService.selectedTraceCaseIds.indexOf(
+                this._traceCaseSelectionService.selectedTraceCaseIds.indexOf(
                     trace.caseId
                 ) !== -1
         );

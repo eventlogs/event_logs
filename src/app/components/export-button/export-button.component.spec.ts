@@ -1,6 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIcon } from '@angular/material/icon';
 import { ExportButtonComponent } from './export-button.component';
+import {
+    MatMenu,
+    MatMenuContent,
+    MatMenuModule,
+    MatMenuTrigger,
+} from '@angular/material/menu';
+import { NgModule } from '@angular/core';
+import { AppModule } from '../../app.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { DrawingAreaComponent } from '../drawingArea/drawingArea.component';
+import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
+import { WertschoepfungsketteComponent } from '../wertschoepfungskette/wertschoepfungskette.component';
+import { DirectlyFollowsGraphComponent } from '../directly-follows-graph/directly-follows-graph.component';
+import { LogInformationViewComponent } from '../log-information-view/log-information-view.component';
+import { ExportMenuItemComponent } from './export-menu-item/export-menu-item.component';
+import { MatFormField } from '@angular/material/form-field';
 
 describe('ExportButtonComponent', () => {
     let component: ExportButtonComponent;
@@ -8,7 +25,20 @@ describe('ExportButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ExportButtonComponent, MatIcon],
+            imports: [MatDialogModule, MatMenuModule, OverlayModule],
+            declarations: [
+                ExportButtonComponent,
+                MatIcon,
+                MatMenu,
+                MatMenuContent,
+                MatMenuTrigger,
+                ExportMenuItemComponent,
+                MatFormField,
+            ],
+            providers: (
+                Reflect.getOwnPropertyDescriptor(AppModule, '__annotations__')
+                    ?.value[0] as NgModule
+            ).providers,
         }).compileComponents();
     });
 

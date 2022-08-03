@@ -1,4 +1,3 @@
-import * as internal from 'stream';
 import { Vertex } from './vertex';
 
 export class Edge {

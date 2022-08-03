@@ -12,6 +12,7 @@ import {
 import { Event } from '../classes/EventLog/event';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Trace } from '../classes/EventLog/trace';
+import { MatFormField } from '@angular/material/form-field';
 var format = require('xml-formatter');
 
 class RandomAttribute extends EventLogAttribute {
@@ -27,7 +28,7 @@ describe('XesService', () => {
     let service: XesService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ declarations: [MatFormField] });
         service = TestBed.inject(XesService);
     });
 
@@ -66,11 +67,16 @@ describe('XesService', () => {
 
         let expected_string = format(
             '<?xml version="1.0" encoding="UTF-8" ?>' +
-                '<log xes.version="2.0">' +
+                '<log xes.version="1.0" xes.features="nested-attributes">' +
+                '<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>' +
+                '<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>' +
+                '<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>' +
+                '<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>' +
+                '<extension name="Semantic" prefix="semantic" uri="http://www.xes-standard.org/semantic.xesext"/>' +
                 '<trace>' +
-                '<string key="case-id" value="1" />' +
+                '<string key="concept:name" value="1" />' +
                 '<event>' +
-                '<string key="activity" value="Auto" />' +
+                '<string key="concept:name" value="Auto" />' +
                 '<boolean key="booleanValue" value="true" />' +
                 '<int key="intValue" value="1" />' +
                 '<float key="floatValue" value="1.3" />' +

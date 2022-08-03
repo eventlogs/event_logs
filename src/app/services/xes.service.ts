@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Classifier } from '../classes/EventLog/classifier';
 import { Event } from '../classes/EventLog/event';
 import { EventLog } from '../classes/EventLog/eventlog';
 import {
@@ -24,7 +25,42 @@ export class XesService {
      */
     public generate(eventLog: EventLog): string {
         let xesString = '<?xml version="1.0" encoding="UTF-8" ?>';
-        xesString += '<log xes.version="2.0">';
+        xesString += '<log xes.version="1.0" xes.features="nested-attributes">';
+        xesString +=
+            '<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>';
+        xesString +=
+            '<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>';
+        xesString +=
+            '<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>';
+        xesString +=
+            '<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>';
+        xesString +=
+            '<extension name="Semantic" prefix="semantic" uri="http://www.xes-standard.org/semantic.xesext"/>';
+
+        if (eventLog.globalTraceAttributes.length > 0) {
+            xesString += '<global scope="trace">';
+            eventLog.globalTraceAttributes.forEach(attribute => {
+                xesString += XesService.getAttributeRepresentation(attribute);
+            });
+            xesString += '</global>';
+        }
+
+        if (eventLog.globalEventAttributes.length > 0) {
+            xesString += '<global scope="event">';
+            eventLog.globalEventAttributes.forEach(attribute => {
+                xesString += XesService.getAttributeRepresentation(attribute);
+            });
+            xesString += '</global>';
+        }
+
+        eventLog.classifiers.forEach(classifier => {
+            xesString += this.getClassifierRepresentation(classifier);
+        });
+
+        eventLog.attributes.forEach(attribute => {
+            xesString += XesService.getAttributeRepresentation(attribute);
+        });
+
         eventLog.traces.forEach(trace => {
             xesString += this.getTraceRepresentation(trace);
         });
@@ -32,9 +68,21 @@ export class XesService {
         return format(xesString);
     }
 
+    private getClassifierRepresentation(classifier: Classifier): string {
+        let classifierString = '<classifier name="' + classifier.name + '"';
+        classifierString += 'keys="' + classifier.keys.join(' ') + '"/>';
+        return classifierString;
+    }
+
     private getTraceRepresentation(trace: Trace): string {
         let traceString = '<trace>';
-        traceString += '<string key="case-id" value="' + trace.caseId + '" />';
+        traceString +=
+            '<string key="concept:name" value="' + trace.caseId + '" />';
+        trace.attributes.forEach(attribute => {
+            if (attribute.key !== 'concept:name') {
+                traceString += XesService.getAttributeRepresentation(attribute);
+            }
+        });
         trace.events.forEach(event => {
             traceString += this.getEventRepresentation(event);
         });
@@ -45,15 +93,17 @@ export class XesService {
     private getEventRepresentation(event: Event): string {
         let eventString = '<event>';
         eventString +=
-            '<string key="activity" value="' + event.activity + '" />';
+            '<string key="concept:name" value="' + event.activity + '" />';
         event.attributes.forEach(attribute => {
-            eventString += this.getAttributeRepresentation(attribute);
+            eventString += XesService.getAttributeRepresentation(attribute);
         });
         eventString += '</event>';
         return eventString;
     }
 
-    private getAttributeRepresentation(attribute: EventLogAttribute): string {
+    private static getAttributeRepresentation(
+        attribute: EventLogAttribute
+    ): string {
         if (attribute instanceof StringAttribute) {
             return (
                 '<string key="' +

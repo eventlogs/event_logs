@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { Event } from 'src/app/classes/EventLog/event';
-import { EventEmitter } from 'stream';
 
 /**
  * Data source for the TracesDetailView view. This class should
@@ -24,30 +23,20 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
         this._filter = value;
         this.refreshData();
     }
-    _selectedTraceCaseIds: BehaviorSubject<Number[]> = new BehaviorSubject<
-        Number[]
-    >([]);
 
     constructor(private _eventlogDataService: EventlogDataService) {
         super();
     }
 
     refreshData() {
-        let eventlog =
-            this._eventlogDataService
-                .eventLogWithSelectedOrNothingWhenNothingSelected;
+        let eventlog = this._eventlogDataService.eventLog;
 
         let eventsData = eventlog.traces.flatMap(trace => trace.events);
         this._data.next(eventsData);
-
-        let selectedData = eventlog.traces.map(trace => trace.caseId);
-        this._selectedTraceCaseIds.next(selectedData);
     }
 
     getColumns(): string[] {
-        let eventlog =
-            this._eventlogDataService
-                .eventLogWithSelectedOrNothingWhenNothingSelected;
+        let eventlog = this._eventlogDataService.eventLog;
         if (!eventlog.traces.length) {
             return [];
         }
@@ -97,7 +86,6 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
      * any open connections or free any held resources that were set up during connect.
      */
     disconnect(): void {
-        this._selectedTraceCaseIds.complete();
         this._data.complete();
     }
 
@@ -168,7 +156,7 @@ export class TracesDetailViewDataSource extends DataSource<Event> {
                         .toLowerCase()
                         .includes(this._filter.toLowerCase())
                 ) ||
-                (parseInt(this._filter) !== NaN &&
+                (!isNaN(parseInt(this._filter)) &&
                     this._eventlogDataService
                         .getCaseId(event)
                         .toString()

@@ -3,6 +3,7 @@ import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
 import { DirectlyFollowsGraphService } from './display.service';
+import { SvgService } from './svg.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,6 +17,8 @@ export class LayoutService {
         this.setLayers(graph);
         this.createDummyVertices(graph);
 
+        this.calcGraphWidth(graph);
+        this.calcGraphHeight(graph);
         this.minimizeCrossings(graph);
 
         this.setPositions(graph);
@@ -244,8 +247,14 @@ export class LayoutService {
             vertex => vertex.layer == 1
         );
 
-        for (let i = 0; i < firstLayerVertices.length; i++)
-            firstLayerVertices[i].position = i + 1;
+        for (let i = 0; i < firstLayerVertices.length; i++) {
+            if (this._displayService.verticalDirection)
+                firstLayerVertices[i].position =
+                    i * this._svgService.offsetXValue;
+            else
+                firstLayerVertices[i].position =
+                    i * this._svgService.offsetYValue;
+        }
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
             let n: number = Math.floor(
@@ -369,7 +378,7 @@ export class LayoutService {
         return count;
     }
 
-    private correctEdgeDirection(edges: Edge[]): void {
+    private static correctEdgeDirection(edges: Edge[]): void {
         edges.forEach(edge => {
             if (edge.isReversed) edge.reverse();
         });

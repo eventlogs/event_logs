@@ -1,0 +1,11 @@
+<table>
+    <tr
+        *ngFor="
+            let traceCaseItem of sortTraces(
+                _eventlogDataService.eventLog.traces
+            )
+        ">
+        <app-log-trace-case
+            [traceCaseItem]="traceCaseItem"></app-log-trace-case>
+    </tr>
+</table>

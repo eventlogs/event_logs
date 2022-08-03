@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIcon } from '@angular/material/icon';
 import { UploadButtonComponent } from './upload-button.component';
+import any = jasmine.any;
 
 describe('UploadButtonComponent', () => {
     let component: UploadButtonComponent;
@@ -32,16 +33,19 @@ describe('UploadButtonComponent', () => {
         expect(component.handleFileInput).toHaveBeenCalled();
     });
 
-    it('should emit event with file content', () => {
+    it('should emit event with file extension and content', done => {
         const element = fixture.nativeElement;
         const input = element.querySelector('.file-input');
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(new File([exampleFileContent], 'test-file.txt'));
         input.files = dataTransfer.files;
 
-        component.newFileUploadedEvent.subscribe((fileContent: string) => {
+        let subscriber = ([fileExtension, fileContent]: [string, string]) => {
+            expect(fileExtension).toBe('txt');
             expect(fileContent).toBe(exampleFileContent);
-        });
+            done();
+        };
+        component.newFileUploadedEventExtensionContent.subscribe(subscriber);
         input.dispatchEvent(new Event('change'));
     });
 
@@ -60,7 +64,7 @@ describe('UploadButtonComponent', () => {
         input.dispatchEvent(new InputEvent('change'));
 
         expect(window.alert).toHaveBeenCalledWith(
-            'Nur Dateien vom Typ .log,.txt sind hier erlaubt'
+            'Only file types .log,.txt are currently supported'
         );
     });
 

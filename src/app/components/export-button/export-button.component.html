@@ -1,12 +1,73 @@
 <div fxLayout="column" fxLayoutAlign="start center">
-    {{ buttonText }}
     <div
         class="interactive-square"
         fxLayout="row"
         fxLayoutAlign="center center"
-        (click)="processMouseClick($event)">
-        <mat-icon class="larger-icon">
-            {{ buttonIcon }}
-        </mat-icon>
+        [matMenuTriggerFor]="exportMenu">
+        <mat-icon class="larger-icon">file_download</mat-icon>
     </div>
+    Export...
 </div>
+
+<mat-menu #exportMenu="matMenu">
+    <button mat-menu-item [matMenuTriggerFor]="exportAsLog">as .log</button>
+    <button mat-menu-item [matMenuTriggerFor]="exportAsXes">as .xes</button>
+    <button mat-menu-item [matMenuTriggerFor]="exportAsSvg">as .svg</button>
+</mat-menu>
+
+<mat-menu #exportAsLog="matMenu">
+    <app-export-menu-item
+        buttonText="Complete Eventlog"
+        (exportFile)="exportLog(true)"
+        [disabled]="shouldDisableExport(false)"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Selected Traces"
+        (exportFile)="exportLog(false)"
+        [disabled]="shouldDisableExport(true)"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Selected Traces and Reimport"
+        (exportFile)="exportLog(false)"
+        [disabled]="shouldDisableExport(true)"
+        [reimport]="true"
+        (processReimport)="processReimport()"></app-export-menu-item>
+</mat-menu>
+
+<mat-menu #exportAsXes="matMenu">
+    <app-export-menu-item
+        buttonText="Complete Eventlog"
+        (exportFile)="exportXes(true)"
+        [disabled]="shouldDisableExport(false)"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Selected Traces"
+        (exportFile)="exportXes(false)"
+        [disabled]="shouldDisableExport(true)"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Selected Traces and Reimport"
+        (exportFile)="exportXes(false)"
+        [disabled]="shouldDisableExport(true)"
+        [reimport]="true"
+        (processReimport)="processReimport()"></app-export-menu-item>
+</mat-menu>
+
+<mat-menu #exportAsSvg="matMenu">
+    <app-export-menu-item
+        buttonText="Value-Chain"
+        (exportFile)="exportSvgValueChain()"
+        [disabled]="shouldDisableExport(false)"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+    <app-export-menu-item
+        buttonText="Directly-Follows-Graph"
+        (exportFile)="exportSvgDirectlyFollowsGraph()"
+        [disabled]="shouldDisableExport(false)"
+        [reimport]="false"
+        (processReimport)="processReimport()"></app-export-menu-item>
+</mat-menu>

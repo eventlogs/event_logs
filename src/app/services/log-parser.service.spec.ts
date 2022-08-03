@@ -11,12 +11,15 @@ import {
 } from '../classes/EventLog/eventlogattribute';
 import { Trace } from '../classes/EventLog/trace';
 import { EventLog } from '../classes/EventLog/eventlog';
+import { DrawingAreaComponent } from '../components/drawingArea/drawingArea.component';
 
 describe('LogParserService', () => {
     let service: LogParserService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            declarations: [DrawingAreaComponent],
+        });
         service = TestBed.inject(LogParserService);
     });
 
@@ -29,7 +32,7 @@ describe('LogParserService', () => {
             '.type log\n' +
             '.attributes\n' +
             'case-id\n' +
-            'activity\n' +
+            'concept:name\n' +
             'booleanValue\n' +
             'intValue\n' +
             'floatValue\n' +
@@ -104,7 +107,7 @@ describe('LogParserService', () => {
             '.type log\n' +
             '.attributes\n' +
             'case-id\n' +
-            'activity\n' +
+            'concept:name\n' +
             'string key\n' +
             'other string key\n' +
             '.events\n' +

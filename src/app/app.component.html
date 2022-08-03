@@ -1,93 +1,36 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
-    <mat-sidenav-container class="sidenav-container" autosize>
-        <mat-sidenav #sidenav mode="side" position="end" class="sidenav-bar">
-            <div class="scrollable-when-to-large">
-                <app-traces-detail-view
-                    #tracesDetailView></app-traces-detail-view>
-            </div>
-        </mat-sidenav>
-        <mat-sidenav-content>
-            <button
-                class="right"
-                mat-icon-button
-                mat-raised-button
-                [disabled]="_selectedTraceCaseIds.length === 0"
-                (click)="sidenav.toggle()">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <!--  Header  -->
-            <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
-                ><h1>I <span class="red">❤</span> Petri Nets</h1></a
-            >
-            <h2>
-                Show an event log as a Value Chain or Directly-Follows Graph.
-            </h2>
-
-            <!--    Main content    -->
-
-            <app-drawing-area></app-drawing-area>
-            <div fxLayout="row" fxLayoutAlign="space-evenly start">
+    <div class="header">
+        <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
+            ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+        >
+        <h2>Show an event log as a Value-Chain or Directly-Follows-Graph.</h2>
+    </div>
+    <hr class="header-divider" />
+    <div class="main-app-body">
+        <app-drawing-area></app-drawing-area>
+        <div class="menubar" fxLayoutGap="20px">
+            <div class="menu-buttons" fxLayoutGap="20px" fxFlex="1 0 auto">
                 <app-upload-button
-                    buttonText="Import .xes"
-                    buttonIcon="file_upload"
-                    [permittedFileExtensions]="['xes']"
-                    (newFileUploadedEvent)="
-                        processXesImport($event)
+                    [permittedFileExtensions]="['xes', 'log', 'txt']"
+                    (newFileUploadedEventExtensionContent)="
+                        processImport($event)
                     "></app-upload-button>
-                <app-upload-button
-                    buttonText="Import .log"
-                    buttonIcon="file_upload"
-                    [permittedFileExtensions]="['log', 'txt']"
-                    (newFileUploadedEvent)="
-                        updateTextarea($event)
-                    "></app-upload-button>
-                <app-delete-button
-                    buttonText="Ausgewählte Traces löschen"
-                    buttonIcon="delete"
-                    (updateTextarea)="
-                        updateTextarea($event)
-                    "></app-delete-button>
-                <mat-form-field appearance="outline" class="textarea">
-                    <mat-label>Source file</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="10"
-                        cdkAutosizeMaxRows="20"
-                        [formControl]="textareaFc"></textarea>
-                </mat-form-field>
                 <app-export-button
-                    buttonText="Export .log"
-                    buttonIcon="file_download"
-                    [fileContent]="getLogExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.log"
-                    [datePrefix]="true"></app-export-button>
-                <app-export-button
-                    buttonText="Export .xes"
-                    buttonIcon="file_download"
-                    [fileContent]="getXesExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.xes"
-                    [datePrefix]="true"></app-export-button>
-                <app-export-button
-                    buttonText="Export .svg Value Chain"
-                    buttonIcon="file_download"
-                    [fileContent]="getSvgValueChainExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.svg"
-                    [datePrefix]="true"></app-export-button>
-                <app-export-button
-                    buttonText="Export .svg Directly-Follows-Graph"
-                    buttonIcon="file_download"
-                    [fileContent]="getSvgDirectlyFollowsGraphExportValue()"
-                    fileType="text/plain;charset=utf-8"
-                    fileName="event.svg"
-                    [datePrefix]="true"></app-export-button>
+                    (processImport)="processImport($event)"></app-export-button>
             </div>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
-    <!--  Footer  -->
+            <mat-form-field
+                appearance="outline"
+                class="input-form-field"
+                fxFlex="1 1 100%">
+                <mat-label>Source file</mat-label>
+                <textarea
+                    class="textarea"
+                    rows="13"
+                    matInput
+                    [formControl]="textareaFc"></textarea>
+            </mat-form-field>
+        </div>
+    </div>
     <hr />
     <app-footer></app-footer>
 </div>

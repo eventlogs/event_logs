@@ -16,7 +16,7 @@ import {
 })
 export class LogService {
     private readonly _caseIdElement = 'case-id';
-    private readonly _activityElement = 'activity';
+    private readonly _activityElement = 'concept:name';
     private readonly _undefinedValue = "''";
 
     constructor() {}

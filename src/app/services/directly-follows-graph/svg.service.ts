@@ -89,7 +89,19 @@ export class SvgService {
     }
 
     private createContainer(vertex: Vertex): SVGElement {
-        let svg = this.createSvgElement('svg');
+        let svg = SvgService.createSvgElement('svg');
+
+        let x: number = 50;
+        let y: number = 50;
+
+        //Setze Abstand zwischen Positionen und Ebenen basierend auf der Ausrichtung
+        if (this._displayService.verticalDirection) {
+            x += vertex.position;
+            y += this.offsetYValue * (vertex.layer - 1);
+        } else {
+            x += this.offsetXValue * (vertex.layer - 1);
+            y += vertex.position;
+        }
 
         let x: number = this.minValue;
         let y: number = this.minValue;
@@ -143,7 +155,7 @@ export class SvgService {
     }
 
     private createRect(vertex: Vertex): SVGElement {
-        let rect = this.createSvgElement('rect');
+        let rect = SvgService.createSvgElement('rect');
 
         rect.setAttribute('name', vertex.activityName.toString());
         rect.setAttribute('rx', '15');
@@ -167,7 +179,7 @@ export class SvgService {
     }
 
     private createTextForGraph(vertex: Vertex): SVGElement {
-        let text = this.createSvgElement('text');
+        let text = SvgService.createSvgElement('text');
 
         text.setAttribute('x', `50%`);
         text.setAttribute('y', `50%`);
@@ -186,7 +198,7 @@ export class SvgService {
     }
 
     private createTspanForText(text: string, offset: number): SVGElement {
-        let tspan = this.createSvgElement('tspan');
+        let tspan = SvgService.createSvgElement('tspan');
 
         tspan.setAttribute('x', (this.rectWidth / 2).toString());
         tspan.setAttribute('dy', (this.rectHeight * offset).toString());
@@ -201,15 +213,15 @@ export class SvgService {
         return tspan;
     }
 
-    private createArrow(): SVGElement {
-        let defs = this.createSvgElement('defs');
-        defs.append(this.createMarker());
+    private static createArrow(): SVGElement {
+        let defs = SvgService.createSvgElement('defs');
+        defs.append(SvgService.createMarker());
 
         return defs;
     }
 
-    private createMarker(): SVGElement {
-        let marker = this.createSvgElement('marker');
+    private static createMarker(): SVGElement {
+        let marker = SvgService.createSvgElement('marker');
 
         marker.setAttribute('viewBox', '0 0 10 10');
         marker.setAttribute('id', 'marker');
@@ -220,7 +232,7 @@ export class SvgService {
         marker.setAttribute('markerHeight', '10');
         marker.setAttribute('orient', 'auto');
 
-        let path = this.createSvgElement('path');
+        let path = SvgService.createSvgElement('path');
         path.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
         path.setAttribute('fill', 'context-stroke');
         path.setAttribute('pointer-events', 'none');
@@ -231,7 +243,7 @@ export class SvgService {
     }
 
     private createPath(edge: Edge, graph: Graph): SVGElement {
-        let path = this.createSvgElement('path');
+        let path = SvgService.createSvgElement('path');
 
         let id =
             'path' +
@@ -415,8 +427,8 @@ export class SvgService {
         return coordinates;
     }
 
-    private createTextForEdge(edge: Edge): SVGElement {
-        let text = this.createSvgElement('text');
+    private static createTextForEdge(edge: Edge): SVGElement {
+        let text = SvgService.createSvgElement('text');
 
         let name = edge.pathSvgElement?.getAttribute('name') + 'Text';
         text.setAttribute('name', name);
@@ -449,7 +461,7 @@ export class SvgService {
         }
     }
 
-    private createSvgElement(name: string): SVGElement {
+    private static createSvgElement(name: string): SVGElement {
         return document.createElementNS('http://www.w3.org/2000/svg', name);
     }
 
