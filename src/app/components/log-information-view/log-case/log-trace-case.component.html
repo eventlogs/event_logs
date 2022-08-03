@@ -1,0 +1,58 @@
+<div>
+    <div>
+        <svg
+            #canvas
+            [style.height.px]="svgHeightPx"
+            [style.width.px]="svgWidthPx"
+            class="canvas"></svg>
+    </div>
+    <div>
+        <details
+            (toggle)="toggleStatus()"
+            [style.width]="getDataWidthStyle() + 'px'"
+            class="xlabelsize-10-size">
+            <summary>{{ status }} attributes</summary>
+            <div>
+                <span *ngFor="let event of traceCaseItem?.events">
+                    <span class="event-item-span">
+                        <table class="outer-table">
+                            <tr>
+                                <td>
+                                    <table class="inner-upper-table">
+                                        <tr class="upper-table-row">
+                                            <th>key</th>
+                                            <th>value</th>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="inner-lower-table-div">
+                                        <table class="inner-lower-table">
+                                            <tr
+                                                *ngFor="
+                                                    let attribute of event.attributes
+                                                ">
+                                                <td class="table-data">
+                                                    {{ attribute.key }}
+                                                </td>
+                                                <td class="table-data">
+                                                    {{
+                                                        getAttributeValue(
+                                                            attribute
+                                                        )
+                                                    }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </span>
+                </span>
+            </div>
+        </details>
+    </div>
+</div>

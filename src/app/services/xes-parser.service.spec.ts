@@ -10,12 +10,13 @@ import {
     StringAttribute,
 } from '../classes/EventLog/eventlogattribute';
 import { Classifier } from '../classes/EventLog/classifier';
+import { MatFormField } from '@angular/material/form-field';
 
 describe('XesParserService', () => {
     let service: XesParserService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ declarations: [MatFormField] });
         service = TestBed.inject(XesParserService);
     });
 

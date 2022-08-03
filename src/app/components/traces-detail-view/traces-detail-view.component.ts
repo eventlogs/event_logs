@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
@@ -6,23 +6,20 @@ import {
     DateAttribute,
     EventLogAttribute,
 } from 'src/app/classes/EventLog/eventlogattribute';
-import { DisplayService } from 'src/app/services/display.service';
 import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { TracesDetailViewDataSource } from './traces-detail-view-datasource';
 import { Event } from 'src/app/classes/EventLog/event';
-import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-traces-detail-view',
     templateUrl: './traces-detail-view.component.html',
     styleUrls: ['./traces-detail-view.component.scss'],
 })
-export class TracesDetailViewComponent implements AfterViewInit, OnDestroy {
+export class TracesDetailViewComponent implements AfterViewInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatTable) table!: MatTable<Event>;
     dataSource: TracesDetailViewDataSource;
-    subscription: Subscription;
 
     private readonly MAX_LETTERS_TABLE_ENTRY_WITHOUT_WHITE_SPACE = 20;
     private readonly MAX_LETTERS_TABLE_ENTRY_TOTAL = 120;
@@ -30,26 +27,16 @@ export class TracesDetailViewComponent implements AfterViewInit, OnDestroy {
     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
     displayedColumns: string[] = [];
 
-    constructor(
-        public _eventlogDataService: EventlogDataService,
-        private _displayService: DisplayService
-    ) {
+    constructor(public _eventlogDataService: EventlogDataService) {
         this.dataSource = new TracesDetailViewDataSource(_eventlogDataService);
         this.displayedColumns = this.dataSource.getColumns();
-        this.subscription =
-            this._displayService.selectedTraceCaseIds$.subscribe(value => {
-                this.refresh();
-            });
     }
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.table.dataSource = this.dataSource;
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.refresh();
     }
 
     public refresh(): void {

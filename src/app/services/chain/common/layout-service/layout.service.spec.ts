@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { Diagram } from '../classes/diagram/diagram';
-import { GraphEvent } from '../classes/diagram/GraphEvent';
-import { GraphTrace } from '../classes/diagram/GraphTrace';
+import { Diagram } from '../../../../classes/diagram/diagram';
+import { GraphEvent } from '../../../../classes/diagram/GraphEvent';
+import { GraphTrace } from '../../../../classes/diagram/GraphTrace';
 import { LayoutService } from './layout.service';
-import { Element, ElementType } from '../classes/diagram/element';
+import { Element, ElementType } from '../../../../classes/diagram/element';
+import { AppModule } from '../../../../app.module';
+import { NgModule, ProviderToken } from '@angular/core';
 
 describe('LayoutService', () => {
     let service: LayoutService;
@@ -13,8 +15,15 @@ describe('LayoutService', () => {
     let diagram1row15col: Diagram = new Diagram([]);
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
-        service = TestBed.inject(LayoutService);
+        TestBed.configureTestingModule({
+            providers: (
+                Reflect.getOwnPropertyDescriptor(AppModule, '__annotations__')
+                    ?.value[0] as NgModule
+            ).providers,
+        });
+        service = TestBed.inject<any>(
+            LayoutService.VALUE_CHAIN_INSTANCE as unknown as ProviderToken<any>
+        );
         //reset Diagrams
         resetDiagrams();
 
@@ -124,14 +133,14 @@ describe('LayoutService', () => {
     const TEXTWIDTH: number = 75;
     const EVENTWIDTH: number = 150;
 
-    const YOFFSETTOMID: number = 50;
+    const YOFFSETTOMID: number = 30;
     const TRACEHEIGHT: number = 50;
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should layout 525px in x when 3 Events are present', () => {
+    it('should layout 535px in x when 3 Events are present', () => {
         let test = service.layout(diagram1row3col);
         expect(test[0]).toBe(XOFFSET + TEXTWIDTH + 3 * EVENTWIDTH);
     });
@@ -141,14 +150,16 @@ describe('LayoutService', () => {
         expect(test[0]).toBe(XOFFSET + TEXTWIDTH + 15 * EVENTWIDTH);
     });
 
-    it('should layout 75px in y when one Trace is present', () => {
+    it('should layout 85px in y when one Trace is present', () => {
         let test = service.layout(diagram1row3col);
-        expect(test[1]).toBe(YOFFSETTOMID + TRACEHEIGHT * 0.5);
+        expect(test[1]).toBe(YOFFSETTOMID * 2 + TRACEHEIGHT * 0.5);
     });
 
-    it('should layout 125px in y when 2 Traces are present', () => {
+    it('should layout 135px in y when 2 Traces are present', () => {
         let test = service.layout(diagram2row3col);
-        expect(test[1]).toBe(YOFFSETTOMID + TRACEHEIGHT * 0.5 + TRACEHEIGHT);
+        expect(test[1]).toBe(
+            YOFFSETTOMID * 2 + TRACEHEIGHT * 0.5 + TRACEHEIGHT
+        );
     });
 
     it('should layout all traces to the correct position', () => {
