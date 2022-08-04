@@ -6,7 +6,8 @@ export class FilterArgument {
     constructor(
         public filterValue: string,
         public filterActivity: boolean,
-        public filterAttributeValues: boolean
+        public filterAttributeValues: boolean,
+        public matchCase: boolean
     ) {}
 }
 
@@ -23,7 +24,22 @@ export class FilterAreaComponent {
     _filterActivity: boolean = true;
     _filterAttributeValues: boolean = false;
     _filterUsed: boolean = false;
+    _matchCase: boolean = false;
     _filterValue: string = '';
+
+    toggleMatchCase($event: MatButtonToggleChange) {
+        this._matchCase = $event.source.checked;
+        if (this._filterUsed) {
+            this.filterChanged.emit(
+                new FilterArgument(
+                    this._filterValue,
+                    this._filterActivity,
+                    this._filterAttributeValues,
+                    this._matchCase
+                )
+            );
+        }
+    }
 
     toggleFilter($event: MatButtonToggleChange) {
         this._filterUsed = $event.source.checked;
@@ -32,11 +48,14 @@ export class FilterAreaComponent {
                 new FilterArgument(
                     this._filterValue,
                     this._filterActivity,
-                    this._filterAttributeValues
+                    this._filterAttributeValues,
+                    this._matchCase
                 )
             );
         } else {
-            this.filterChanged.emit(new FilterArgument('', false, false));
+            this.filterChanged.emit(
+                new FilterArgument('', false, false, false)
+            );
         }
     }
 
@@ -51,7 +70,8 @@ export class FilterAreaComponent {
             new FilterArgument(
                 this._filterValue,
                 this._filterActivity,
-                this._filterAttributeValues
+                this._filterAttributeValues,
+                this._matchCase
             )
         );
     }
@@ -67,7 +87,8 @@ export class FilterAreaComponent {
             new FilterArgument(
                 this._filterValue,
                 this._filterActivity,
-                this._filterAttributeValues
+                this._filterAttributeValues,
+                this._matchCase
             )
         );
     }
@@ -81,7 +102,8 @@ export class FilterAreaComponent {
             new FilterArgument(
                 this._filterValue,
                 this._filterActivity,
-                this._filterAttributeValues
+                this._filterAttributeValues,
+                this._matchCase
             )
         );
     }

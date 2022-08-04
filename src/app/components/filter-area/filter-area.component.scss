@@ -9,9 +9,22 @@
     margin: 10px;
 }
 
+.filter-button-small {
+    height: 32px;
+    width: 32px;
+}
+
+.icon-small {
+    position: absolute;
+    margin-top: -27px;
+    margin-left: -10px;
+    font-weight: 400;
+}
+
 .filter-field {
     margin-left: 10px;
     margin-right: 30px;
+    width: 200px;
 }
 
 .filter-checkboxes {

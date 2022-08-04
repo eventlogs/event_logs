@@ -10,7 +10,12 @@ import { FilterArgument } from '../components/filter-area/filter-area.component'
 export class EventlogDataService {
     private _eventLog: EventLog;
     private _filteredEventLog: EventLog;
-    private _filter: FilterArgument = new FilterArgument('', false, false);
+    private _filter: FilterArgument = new FilterArgument(
+        '',
+        false,
+        false,
+        false
+    );
 
     constructor(private _traceCaseSelectionService: TraceCaseSelectionService) {
         this._eventLog = new EventLog([], [], [], [], []);
@@ -87,25 +92,41 @@ export class EventlogDataService {
         this._eventLog.traces.forEach(trace => {
             if (
                 trace.events.some(event => {
-                    if (
-                        this._filter.filterActivity &&
-                        event.activity.includes(arg.filterValue)
-                    ) {
-                        console.log(event.activity);
+                    if (this.filterActivity(event)) {
                         return true;
                     }
-                    if (!this._filter.filterAttributeValues) {
-                        return false;
-                    }
-                    return event.attributes.some(attribute => {
-                        return attribute.value
-                            .toString()
-                            .includes(arg.filterValue);
-                    });
+                    return this.filterAttributes(event);
                 })
             ) {
                 this._filteredEventLog.traces.push(trace);
             }
         });
+    }
+
+    private filterAttributes(event: Event): boolean {
+        if (!this._filter.filterAttributeValues) {
+            return false;
+        }
+        return event.attributes.some(attribute => {
+            return this._filter.matchCase
+                ? attribute.value.toString().includes(this._filter.filterValue)
+                : attribute.value
+                      .toString()
+                      .toLowerCase()
+                      .includes(this._filter.filterValue);
+        });
+    }
+
+    private filterActivity(event: Event) {
+        if (!this._filter.filterActivity) {
+            return false;
+        }
+        if (this._filter.matchCase) {
+            return event.activity.includes(this._filter.filterValue);
+        } else {
+            return event.activity
+                .toLowerCase()
+                .includes(this._filter.filterValue.toLowerCase());
+        }
     }
 }
