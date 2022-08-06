@@ -28,6 +28,7 @@ import { LogTraceCaseComponent } from './components/log-information-view/log-cas
 import { LogInformationViewComponent } from './components/log-information-view/log-information-view.component';
 import { LayoutService } from './services/chain/common/layout-service/layout.service';
 import { SvgService } from './services/chain/common/svg-service/svg.service';
+import { AttributeValuePipe } from "./pipes/attribute-value.pipe";
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { SvgService } from './services/chain/common/svg-service/svg.service';
         SwitchDirectionButtonComponent,
         LogInformationViewComponent,
         LogTraceCaseComponent,
+        AttributeValuePipe
     ],
     imports: [
         BrowserModule,

@@ -14,10 +14,6 @@ import { Subscription } from 'rxjs';
 import { Diagram } from '../../../classes/diagram/diagram';
 import { LayoutService } from '../../../services/chain/common/layout-service/layout.service';
 import { SvgService } from '../../../services/chain/common/svg-service/svg.service';
-import {
-    DateAttribute,
-    EventLogAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
 import { TraceCaseSelectionService } from '../../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
@@ -120,21 +116,6 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             this.status = this.closedStatus;
         }
-    }
-
-    public getAttributeValue(attribute: EventLogAttribute): any {
-        if (attribute instanceof DateAttribute) {
-            return attribute.value.toLocaleDateString('de-De', {
-                timeZone: 'UTC',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-            });
-        }
-        return attribute.value;
     }
 
     public getDataWidthStyle() {
