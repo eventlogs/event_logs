@@ -20,7 +20,6 @@ export class AppComponent implements OnDestroy {
 
     public textareaFc: FormControl;
     private _sub: Subscription;
-    private _subSelectedTraces: Subscription;
     public _selectedTraceCaseIds: Array<number> = [];
     private _xesImport: boolean = false;
 
@@ -40,21 +39,12 @@ export class AppComponent implements OnDestroy {
 
         this.processLogImport(this.logExampleValue());
 
-        this._subSelectedTraces =
-            this.traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
-                selectedTraceCaseIds => {
-                    this._selectedTraceCaseIds = selectedTraceCaseIds;
-                    console.log("update views sub selected traces");
-                    this.updateViews();
-                }
-            );
         console.log("update views constructor");
         this.updateViews();
     }
 
     ngOnDestroy(): void {
         this._sub.unsubscribe();
-        this._subSelectedTraces.unsubscribe();
     }
 
     @HostListener('document:keydown', ['$event'])
