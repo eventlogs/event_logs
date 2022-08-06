@@ -3,6 +3,7 @@ import {
     ElementRef,
     Inject,
     Input,
+    OnInit,
     OnDestroy,
     ViewChild,
 } from '@angular/core';
@@ -18,13 +19,13 @@ import { TraceCaseSelectionService } from '../../services/chain/common/trace-cas
     templateUrl: './wertschoepfungskette.component.html',
     styleUrls: ['./wertschoepfungskette.component.scss'],
 })
-export class WertschoepfungsketteComponent implements OnDestroy {
+export class WertschoepfungsketteComponent implements OnInit, OnDestroy {
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
     @Input() clientWidth: number | undefined;
 
-    private _sub: Subscription;
+    private _sub: Subscription | undefined;
     private _diagram: Diagram | undefined;
-    private _subSelectedTraces: Subscription;
+    private _subSelectedTraces: Subscription | undefined;
     private _selectedTraceCaseIds: Array<number> = [];
     public heightPx: number = 390;
     public widthPx: number = 1080;
@@ -36,7 +37,9 @@ export class WertschoepfungsketteComponent implements OnDestroy {
         private _svgService: SvgService,
         private _traceCaseSelectionService: TraceCaseSelectionService,
         private _displayService: DisplayService
-    ) {
+    ) {}
+
+    ngOnInit(): void {
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
             [this.widthPx, this.heightPx] = this._layoutService.layout(
@@ -59,8 +62,8 @@ export class WertschoepfungsketteComponent implements OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this._sub.unsubscribe();
-        this._subSelectedTraces.unsubscribe();
+        this._sub?.unsubscribe();
+        this._subSelectedTraces?.unsubscribe();
     }
 
     private draw() {
