@@ -29,6 +29,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             graph => {
                 this._graph = graph;
                 this._layoutService.layout(this._graph);
+                console.log("DFG draw");
                 this.draw();
             }
         );

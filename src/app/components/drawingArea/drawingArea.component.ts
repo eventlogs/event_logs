@@ -4,7 +4,6 @@ import {
     ElementRef,
     ViewChild,
 } from '@angular/core';
-import { DisplayService } from 'src/app/services/chain/value-chain/display-service/display.service';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
@@ -58,6 +57,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     clickDrawArea() {
+        console.log("click");
         this._traceCaseSelectionService.selectTraceCaseIds([]);
     }
 }

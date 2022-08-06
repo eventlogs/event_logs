@@ -45,12 +45,14 @@ export class WertschoepfungsketteComponent implements OnDestroy {
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
+            console.log("VC init draw");
             this.draw();
         });
         this._subSelectedTraces =
             this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
+                    console.log("VC select draw");
                     this.draw();
                 }
             );
