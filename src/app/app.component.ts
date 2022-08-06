@@ -165,7 +165,6 @@ export class AppComponent implements OnDestroy {
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
             this._eventlogDataService.eventLog
         );
-        this.drawingArea?.refresh();
     }
 
     logExampleValue() {

@@ -18,7 +18,6 @@ import { ExportMenuItemComponent } from './components/export-button/export-menu-
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { ChangeViewButtonComponent } from './components/change-view-button/change-view-button.component';
 import { APP_BASE_HREF } from '@angular/common';
-import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -41,7 +40,6 @@ import { SvgService } from './services/chain/common/svg-service/svg.service';
         ExportMenuItemComponent,
         DirectlyFollowsGraphComponent,
         ChangeViewButtonComponent,
-        TracesDetailViewComponent,
         DrawingAreaComponent,
         ExportButtonComponent,
         SwitchDirectionButtonComponent,

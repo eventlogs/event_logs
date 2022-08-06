@@ -7,7 +7,6 @@ import {
 import { DisplayService } from 'src/app/services/chain/value-chain/display-service/display.service';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
-import { TracesDetailViewComponent } from '../traces-detail-view/traces-detail-view.component';
 import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
@@ -17,7 +16,6 @@ import { TraceCaseSelectionService } from '../../services/chain/common/trace-cas
 })
 export class DrawingAreaComponent implements AfterContentChecked {
     @ViewChild('drawingArea') drawingArea!: ElementRef;
-    @ViewChild('tracesDetailView') tracesDetailView?: TracesDetailViewComponent;
 
     public canvasWidth: number = 0;
     wertschoepfungsketteHidden: boolean = false;
@@ -61,9 +59,5 @@ export class DrawingAreaComponent implements AfterContentChecked {
 
     clickDrawArea() {
         this._traceCaseSelectionService.selectTraceCaseIds([]);
-    }
-
-    refresh() {
-        this.tracesDetailView?.refresh();
     }
 }
