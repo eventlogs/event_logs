@@ -6,7 +6,9 @@ import {
 } from '@angular/core';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
-import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
+import { LoadingService } from "../../services/loading.service";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: 'app-drawing-area',
@@ -16,15 +18,25 @@ import { TraceCaseSelectionService } from '../../services/chain/common/trace-cas
 export class DrawingAreaComponent implements AfterContentChecked {
     @ViewChild('drawingArea') drawingArea!: ElementRef;
 
+    loading$ = this.loader.loading$;
     public canvasWidth: number = 0;
     wertschoepfungsketteHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
     logInformationHidden: boolean = true;
+    private _subLoadingIndicator: Subscription | undefined;
 
     constructor(
         private _traceCaseSelectionService: TraceCaseSelectionService,
-        private _directyFollowsGraphService: DirectlyFollowsGraphService
-    ) {}
+        private _directyFollowsGraphService: DirectlyFollowsGraphService,
+        public loader: LoadingService
+    ) {
+        this._subLoadingIndicator =
+            this.loader.loading$.subscribe(
+                loading => {
+                    console.log("LOADING: " + loading);
+                }
+            );
+    }
 
     ngAfterContentChecked() {
         if (this.drawingArea != undefined) {

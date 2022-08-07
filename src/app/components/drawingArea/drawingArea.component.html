@@ -4,6 +4,10 @@
     *ngIf="!direktfolgegraphHidden"
     (switchDirectionEvent)="switchDirection()"></app-switch-direction-button>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
+    <div class="loading-screen"
+         *ngIf="loading$ | async">
+        <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+    </div>
     <app-wertschoepfungskette
         [clientWidth]="canvasWidth"
         [hidden]="wertschoepfungsketteHidden"

@@ -8,7 +8,8 @@ import { EventlogDataService } from './services/eventlog-data.service';
 import { XesParserService } from './services/xes-parser.service';
 import { LogService } from './services/log.service';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
-import { TraceCaseSelectionService } from './services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { TraceCaseSelectionService } from './services/common/trace-case-selection-service/trace-case-selection.service';
+import { LoadingService } from "./services/loading.service";
 
 @Component({
     selector: 'app-root',
@@ -30,7 +31,8 @@ export class AppComponent implements OnDestroy {
         private traceCaseSelectionService: TraceCaseSelectionService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
-        public _eventlogDataService: EventlogDataService
+        public _eventlogDataService: EventlogDataService,
+        private loadingSpinner: LoadingService
     ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
@@ -64,6 +66,7 @@ export class AppComponent implements OnDestroy {
     }
 
     private processSourceChange(newSource: string) {
+        this.loadingSpinner.show();
         console.log("Parse new source in textfield");
         const startLogParse = Date.now();
         const result = this._logParserService.parse(newSource);
@@ -88,9 +91,13 @@ export class AppComponent implements OnDestroy {
             }
         }
         this._xesImport = false;
+        this.loadingSpinner.hide();
+        console.log("FINISHED LOADING");
     }
 
     processImport([fileExtension, fileContent]: [string, string]) {
+        this.loadingSpinner.show();
+        console.log("LOADING");
         if (['log', 'txt'].includes(fileExtension)) {
             this.processLogImport(fileContent);
         } else if ('xes' === fileExtension) {
@@ -102,6 +109,8 @@ export class AppComponent implements OnDestroy {
                     ' can not be imported!'
             );
         }
+        this.loadingSpinner.hide();
+        console.log("FINISHED LOADING");
     }
 
     processLogImport(fileContent: string) {
@@ -155,6 +164,8 @@ export class AppComponent implements OnDestroy {
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
             this._eventlogDataService.eventLog
         );
+        this.loadingSpinner.hide();
+        console.log("FINISHED LOADING");
     }
 
     logExampleValue() {

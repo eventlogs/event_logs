@@ -71,7 +71,7 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
                     console.log("borders only");
-                    this.drawSelectedBorder();
+                    this.draw();
                 }
             );
     }

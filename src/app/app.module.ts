@@ -29,6 +29,7 @@ import { LogInformationViewComponent } from './components/log-information-view/l
 import { LayoutService } from './services/chain/common/layout-service/layout.service';
 import { SvgService } from './services/chain/common/svg-service/svg.service';
 import { AttributeValuePipe } from "./pipes/attribute-value.pipe";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
     declarations: [
@@ -62,6 +63,7 @@ import { AttributeValuePipe } from "./pipes/attribute-value.pipe";
         MatPaginatorModule,
         MatSortModule,
         MatMenuModule,
+        MatProgressSpinnerModule
     ],
     providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
