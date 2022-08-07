@@ -10,6 +10,7 @@ import { LogService } from './services/file-operations/log/log.service';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
 import { TraceCaseSelectionService } from './services/common/trace-case-selection-service/trace-case-selection.service';
 import { LoadingService } from "./services/views/loading/loading.service";
+import { ValueChainControllerService } from "./services/views/value-chain/value-chain-controller.service";
 
 @Component({
     selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnDestroy {
 
     public textareaFc: FormControl;
     private _sub: Subscription;
+    private _subSelectedTraces: Subscription;
     public _selectedTraceCaseIds: Array<number> = [];
     private _xesImport: boolean = false;
 
@@ -28,7 +30,8 @@ export class AppComponent implements OnDestroy {
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
         private _displayService: DisplayService,
-        private traceCaseSelectionService: TraceCaseSelectionService,
+        private _valueChainControllerService: ValueChainControllerService,
+        private _traceCaseSelectionService: TraceCaseSelectionService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         public _eventlogDataService: EventlogDataService,
@@ -38,6 +41,14 @@ export class AppComponent implements OnDestroy {
         this._sub = this.textareaFc.valueChanges
             .pipe(debounceTime(400))
             .subscribe(val => this.processSourceChange(val));
+
+        this._subSelectedTraces =
+            this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
+                selectedTraceCaseIds => {
+                    this._selectedTraceCaseIds = selectedTraceCaseIds;
+                    this.updateViews();
+                }
+            );
 
         this.processLogImport(this.logExampleValue());
 
@@ -61,7 +72,7 @@ export class AppComponent implements OnDestroy {
         }
 
         if (event.key == 'Escape') {
-            this.traceCaseSelectionService.selectTraceCaseIds([]);
+            this._traceCaseSelectionService.selectTraceCaseIds([]);
         }
     }
 
@@ -78,7 +89,7 @@ export class AppComponent implements OnDestroy {
                     trace => [caseId].indexOf(trace.caseId) !== -1
                 ).length > 0;
             if (!caseIdStillExists) {
-                this.traceCaseSelectionService.selectTraceCaseIds([]);
+                this._traceCaseSelectionService.selectTraceCaseIds([]);
                 break;
             }
         }
@@ -117,7 +128,7 @@ export class AppComponent implements OnDestroy {
         this.updateTextarea(fileContent);
     }
 
-    processXesImport(fileContent: string) {
+    async processXesImport(fileContent: string) {
         try {
             console.log("parsing content");
             const startParsing = Date.now();
@@ -158,9 +169,12 @@ export class AppComponent implements OnDestroy {
     }
 
     updateViews() {
-        this._displayService.displayEventLog(
+        this._valueChainControllerService.updateValueChain(
             this._eventlogDataService.eventLog
         );
+        // this._displayService.displayEventLog(
+        //     this._eventlogDataService.eventLog
+        // );
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
             this._eventlogDataService.eventLog
         );

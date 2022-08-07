@@ -34,5 +34,6 @@ export class DisplayService extends DisplayServiceBase {
     public displayEventLog(log: EventLog) {
         let net = this.convertEventLogToDiagram(log);
         this._diagram$.next(net);
+        return net;
     }
 }
