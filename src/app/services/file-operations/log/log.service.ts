@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Trace } from '../classes/EventLog/trace';
-import { Event } from '../classes/EventLog/event';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Trace } from '../../../classes/EventLog/trace';
+import { Event } from '../../../classes/EventLog/event';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,7 +9,7 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
+} from '../../../classes/EventLog/eventlogattribute';
 
 @Injectable({
     providedIn: 'root',

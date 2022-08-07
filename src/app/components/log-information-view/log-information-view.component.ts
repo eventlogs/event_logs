@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EventlogDataService } from 'src/app/services/eventlog-data.service';
+import { EventlogDataService } from 'src/app/services/common/data/eventlog-data.service';
 import { Trace } from '../../classes/EventLog/trace';
 
 @Component({

@@ -1,5 +1,5 @@
-import { Diagram } from '../../../../classes/diagram/diagram';
-import { Element } from '../../../../classes/diagram/element';
+import { Diagram } from '../../../classes/diagram/diagram';
+import { Element } from '../../../classes/diagram/element';
 
 export class LayoutService {
     public static readonly LOG_INFORMATION_INSTANCE =

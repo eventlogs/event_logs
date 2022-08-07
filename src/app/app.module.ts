@@ -26,8 +26,8 @@ import { ExportButtonComponent } from './components/export-button/export-button.
 import { SwitchDirectionButtonComponent } from './components/switch-direction-button/switch-direction-button.component';
 import { LogTraceCaseComponent } from './components/log-information-view/log-case/log-trace-case.component';
 import { LogInformationViewComponent } from './components/log-information-view/log-information-view.component';
-import { LayoutService } from './services/chain/common/layout-service/layout.service';
-import { SvgService } from './services/chain/common/svg-service/svg.service';
+import { LayoutService } from './services/common/layout-service/layout.service';
+import { SvgService } from './services/common/svg-service/svg.service';
 import { AttributeValuePipe } from "./pipes/attribute-value.pipe";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 

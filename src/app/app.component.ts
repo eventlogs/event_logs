@@ -1,15 +1,15 @@
 import { Component, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { LogParserService } from './services/log-parser.service';
-import { DisplayService } from './services/chain/value-chain/display-service/display.service';
+import { LogParserService } from './services/file-operations/log/log-parser.service';
+import { DisplayService } from './services/views/value-chain/display-service/display.service';
 import { debounceTime, Subscription } from 'rxjs';
-import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
-import { EventlogDataService } from './services/eventlog-data.service';
-import { XesParserService } from './services/xes-parser.service';
-import { LogService } from './services/log.service';
+import { DirectlyFollowsGraphService } from './services/views/directly-follows-graph/display.service';
+import { EventlogDataService } from './services/common/data/eventlog-data.service';
+import { XesParserService } from './services/file-operations/xes/xes-parser.service';
+import { LogService } from './services/file-operations/log/log.service';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
 import { TraceCaseSelectionService } from './services/common/trace-case-selection-service/trace-case-selection.service';
-import { LoadingService } from "./services/loading.service";
+import { LoadingService } from "./services/views/loading/loading.service";
 
 @Component({
     selector: 'app-root',

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { SvgService } from './svg.service';
-import { AppModule } from '../../../../app.module';
+import { AppModule } from '../../../app.module';
 import { NgModule, ProviderToken } from '@angular/core';
 
 describe('SvgService', () => {

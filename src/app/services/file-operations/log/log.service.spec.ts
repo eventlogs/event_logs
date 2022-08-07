@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { LogService } from './log.service';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Trace } from '../classes/EventLog/trace';
-import { Event } from '../classes/EventLog/event';
-import { StringAttribute } from '../classes/EventLog/eventlogattribute';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Trace } from '../../../classes/EventLog/trace';
+import { Event } from '../../../classes/EventLog/event';
+import { StringAttribute } from '../../../classes/EventLog/eventlogattribute';
 
 describe('Log.ServiceService', () => {
     let service: LogService;

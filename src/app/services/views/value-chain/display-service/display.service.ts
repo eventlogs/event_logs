@@ -3,7 +3,7 @@ import { Diagram } from '../../../../classes/diagram/diagram';
 import { GraphTrace } from '../../../../classes/diagram/GraphTrace';
 import { EventLog } from '../../../../classes/EventLog/eventlog';
 import { Element, ElementType } from '../../../../classes/diagram/element';
-import { DisplayServiceBase } from '../../common/display-service/display-base.service';
+import { DisplayServiceBase } from '../../../common/display-service/display-base.service';
 
 @Injectable({
     providedIn: 'root',

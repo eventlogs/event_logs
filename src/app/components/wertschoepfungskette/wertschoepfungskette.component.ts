@@ -7,12 +7,12 @@ import {
     OnDestroy,
     ViewChild,
 } from '@angular/core';
-import { DisplayService } from '../../services/chain/value-chain/display-service/display.service';
+import { DisplayService } from '../../services/views/value-chain/display-service/display.service';
 import { Subscription } from 'rxjs';
 import { Diagram } from '../../classes/diagram/diagram';
-import { LayoutService } from '../../services/chain/common/layout-service/layout.service';
-import { SvgService } from '../../services/chain/common/svg-service/svg.service';
-import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { LayoutService } from '../../services/common/layout-service/layout.service';
+import { SvgService } from '../../services/common/svg-service/svg.service';
+import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-wertschoepfungskette',

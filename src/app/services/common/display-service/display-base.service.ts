@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Diagram } from '../../../../classes/diagram/diagram';
-import { GraphEvent } from '../../../../classes/diagram/GraphEvent';
-import { Element, ElementType } from '../../../../classes/diagram/element';
-import { Trace } from '../../../../classes/EventLog/trace';
+import { Diagram } from '../../../classes/diagram/diagram';
+import { GraphEvent } from '../../../classes/diagram/GraphEvent';
+import { Element, ElementType } from '../../../classes/diagram/element';
+import { Trace } from '../../../classes/EventLog/trace';
 import { TraceCaseSelectionService } from '../trace-case-selection-service/trace-case-selection.service';
 
 @Injectable()

@@ -1,7 +1,7 @@
-import { Diagram } from '../../../../classes/diagram/diagram';
-import { Element, ElementType } from '../../../../classes/diagram/element';
+import { Diagram } from '../../../classes/diagram/diagram';
+import { Element, ElementType } from '../../../classes/diagram/element';
 import { LayoutService } from '../layout-service/layout.service';
-import { GraphTrace } from '../../../../classes/diagram/GraphTrace';
+import { GraphTrace } from '../../../classes/diagram/GraphTrace';
 
 export class SvgService {
     private readonly backgroundColors = [

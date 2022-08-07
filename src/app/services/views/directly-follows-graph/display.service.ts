@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Edge } from '../../classes/directly-follows-graph/edge';
-import { Graph } from '../../classes/directly-follows-graph/graph';
-import { Vertex } from '../../classes/directly-follows-graph/vertex';
-import { Event } from '../../classes/EventLog/event';
-import { EventLog } from '../../classes/EventLog/eventlog';
-import { Trace } from '../../classes/EventLog/trace';
-import { EventlogDataService } from '../eventlog-data.service';
+import { Edge } from '../../../classes/directly-follows-graph/edge';
+import { Graph } from '../../../classes/directly-follows-graph/graph';
+import { Vertex } from '../../../classes/directly-follows-graph/vertex';
+import { Event } from '../../../classes/EventLog/event';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Trace } from '../../../classes/EventLog/trace';
+import { EventlogDataService } from '../../common/data/eventlog-data.service';
 
 @Injectable({
     providedIn: 'root',

@@ -2,14 +2,14 @@ import { TestBed } from '@angular/core/testing';
 
 import { XesParserService } from './xes-parser.service';
 import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Trace } from '../classes/EventLog/trace';
-import { Event } from '../classes/EventLog/event';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Trace } from '../../../classes/EventLog/trace';
+import { Event } from '../../../classes/EventLog/event';
 import {
     FloatAttribute,
     StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
-import { Classifier } from '../classes/EventLog/classifier';
+} from '../../../classes/EventLog/eventlogattribute';
+import { Classifier } from '../../../classes/EventLog/classifier';
 import { MatFormField } from '@angular/material/form-field';
 
 describe('XesParserService', () => {

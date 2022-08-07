@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as xml2js from 'xml2js';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Event } from '../classes/EventLog/event';
-import { Trace } from '../classes/EventLog/trace';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Event } from '../../../classes/EventLog/event';
+import { Trace } from '../../../classes/EventLog/trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -10,8 +10,8 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
-import { Classifier } from '../classes/EventLog/classifier';
+} from '../../../classes/EventLog/eventlogattribute';
+import { Classifier } from '../../../classes/EventLog/classifier';
 
 @Injectable({
     providedIn: 'root',

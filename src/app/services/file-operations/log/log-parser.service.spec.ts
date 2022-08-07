@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { LogParserService } from './log-parser.service';
 import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { Event } from '../classes/EventLog/event';
+import { Event } from '../../../classes/EventLog/event';
 import {
     BooleanAttribute,
     DateAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
-import { Trace } from '../classes/EventLog/trace';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { DrawingAreaComponent } from '../components/drawingArea/drawingArea.component';
+} from '../../../classes/EventLog/eventlogattribute';
+import { Trace } from '../../../classes/EventLog/trace';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { DrawingAreaComponent } from '../../../components/drawingArea/drawingArea.component';
 
 describe('LogParserService', () => {
     let service: LogParserService;

@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { DisplayService } from '../../services/chain/value-chain/display-service/display.service';
-import { LogService } from '../../services/log.service';
-import { DirectlyFollowsGraphService } from '../../services/directly-follows-graph/display.service';
-import { XesService } from '../../services/xes.service';
-import { EventlogDataService } from '../../services/eventlog-data.service';
-import { SvgService as DirectlyFollowsGraphSvgService } from '../../services/directly-follows-graph/svg.service';
+import { DisplayService } from '../../services/views/value-chain/display-service/display.service';
+import { LogService } from '../../services/file-operations/log/log.service';
+import { DirectlyFollowsGraphService } from '../../services/views/directly-follows-graph/display.service';
+import { XesService } from '../../services/file-operations/xes/xes.service';
+import { EventlogDataService } from '../../services/common/data/eventlog-data.service';
+import { SvgService as DirectlyFollowsGraphSvgService } from '../../services/views/directly-follows-graph/svg.service';
 import { saveAs } from 'file-saver';
-import { SvgService } from '../../services/chain/common/svg-service/svg.service';
-import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { SvgService } from '../../services/common/svg-service/svg.service';
+import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-export-button',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Classifier } from '../classes/EventLog/classifier';
-import { Event } from '../classes/EventLog/event';
-import { EventLog } from '../classes/EventLog/eventlog';
+import { Classifier } from '../../../classes/EventLog/classifier';
+import { Event } from '../../../classes/EventLog/event';
+import { EventLog } from '../../../classes/EventLog/eventlog';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,8 +9,8 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
-import { Trace } from '../classes/EventLog/trace';
+} from '../../../classes/EventLog/eventlogattribute';
+import { Trace } from '../../../classes/EventLog/trace';
 var format = require('xml-formatter');
 
 @Injectable({

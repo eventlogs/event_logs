@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { Diagram } from '../../../../classes/diagram/diagram';
-import { GraphEvent } from '../../../../classes/diagram/GraphEvent';
-import { GraphTrace } from '../../../../classes/diagram/GraphTrace';
+import { Diagram } from '../../../classes/diagram/diagram';
+import { GraphEvent } from '../../../classes/diagram/GraphEvent';
+import { GraphTrace } from '../../../classes/diagram/GraphTrace';
 import { LayoutService } from './layout.service';
-import { Element, ElementType } from '../../../../classes/diagram/element';
-import { AppModule } from '../../../../app.module';
+import { Element, ElementType } from '../../../classes/diagram/element';
+import { AppModule } from '../../../app.module';
 import { NgModule, ProviderToken } from '@angular/core';
 
 describe('LayoutService', () => {

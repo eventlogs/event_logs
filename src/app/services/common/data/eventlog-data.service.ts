@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Event } from '../classes/EventLog/event';
-import { TraceCaseSelectionService } from './chain/common/trace-case-selection-service/trace-case-selection.service';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Event } from '../../../classes/EventLog/event';
+import { TraceCaseSelectionService } from '../trace-case-selection-service/trace-case-selection.service';
 
 @Injectable({
     providedIn: 'root',

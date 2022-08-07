@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DisplayService } from './display.service';
-import { TraceCaseSelectionService } from '../../common/trace-case-selection-service/trace-case-selection.service';
+import { TraceCaseSelectionService } from '../../../common/trace-case-selection-service/trace-case-selection.service';
 
 describe('DisplayService', () => {
     let service: DisplayService;

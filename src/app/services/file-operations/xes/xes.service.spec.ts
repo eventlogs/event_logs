@@ -8,10 +8,10 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../classes/EventLog/eventlogattribute';
-import { Event } from '../classes/EventLog/event';
-import { EventLog } from '../classes/EventLog/eventlog';
-import { Trace } from '../classes/EventLog/trace';
+} from '../../../classes/EventLog/eventlogattribute';
+import { Event } from '../../../classes/EventLog/event';
+import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Trace } from '../../../classes/EventLog/trace';
 import { MatFormField } from '@angular/material/form-field';
 var format = require('xml-formatter');
 

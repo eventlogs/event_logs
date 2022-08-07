@@ -4,10 +4,10 @@ import {
     ElementRef,
     ViewChild,
 } from '@angular/core';
-import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
+import { DirectlyFollowsGraphService } from 'src/app/services/views/directly-follows-graph/display.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
-import { LoadingService } from "../../services/loading.service";
+import { LoadingService } from "../../services/views/loading/loading.service";
 import { Subscription } from "rxjs";
 
 @Component({
