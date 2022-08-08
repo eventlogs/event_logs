@@ -56,8 +56,6 @@ export class LogService {
      * @return .type log formattierter String
      */
     public generate(eventLog: EventLog): string {
-        console.log("generating log for text area");
-        const startGenerateLog = Date.now();
         if (eventLog.traces.length == 0) {
             return '';
         }
@@ -79,7 +77,6 @@ export class LogService {
                 this.getTraceRepresentation(trace, trace.caseId, attributes)
             )
             .join('\n');
-        console.log("finished generating log - took " + ((Date.now() - startGenerateLog)/1000) + " seconds");
         return logString;
     }
 

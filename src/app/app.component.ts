@@ -11,6 +11,8 @@ import { DrawingAreaComponent } from './components/drawingArea/drawingArea.compo
 import { TraceCaseSelectionService } from './services/common/trace-case-selection-service/trace-case-selection.service';
 import { LoadingService } from "./services/views/loading/loading.service";
 import { ValueChainControllerService } from "./services/views/value-chain/value-chain-controller.service";
+import { EventLog } from "./classes/EventLog/eventlog";
+import { XesParser } from "./classes/EventLog/xesParser";
 
 @Component({
     selector: 'app-root',
@@ -128,28 +130,56 @@ export class AppComponent implements OnDestroy {
         this.updateTextarea(fileContent);
     }
 
+    parseXesFile(fileContent: string) {
+        return new Promise<EventLog>((resolve, reject) => {
+            if (typeof Worker !== 'undefined') {
+                const worker = new Worker(new URL('./workers/xes-parser.worker', import.meta.url));
+                worker.onmessage = ({ data }) => {
+                    if (data == null) {
+                        reject(XesParser.PARSING_ERROR);
+                    }
+                    console.log("WORKER USED");
+                    const result = new EventLog(data._classifiers,
+                        data._globalEventAttributes,
+                        data._globalTraceAttributes,
+                        data._traces,
+                        data._attributes);
+                    resolve(result);
+                };
+                worker.postMessage(fileContent);
+            } else {
+                // web worker not available, fallback option
+                try {
+                    const result = this._xesParserService.parse(fileContent);
+                    resolve(result);
+                }
+                catch (e) {
+                    this._xesImport = false;
+                    if (e === XesParser.PARSING_ERROR) {
+                        alert(
+                            'The uploaded XES file could not be parsed.\n' +
+                            'Check the file for valid XES syntax and try again.'
+                        );
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        })
+    }
+
     async processXesImport(fileContent: string) {
         try {
-            console.log("parsing content");
-            const startParsing = Date.now();
-            const result = this._xesParserService.parse(fileContent);
-            console.log("done parsing - took " + ((Date.now() - startParsing)/1000) + " seconds");
+            const result = await this.parseXesFile(fileContent);
             this._xesImport = true;
             if (result !== undefined) {
-                console.log("updating event log representation");
-                const startStoreLog = Date.now();
                 this._eventlogDataService.eventLog = result;
-                console.log("done updating log rep - took " + ((Date.now() - startStoreLog)/1000) + " seconds");
-                console.log("updating textarea");
-                const startTextarea = Date.now();
                 this.updateTextarea(this._logService.generate(result));
-                console.log("done updating textarea - took " + ((Date.now() - startTextarea)/1000) + " seconds");
-                console.log("update views xes import");
                 this.updateViews();
             }
         } catch (e) {
             this._xesImport = false;
-            if (e === XesParserService.PARSING_ERROR) {
+            if (e === XesParser.PARSING_ERROR) {
                 alert(
                     'The uploaded XES file could not be parsed.\n' +
                         'Check the file for valid XES syntax and try again.'
