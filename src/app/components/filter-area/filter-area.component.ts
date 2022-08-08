@@ -96,7 +96,7 @@ export class FilterAreaComponent {
     applyFilter(filterValue: string) {
         this._filterValue = filterValue;
         if (!this._filterUsed) {
-            return;
+            this._filterUsed = true;
         }
         this.filterChanged.emit(
             new FilterArgument(
