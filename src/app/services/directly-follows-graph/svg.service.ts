@@ -94,6 +94,7 @@ export class SvgService {
                     vertex.activityName
                 );
 
+                //Anpassung von Durchlässigkeit und Offset, um weniger häufige Knoten abzugrenzen
                 let opacity =
                     vertex.activityCount / this.maxActivityCountVertex;
 
@@ -159,10 +160,6 @@ export class SvgService {
     private createPathForDummyVertex(vertex: Vertex): SVGElement {
         let path = SvgService.createSvgElement('path');
 
-        // let startX: number = vertex.getSvgElementXValue();
-        // let startY: number = vertex.getSvgElementXValue();
-        // let endX: number = vertex.getSvgElementYValue();
-        // let endY: number = vertex.getSvgElementYValue();
         let startX: number = 0;
         let startY: number = 0;
         let endX: number = 0;
@@ -196,17 +193,10 @@ export class SvgService {
         rect.setAttribute('ry', '15');
         rect.setAttribute('width', this.rectWidth.toString());
         rect.setAttribute('height', this.rectHeight.toString());
-        // let color = ValueChainSvgService.activityColorMap.get(
-        //     vertex.activityName
-        // );
-        // if (color != undefined) rect.setAttribute('fill', color.toString());
         rect.setAttribute(
             'fill',
             "url('#" + vertex.activityName + "Gradient')"
         );
-        //Setze höhere Füllstärke, für häufiger vorkommende Knoten
-        // let percent = vertex.activityCount / this.maxActivityCountVertex;
-        // let fillOpacity = 0.1 + 0.9 * percent;
         rect.setAttribute('fill-opacity', '1');
         rect.setAttribute('stroke-width', '2');
         rect.setAttribute('stroke', 'black');
