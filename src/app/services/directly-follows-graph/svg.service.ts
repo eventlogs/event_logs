@@ -3,6 +3,7 @@ import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
 import { DirectlyFollowsGraphService } from './display.service';
+import { SvgService as ValueChainSvgService } from '../chain/common/svg-service/svg.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,7 +13,7 @@ export class SvgService {
     private _rectHeight: number = 40;
     private _offsetXValue: number = this._rectWidth * 1.5;
     private _offsetYValue: number = this._rectHeight * 2.5;
-    private maxActivityCount = 0;
+    private maxActivityCountVertex = 0;
 
     public get rectWidth(): number {
         return this._rectWidth;
@@ -35,7 +36,9 @@ export class SvgService {
     public createSvgElements(graph: Graph): SVGElement[] {
         let result: SVGElement[] = [];
 
-        this.setMaxActivityCount(graph);
+        this.maxActivityCountVertex = graph.getMaxActivityCountVertex();
+
+        result.push(this.createGradients(graph));
 
         graph.vertices.forEach(vertex => {
             let container = this.createContainer(vertex);
@@ -71,14 +74,61 @@ export class SvgService {
         return result;
     }
 
-    private setMaxActivityCount(graph: Graph) {
-        this.maxActivityCount = 0;
+    private createGradients(graph: Graph): SVGElement {
+        let defs = SvgService.createSvgElement('defs');
+
         graph.vertices.forEach(vertex => {
-            this.maxActivityCount = Math.max(
-                vertex.activityCount,
-                this.maxActivityCount
-            );
+            if (!vertex.isDummy) {
+                let linearGradient =
+                    SvgService.createSvgElement('linearGradient');
+                linearGradient.setAttribute(
+                    'id',
+                    vertex.activityName + 'Gradient'
+                );
+                linearGradient.setAttribute('x1', '0%');
+                linearGradient.setAttribute('y1', '0%');
+                linearGradient.setAttribute('x2', '100%');
+                linearGradient.setAttribute('y2', '0%');
+
+                let color = ValueChainSvgService.activityColorMap.get(
+                    vertex.activityName
+                );
+
+                let opacity =
+                    vertex.activityCount / this.maxActivityCountVertex;
+
+                let offset = 33 - 33 * opacity;
+
+                let stop1 = this.createStop(offset, opacity, color);
+
+                let stop2 = this.createStop(50, 1, color);
+
+                offset = 67 + 33 * opacity;
+                let stop3 = this.createStop(offset, opacity, color);
+
+                linearGradient.append(stop1);
+                linearGradient.append(stop2);
+                linearGradient.append(stop3);
+
+                defs.append(linearGradient);
+            }
         });
+
+        return defs;
+    }
+
+    private createStop(
+        offset: number,
+        opacity: number,
+        color: String | undefined
+    ): SVGElement {
+        let stop = SvgService.createSvgElement('stop');
+        stop.setAttribute('offset', offset.toString() + '%');
+        if (color != undefined)
+            stop.setAttribute('stop-color', color.toString());
+        stop.setAttribute('stop-opacity', opacity.toString());
+
+        return stop;
     }
 
     private createContainer(vertex: Vertex): SVGElement {
@@ -146,11 +196,18 @@ export class SvgService {
         rect.setAttribute('ry', '15');
         rect.setAttribute('width', this.rectWidth.toString());
         rect.setAttribute('height', this.rectHeight.toString());
-        rect.setAttribute('fill', 'rgb(150, 150, 150)');
+        // let color = ValueChainSvgService.activityColorMap.get(
+        //     vertex.activityName
+        // );
+        // if (color != undefined) rect.setAttribute('fill', color.toString());
+        rect.setAttribute(
+            'fill',
+            "url('#" + vertex.activityName + "Gradient')"
+        );
         //Setze höhere Füllstärke, für häufiger vorkommende Knoten
-        let fillOpacity =
-            0.1 + 0.8 * (vertex.activityCount / this.maxActivityCount);
-        rect.setAttribute('fill-opacity', fillOpacity.toString());
+        // let percent = vertex.activityCount / this.maxActivityCountVertex;
+        // let fillOpacity = 0.1 + 0.9 * percent;
+        rect.setAttribute('fill-opacity', '1');
         rect.setAttribute('stroke-width', '2');
         rect.setAttribute('stroke', 'black');
 

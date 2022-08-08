@@ -64,7 +64,10 @@ export class SvgService {
         this.topXCoordinate = 0 - this.boxHeight / 2;
     }
 
-    private static activityColorMap = new Map<String, number>();
+    private static _activityColorMap = new Map<String, String>();
+    public static get activityColorMap() {
+        return SvgService._activityColorMap;
+    }
 
     /// Erstellt alle benötigten SVGElemente für ein gegebenes Diagram
     /// Alle SVG's werden außerdem zurückgegeben
@@ -111,8 +114,10 @@ export class SvgService {
                         if (!SvgService.activityColorMap.has(ev.activity)) {
                             SvgService.activityColorMap.set(
                                 ev.activity,
-                                SvgService.activityColorMap.size %
-                                    this.backgroundColors.length
+                                this.backgroundColors[
+                                    SvgService.activityColorMap.size %
+                                        this.backgroundColors.length
+                                ]
                             ); // Wenn die Map größer ist als Size Farben recyclen
                         }
                         const rect = this.createBoxForElement(
@@ -147,7 +152,7 @@ export class SvgService {
         return svg;
     }
 
-    private createBoxForElement(element: Element, fill: number): SVGElement {
+    private createBoxForElement(element: Element, fill: String): SVGElement {
         const svg = SvgService.createSvgElement('polygon');
         svg.setAttribute('transform', `translate( ${element.x} ${element.y} )`);
         svg.setAttribute(
@@ -171,10 +176,7 @@ export class SvgService {
                                                          this.peakOffset
                                                      },${this.midPointOfHeight}`
         );
-        svg.setAttribute(
-            'fill',
-            this.backgroundColors[fill % this.backgroundColors.length]
-        );
+        svg.setAttribute('fill', fill.toString());
         svg.setAttribute('stroke-width', '2');
         svg.setAttribute('stroke', 'black');
 

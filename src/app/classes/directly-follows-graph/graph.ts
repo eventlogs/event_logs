@@ -128,4 +128,14 @@ export class Graph {
             else return 0;
         });
     }
+
+    public getMaxActivityCountVertex(): number {
+        let max = 0;
+
+        this.vertices.forEach(vertex => {
+            max = Math.max(vertex.activityCount, max);
+        });
+
+        return max;
+    }
 }
