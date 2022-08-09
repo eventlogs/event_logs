@@ -55,7 +55,6 @@ export class XesParser {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(xmlString: string): EventLog {
-        console.log("Hello there");
         const parser = new xml2js.Parser({ strict: false, trim: true });
         let parsedXmlObj = undefined;
 

@@ -1,5 +1,11 @@
+import 'reflect-metadata';
+import { jsonObject, jsonMember, jsonArrayMember } from "typedjson";
+
+@jsonObject
 export class Classifier {
+    @jsonMember
     private _name: string;
+    @jsonArrayMember(String)
     private _keys: Array<string>;
 
     public get name(): string {

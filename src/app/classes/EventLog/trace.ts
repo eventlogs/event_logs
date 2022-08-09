@@ -1,9 +1,28 @@
-import { EventLogAttribute } from './eventlogattribute';
+import {
+    BooleanAttribute,
+    DateAttribute,
+    EventLogAttribute,
+    FloatAttribute,
+    IntAttribute,
+    StringAttribute
+} from "./eventlogattribute";
 import { Event } from './event';
+import 'reflect-metadata';
+import { jsonObject, jsonMember, jsonArrayMember } from "typedjson";
 
+@jsonObject({
+    knownTypes: [StringAttribute,
+        DateAttribute,
+        IntAttribute,
+        FloatAttribute,
+        BooleanAttribute],
+})
 export class Trace {
+    @jsonArrayMember(EventLogAttribute)
     private _attributes: Array<EventLogAttribute>;
+    @jsonArrayMember(Event)
     private _events: Array<Event>;
+    @jsonMember
     private _caseId: number;
 
     public get attributes(): Array<EventLogAttribute> {

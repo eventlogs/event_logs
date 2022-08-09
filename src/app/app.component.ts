@@ -13,6 +13,7 @@ import { LoadingService } from "./services/views/loading/loading.service";
 import { ValueChainControllerService } from "./services/views/value-chain/value-chain-controller.service";
 import { EventLog } from "./classes/EventLog/eventlog";
 import { XesParser } from "./classes/EventLog/xesParser";
+import { TypedJSON } from "typedjson";
 
 @Component({
     selector: 'app-root',
@@ -139,12 +140,11 @@ export class AppComponent implements OnDestroy {
                         reject(XesParser.PARSING_ERROR);
                     }
                     console.log("WORKER USED");
-                    const result = new EventLog(data._classifiers,
-                        data._globalEventAttributes,
-                        data._globalTraceAttributes,
-                        data._traces,
-                        data._attributes);
-                    resolve(result);
+                    const serializer = new TypedJSON(EventLog);
+                    const result = serializer.parse(data);
+                    if (result != undefined) {
+                        resolve(result);
+                    }
                 };
                 worker.postMessage(fileContent);
             } else {
