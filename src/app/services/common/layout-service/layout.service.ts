@@ -6,8 +6,8 @@ export class LayoutService {
         'LogInformationLayoutService';
     public static readonly VALUE_CHAIN_INSTANCE = 'ValueChainLayoutService';
 
-    public static readonly X_OFFSET_VALUE_CHAIN = 10;
-    public static readonly X_OFFSET_LOG_INFORMATION = 10;
+    public static readonly X_OFFSET_VALUE_CHAIN = 40;
+    public static readonly X_OFFSET_LOG_INFORMATION = 40;
 
     public static readonly Y_OFFSET_VALUE_CHAIN = 30;
     public static readonly Y_OFFSET_LOG_INFORMATION = 25;

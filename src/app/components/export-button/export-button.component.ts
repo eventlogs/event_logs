@@ -78,7 +78,9 @@ export class ExportButtonComponent {
     exportSvgValueChain() {
         const elements = this._valueChainSvgService.createSvgElements(
             this._displayService.diagram,
-            this._selectedTraceCaseIds
+            this._selectedTraceCaseIds,
+            true,
+            true
         );
         this.saveFile(
             this.getSvg(elements),

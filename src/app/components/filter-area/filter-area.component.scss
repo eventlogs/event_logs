@@ -1,0 +1,41 @@
+.card {
+    margin-left: 30px;
+    margin-right: 30px;
+    border: rgba(0, 0, 0, 0.0) 1px solid;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.filter-button {
+    margin: 10px;
+}
+
+.filter-button-small {
+    height: 32px;
+    width: 32px;
+}
+
+.icon-small {
+    position: absolute;
+    margin-top: -27px;
+    margin-left: -10px;
+    font-weight: 400;
+}
+
+.filter-field {
+    margin-left: 10px;
+    margin-right: 30px;
+    width: 200px;
+}
+
+.filter-checkboxes {
+    margin-left: 10px;
+    margin-right: 30px;
+}
+
+::ng-deep .mat-button-toggle-checked {
+    color: rgb(227, 26, 28)!important;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-accent .mat-pseudo-checkbox-checked, .mat-accent .mat-pseudo-checkbox-indeterminate, .mat-pseudo-checkbox-checked, .mat-pseudo-checkbox-indeterminate {
+    background-color: rgb(227, 26, 28) !important;
+}

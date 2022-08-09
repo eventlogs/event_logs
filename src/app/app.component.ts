@@ -58,6 +58,7 @@ export class AppComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this._sub.unsubscribe();
+        this._subSelectedTraces.unsubscribe();
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -159,7 +160,6 @@ export class AppComponent implements OnDestroy {
             this.loadingSpinner.show();
             this.parseXesFile(fileContent).then(result => {
                 this._xesImport = true;
-                console.log('continuing...');
                 if (result !== undefined) {
                     this._eventlogDataService.eventLog = result;
                     this.updateTextarea(this._logService.generate(result));
@@ -195,6 +195,10 @@ export class AppComponent implements OnDestroy {
             this._eventlogDataService.eventLog
         );
         this.loadingSpinner.hide();
+    }
+
+    updateFilter(filter: String) {
+        this.updateViews();
     }
 
     logExampleValue() {

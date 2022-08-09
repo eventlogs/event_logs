@@ -8,9 +8,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-drop-file-upload.directive';
@@ -24,6 +26,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatMenuModule } from '@angular/material/menu';
 import { ExportButtonComponent } from './components/export-button/export-button.component';
 import { SwitchDirectionButtonComponent } from './components/switch-direction-button/switch-direction-button.component';
+import { FilterAreaComponent } from './components/filter-area/filter-area.component';
 import { LogTraceCaseComponent } from './components/log-information-view/log-case/log-trace-case.component';
 import { LogInformationViewComponent } from './components/log-information-view/log-information-view.component';
 import { LayoutService } from './services/common/layout-service/layout.service';
@@ -45,6 +48,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         DrawingAreaComponent,
         ExportButtonComponent,
         SwitchDirectionButtonComponent,
+        FilterAreaComponent,
         LogInformationViewComponent,
         LogTraceCaseComponent,
         AttributeValuePipe,
@@ -52,10 +56,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     imports: [
         BrowserModule,
         FlexLayoutModule,
+        FormsModule,
         BrowserAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
+        MatButtonToggleModule,
         MatIconModule,
         MatSidenavModule,
         ReactiveFormsModule,
@@ -64,6 +70,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatSortModule,
         MatMenuModule,
         MatProgressSpinnerModule,
+        MatCheckboxModule,
     ],
     providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

@@ -129,7 +129,7 @@ describe('LayoutService', () => {
         }
     });
 
-    const XOFFSET: number = 10;
+    const XOFFSET: number = 40;
     const TEXTWIDTH: number = 75;
     const EVENTWIDTH: number = 150;
 

@@ -2,11 +2,15 @@ import {
     AfterContentChecked,
     Component,
     ElementRef,
+    Output,
     ViewChild,
+    EventEmitter,
 } from '@angular/core';
 import { DirectlyFollowsGraphService } from 'src/app/services/views/directly-follows-graph/display.service';
+import { EventlogDataService } from 'src/app/services/common/data/eventlog-data.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
+import { FilterArgument } from '../filter-area/filter-area.component';
 import { LoadingService } from '../../services/views/loading/loading.service';
 
 @Component({
@@ -23,9 +27,12 @@ export class DrawingAreaComponent implements AfterContentChecked {
     direktfolgegraphHidden: boolean = true;
     logInformationHidden: boolean = true;
 
+    @Output() filterChanged = new EventEmitter();
+
     constructor(
+        private _directlyFollowsGraphService: DirectlyFollowsGraphService,
         private _traceCaseSelectionService: TraceCaseSelectionService,
-        private _directyFollowsGraphService: DirectlyFollowsGraphService,
+        private _eventlogDataService: EventlogDataService,
         public loader: LoadingService
     ) {}
 
@@ -36,7 +43,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     switchDirection() {
-        this._directyFollowsGraphService.switchDirection();
+        this._directlyFollowsGraphService.switchDirection();
     }
 
     changeView(nextView: string) {
@@ -57,6 +64,11 @@ export class DrawingAreaComponent implements AfterContentChecked {
                 this.logInformationHidden = false;
                 break;
         }
+    }
+
+    applyFilter(FilterArgument: FilterArgument) {
+        this._eventlogDataService.changeFilter(FilterArgument);
+        this.filterChanged.emit(FilterArgument);
     }
 
     clickDrawArea() {
