@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FilterArgument } from "../../../components/filter-area/filter-area.component";
+import { FilterArgument } from '../../../components/filter-area/filter-area.component';
 import { EventLog } from '../../../classes/EventLog/eventlog';
 import { Event } from '../../../classes/EventLog/event';
 import { TraceCaseSelectionService } from '../trace-case-selection-service/trace-case-selection.service';
