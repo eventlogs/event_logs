@@ -1,11 +1,15 @@
 <div fxLayout="row">
-    <app-change-view-button
-        (changeViewEvent)="changeView($event)"></app-change-view-button>
-    <app-switch-direction-button
-        *ngIf="!direktfolgegraphHidden"
-        (switchDirectionEvent)="
-            switchDirection()
-        "></app-switch-direction-button>
+    <div class="card">
+        <span>
+            <app-change-view-button
+                (changeViewEvent)="changeView($event)"></app-change-view-button>
+            <app-switch-direction-button
+                *ngIf="!direktfolgegraphHidden"
+                (switchDirectionEvent)="
+                    switchDirection()
+                "></app-switch-direction-button>
+        </span>
+    </div>
     <app-filter-area (filterChanged)="applyFilter($event)"></app-filter-area>
 </div>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
