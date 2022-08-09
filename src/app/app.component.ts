@@ -153,6 +153,10 @@ export class AppComponent implements OnDestroy {
         this.drawingArea?.refresh();
     }
 
+    updateFilter(filter: String) {
+        this.updateViews();
+    }
+
     xesExampleValue() {
         return (
             '<?xml version="1.0" encoding="UTF-8"?>' +

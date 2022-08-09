@@ -2,23 +2,36 @@ import { Injectable } from '@angular/core';
 import { EventLog } from '../classes/EventLog/eventlog';
 import { Event } from '../classes/EventLog/event';
 import { TraceCaseSelectionService } from './chain/common/trace-case-selection-service/trace-case-selection.service';
+import { FilterArgument } from '../components/filter-area/filter-area.component';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EventlogDataService {
     private _eventLog: EventLog;
+    private _filteredEventLog: EventLog;
+    private _filter: FilterArgument = new FilterArgument(
+        '',
+        false,
+        false,
+        false
+    );
 
     constructor(private _traceCaseSelectionService: TraceCaseSelectionService) {
         this._eventLog = new EventLog([], [], [], [], []);
+        this._filteredEventLog = new EventLog([], [], [], [], []);
     }
 
     public get eventLog(): EventLog {
-        return this._eventLog;
+        if (this._filter.filterValue === '') {
+            return this._eventLog;
+        }
+        return this._filteredEventLog;
     }
 
     public set eventLog(value: EventLog) {
         this._eventLog = value;
+        this.changeFilter(this._filter);
     }
 
     public get eventLogWithSelectedOrAllWhenNothingSelected() {
@@ -68,5 +81,52 @@ export class EventlogDataService {
             filteredTraces,
             this._eventLog.attributes
         );
+    }
+
+    public changeFilter(arg: FilterArgument) {
+        this._filter = arg;
+        if (arg.filterValue === '') {
+            return;
+        }
+        this._filteredEventLog.traces = [];
+        this._eventLog.traces.forEach(trace => {
+            if (
+                trace.events.some(event => {
+                    if (this.filterActivity(event)) {
+                        return true;
+                    }
+                    return this.filterAttributes(event);
+                })
+            ) {
+                this._filteredEventLog.traces.push(trace);
+            }
+        });
+    }
+
+    private filterAttributes(event: Event): boolean {
+        if (!this._filter.filterAttributeValues) {
+            return false;
+        }
+        return event.attributes.some(attribute => {
+            return this._filter.matchCase
+                ? attribute.value.toString().includes(this._filter.filterValue)
+                : attribute.value
+                      .toString()
+                      .toLowerCase()
+                      .includes(this._filter.filterValue);
+        });
+    }
+
+    private filterActivity(event: Event) {
+        if (!this._filter.filterActivity) {
+            return false;
+        }
+        if (this._filter.matchCase) {
+            return event.activity.includes(this._filter.filterValue);
+        } else {
+            return event.activity
+                .toLowerCase()
+                .includes(this._filter.filterValue.toLowerCase());
+        }
     }
 }

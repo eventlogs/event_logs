@@ -2,13 +2,17 @@ import {
     AfterContentChecked,
     Component,
     ElementRef,
+    Output,
     ViewChild,
+    EventEmitter,
 } from '@angular/core';
 import { DisplayService } from 'src/app/services/chain/value-chain/display-service/display.service';
 import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
+import { EventlogDataService } from 'src/app/services/eventlog-data.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { TracesDetailViewComponent } from '../traces-detail-view/traces-detail-view.component';
 import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { FilterArgument } from '../filter-area/filter-area.component';
 
 @Component({
     selector: 'app-drawing-area',
@@ -24,9 +28,13 @@ export class DrawingAreaComponent implements AfterContentChecked {
     direktfolgegraphHidden: boolean = true;
     logInformationHidden: boolean = true;
 
+    @Output() filterChanged = new EventEmitter();
+
     constructor(
-        private _traceCaseSelectionService: TraceCaseSelectionService,
-        private _directyFollowsGraphService: DirectlyFollowsGraphService
+        private _displayService: DisplayService,
+        private _directlyFollowsGraphService: DirectlyFollowsGraphService,
+        private _eventlogDataService: EventlogDataService,
+        private _traceCaseSelectionService: TraceCaseSelectionService
     ) {}
 
     ngAfterContentChecked() {
@@ -36,7 +44,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     switchDirection() {
-        this._directyFollowsGraphService.switchDirection();
+        this._directlyFollowsGraphService.switchDirection();
     }
 
     changeView(nextView: string) {
@@ -57,6 +65,11 @@ export class DrawingAreaComponent implements AfterContentChecked {
                 this.logInformationHidden = false;
                 break;
         }
+    }
+
+    applyFilter(FilterArgument: FilterArgument) {
+        this._eventlogDataService.changeFilter(FilterArgument);
+        this.filterChanged.emit(FilterArgument);
     }
 
     clickDrawArea() {
