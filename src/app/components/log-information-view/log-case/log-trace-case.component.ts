@@ -63,21 +63,18 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
-            console.log("CV init");
             this.draw();
         });
         this._subSelectedTraces =
             this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
-                    console.log("borders only");
                     this.draw();
                 }
             );
     }
 
     ngAfterViewInit(): void {
-        console.log("after view init");
         this.draw();
     }
 
@@ -93,20 +90,13 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this.clearDrawingArea();
-        console.log("creating svg elements for case view");
-        const startCaseView = Date.now();
         const elements = this._svgService.createSvgElements(
             this._displayService.diagram,
             this._selectedTraceCaseIds
         );
-        console.log("svg elements ready - took " + ((Date.now() - startCaseView)/1000) + " seconds");
-        console.log("draw case view");
-        const startDrawCv = Date.now();
         for (const element of elements) {
             this.canvas.nativeElement.appendChild(element);
-            console.log("draw element");
         }
-        console.log("finished drawing case view - took " + ((Date.now() - startDrawCv)/1000) + " seconds");
     }
 
     private clearDrawingArea() {

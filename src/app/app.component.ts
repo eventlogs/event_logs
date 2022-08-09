@@ -77,7 +77,6 @@ export class AppComponent implements OnDestroy {
     }
 
     private processSourceChange(newSource: string) {
-        this.loadingSpinner.show();
         const result = this._logParserService.parse(newSource);
         // Ausgewählte Traces zurücksetzen, wenn mindestens eine Case Id nicht mehr vorhanden ist
         for (const caseId of this._selectedTraceCaseIds) {
@@ -98,11 +97,9 @@ export class AppComponent implements OnDestroy {
             }
         }
         this._xesImport = false;
-        this.loadingSpinner.hide();
     }
 
     processImport([fileExtension, fileContent]: [string, string]) {
-        this.loadingSpinner.show();
         if (['log', 'txt'].includes(fileExtension)) {
             this.processLogImport(fileContent);
         } else if ('xes' === fileExtension) {
@@ -114,7 +111,6 @@ export class AppComponent implements OnDestroy {
                     ' can not be imported!'
             );
         }
-        this.loadingSpinner.hide();
     }
 
     processLogImport(fileContent: string) {
@@ -159,13 +155,17 @@ export class AppComponent implements OnDestroy {
 
     async processXesImport(fileContent: string) {
         try {
-            const result = await this.parseXesFile(fileContent);
-            this._xesImport = true;
-            if (result !== undefined) {
-                this._eventlogDataService.eventLog = result;
-                this.updateTextarea(this._logService.generate(result));
-                this.updateViews();
-            }
+            this.loadingSpinner.show();
+            this.parseXesFile(fileContent).then(result => {
+                    this._xesImport = true;
+                    console.log("continuing...");
+                    if (result !== undefined) {
+                        this._eventlogDataService.eventLog = result;
+                        this.updateTextarea(this._logService.generate(result));
+                        this.updateViews();
+                    }
+                }
+            );
         } catch (e) {
             this._xesImport = false;
             if (e === XesParser.PARSING_ERROR) {
@@ -191,9 +191,6 @@ export class AppComponent implements OnDestroy {
         this._valueChainControllerService.updateValueChain(
             this._eventlogDataService.eventLog
         );
-        // this._displayService.displayEventLog(
-        //     this._eventlogDataService.eventLog
-        // );
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
             this._eventlogDataService.eventLog
         );

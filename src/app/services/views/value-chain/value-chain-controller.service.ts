@@ -25,7 +25,6 @@ export class ValueChainControllerService {
     }
 
     public updateValueChain(log: EventLog) {
-        console.log("updateValueChain");
         let diagram = this._displayService.displayEventLog(log);
         [this.widthPx, this.heightPx] = this._layoutService.layout(
             this._displayService.diagram
