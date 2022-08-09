@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
-import {XesParser} from "../classes/EventLog/xesParser";
-import { TypedJSON } from "typedjson";
-import { EventLog } from "../classes/EventLog/eventlog";
+import { XesParser } from '../classes/EventLog/xesParser';
+import { TypedJSON } from 'typedjson';
+import { EventLog } from '../classes/EventLog/eventlog';
 
 addEventListener('message', ({ data }) => {
     const parser = new XesParser();

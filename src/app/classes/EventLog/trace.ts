@@ -4,18 +4,20 @@ import {
     EventLogAttribute,
     FloatAttribute,
     IntAttribute,
-    StringAttribute
-} from "./eventlogattribute";
+    StringAttribute,
+} from './eventlogattribute';
 import { Event } from './event';
 import 'reflect-metadata';
-import { jsonObject, jsonMember, jsonArrayMember } from "typedjson";
+import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
 @jsonObject({
-    knownTypes: [StringAttribute,
+    knownTypes: [
+        StringAttribute,
         DateAttribute,
         IntAttribute,
         FloatAttribute,
-        BooleanAttribute],
+        BooleanAttribute,
+    ],
 })
 export class Trace {
     @jsonArrayMember(EventLogAttribute)

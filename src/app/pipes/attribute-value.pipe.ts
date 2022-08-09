@@ -1,5 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DateAttribute, EventLogAttribute } from "../classes/EventLog/eventlogattribute";
+import {
+    DateAttribute,
+    EventLogAttribute,
+} from '../classes/EventLog/eventlogattribute';
 
 @Pipe({
     name: 'attributeValue',

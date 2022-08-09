@@ -38,7 +38,10 @@
                                                     {{ attribute.key }}
                                                 </td>
                                                 <td class="table-data">
-                                                    {{ attribute | attributeValue }}
+                                                    {{
+                                                        attribute
+                                                            | attributeValue
+                                                    }}
                                                 </td>
                                             </tr>
                                         </table>

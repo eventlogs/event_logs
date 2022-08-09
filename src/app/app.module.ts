@@ -28,8 +28,8 @@ import { LogTraceCaseComponent } from './components/log-information-view/log-cas
 import { LogInformationViewComponent } from './components/log-information-view/log-information-view.component';
 import { LayoutService } from './services/common/layout-service/layout.service';
 import { SvgService } from './services/common/svg-service/svg.service';
-import { AttributeValuePipe } from "./pipes/attribute-value.pipe";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { AttributeValuePipe } from './pipes/attribute-value.pipe';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [
@@ -47,7 +47,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
         SwitchDirectionButtonComponent,
         LogInformationViewComponent,
         LogTraceCaseComponent,
-        AttributeValuePipe
+        AttributeValuePipe,
     ],
     imports: [
         BrowserModule,
@@ -63,7 +63,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
         MatPaginatorModule,
         MatSortModule,
         MatMenuModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
     ],
     providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

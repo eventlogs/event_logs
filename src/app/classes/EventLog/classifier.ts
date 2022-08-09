@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { jsonObject, jsonMember, jsonArrayMember } from "typedjson";
+import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
 @jsonObject
 export class Classifier {

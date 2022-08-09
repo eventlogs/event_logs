@@ -7,7 +7,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import { DisplayService } from '../../services/views/value-chain/display-service/display.service';
-import { ValueChainControllerService } from "../../services/views/value-chain/value-chain-controller.service";
+import { ValueChainControllerService } from '../../services/views/value-chain/value-chain-controller.service';
 import { Subscription } from 'rxjs';
 import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
 
@@ -32,14 +32,16 @@ export class WertschoepfungsketteComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this._sub = this._valueChainControllerService._elements$.subscribe(elements => {
-            if (this.canvas == undefined) {
-                console.log('UNDEFINED DRAWING AREA');
+        this._sub = this._valueChainControllerService._elements$.subscribe(
+            elements => {
+                if (this.canvas == undefined) {
+                    console.log('UNDEFINED DRAWING AREA');
+                }
+                this.widthPx = this._valueChainControllerService.widthPx;
+                this.heightPx = this._valueChainControllerService.heightPx;
+                this.draw(elements);
             }
-            this.widthPx = this._valueChainControllerService.widthPx;
-            this.heightPx = this._valueChainControllerService.heightPx;
-            this.draw(elements);
-        })
+        );
     }
 
     ngOnDestroy(): void {

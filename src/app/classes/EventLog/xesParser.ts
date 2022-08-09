@@ -1,16 +1,16 @@
-import { EventLog } from "./eventlog";
-import * as xml2js from "xml2js";
-import { Classifier } from "./classifier";
+import { EventLog } from './eventlog';
+import * as xml2js from 'xml2js';
+import { Classifier } from './classifier';
 import {
     BooleanAttribute,
     DateAttribute,
     EventLogAttribute,
     FloatAttribute,
     IntAttribute,
-    StringAttribute
-} from "./eventlogattribute";
-import { Trace } from "./trace";
-import { Event } from "./event";
+    StringAttribute,
+} from './eventlogattribute';
+import { Trace } from './trace';
+import { Event } from './event';
 
 export class XesParser {
     public static PARSING_ERROR = new Error(
@@ -299,16 +299,18 @@ export class XesParser {
             default:
                 console.error(
                     'unknown attribute type ' +
-                    type +
-                    ' with value ' +
-                    value +
-                    ' will be ignored'
+                        type +
+                        ' with value ' +
+                        value +
+                        ' will be ignored'
                 );
                 return undefined;
         }
     }
 
-    private static extractCaseId(attributes: EventLogAttribute[]): number | undefined {
+    private static extractCaseId(
+        attributes: EventLogAttribute[]
+    ): number | undefined {
         const filterAttributes = attributes.filter(
             attr => attr.key === 'concept:name' || attr.key === 'case-id'
         );

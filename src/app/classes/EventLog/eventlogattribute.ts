@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { jsonObject, jsonMember } from "typedjson";
+import { jsonObject, jsonMember } from 'typedjson';
 
 export abstract class EventLogAttribute {
     @jsonMember

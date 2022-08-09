@@ -4,19 +4,21 @@ import {
     EventLogAttribute,
     FloatAttribute,
     IntAttribute,
-    StringAttribute
-} from "./eventlogattribute";
+    StringAttribute,
+} from './eventlogattribute';
 import { Classifier } from './classifier';
 import { Trace } from './trace';
 import 'reflect-metadata';
-import { jsonObject, jsonArrayMember } from "typedjson";
+import { jsonObject, jsonArrayMember } from 'typedjson';
 
 @jsonObject({
-    knownTypes: [StringAttribute,
+    knownTypes: [
+        StringAttribute,
         DateAttribute,
         IntAttribute,
         FloatAttribute,
-        BooleanAttribute],
+        BooleanAttribute,
+    ],
 })
 export class EventLog {
     @jsonArrayMember(Classifier)

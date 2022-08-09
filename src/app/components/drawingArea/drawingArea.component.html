@@ -3,8 +3,7 @@
 <app-switch-direction-button
     *ngIf="!direktfolgegraphHidden"
     (switchDirectionEvent)="switchDirection()"></app-switch-direction-button>
-<div class="loading-screen"
-     *ngIf="(loading$ | async)">
+<div class="loading-screen" *ngIf="loading$ | async">
     <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
 </div>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">

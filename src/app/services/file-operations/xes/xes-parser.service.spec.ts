@@ -11,7 +11,7 @@ import {
 } from '../../../classes/EventLog/eventlogattribute';
 import { Classifier } from '../../../classes/EventLog/classifier';
 import { MatFormField } from '@angular/material/form-field';
-import { XesParser } from "../../../classes/EventLog/xesParser";
+import { XesParser } from '../../../classes/EventLog/xesParser';
 
 describe('XesParserService', () => {
     let service: XesParserService;
@@ -26,9 +26,7 @@ describe('XesParserService', () => {
     });
 
     it('should throw error on invalid xes-file', () => {
-        expect(() => service.parse('INVALID')).toThrow(
-            XesParser.PARSING_ERROR
-        );
+        expect(() => service.parse('INVALID')).toThrow(XesParser.PARSING_ERROR);
     });
 
     it('should parse empty xes-file', () => {

@@ -9,11 +9,11 @@ import { XesParserService } from './services/file-operations/xes/xes-parser.serv
 import { LogService } from './services/file-operations/log/log.service';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
 import { TraceCaseSelectionService } from './services/common/trace-case-selection-service/trace-case-selection.service';
-import { LoadingService } from "./services/views/loading/loading.service";
-import { ValueChainControllerService } from "./services/views/value-chain/value-chain-controller.service";
-import { EventLog } from "./classes/EventLog/eventlog";
-import { XesParser } from "./classes/EventLog/xesParser";
-import { TypedJSON } from "typedjson";
+import { LoadingService } from './services/views/loading/loading.service';
+import { ValueChainControllerService } from './services/views/value-chain/value-chain-controller.service';
+import { EventLog } from './classes/EventLog/eventlog';
+import { XesParser } from './classes/EventLog/xesParser';
+import { TypedJSON } from 'typedjson';
 
 @Component({
     selector: 'app-root',
@@ -120,7 +120,9 @@ export class AppComponent implements OnDestroy {
     parseXesFile(fileContent: string) {
         return new Promise<EventLog>((resolve, reject) => {
             if (typeof Worker !== 'undefined') {
-                const worker = new Worker(new URL('./workers/xes-parser.worker', import.meta.url));
+                const worker = new Worker(
+                    new URL('./workers/xes-parser.worker', import.meta.url)
+                );
                 worker.onmessage = ({ data }) => {
                     if (data == null) {
                         reject(XesParser.PARSING_ERROR);
@@ -137,35 +139,33 @@ export class AppComponent implements OnDestroy {
                 try {
                     const result = this._xesParserService.parse(fileContent);
                     resolve(result);
-                }
-                catch (e) {
+                } catch (e) {
                     this._xesImport = false;
                     if (e === XesParser.PARSING_ERROR) {
                         alert(
                             'The uploaded XES file could not be parsed.\n' +
-                            'Check the file for valid XES syntax and try again.'
+                                'Check the file for valid XES syntax and try again.'
                         );
                     } else {
                         throw e;
                     }
                 }
             }
-        })
+        });
     }
 
     async processXesImport(fileContent: string) {
         try {
             this.loadingSpinner.show();
             this.parseXesFile(fileContent).then(result => {
-                    this._xesImport = true;
-                    console.log("continuing...");
-                    if (result !== undefined) {
-                        this._eventlogDataService.eventLog = result;
-                        this.updateTextarea(this._logService.generate(result));
-                        this.updateViews();
-                    }
+                this._xesImport = true;
+                console.log('continuing...');
+                if (result !== undefined) {
+                    this._eventlogDataService.eventLog = result;
+                    this.updateTextarea(this._logService.generate(result));
+                    this.updateViews();
                 }
-            );
+            });
         } catch (e) {
             this._xesImport = false;
             if (e === XesParser.PARSING_ERROR) {
@@ -212,37 +212,37 @@ export class AppComponent implements OnDestroy {
             'phoneType\n' +
             '.events\n' +
             '1 Register System complete 1970-01-02T12:23:00.000Z\n' +
-            '1 \'Analyze Defect\' Tester3 start 1970-01-02T12:23:00.000Z\n' +
-            '1 \'Analyze Defect\' Tester3 complete 1970-01-02T12:30:00.000Z \'\' \'\' 6 T2\n' +
-            '1 \'Repair (Complex)\' SolverC1 start 1970-01-02T12:31:00.000Z\n' +
-            '1 \'Repair (Complex)\' SolverC1 complete 1970-01-02T12:49:00.000Z\n' +
-            '1 \'Test Repair\' Tester3 start 1970-01-02T12:49:00.000Z\n' +
-            '1 \'Test Repair\' Tester3 complete 1970-01-02T12:55:00.000Z 0 true\n' +
-            '1 \'Inform User\' System complete 1970-01-02T13:10:00.000Z\n' +
-            '1 \'Archive Repair\' System complete 1970-01-02T13:10:00.000Z 0 true\n' +
+            "1 'Analyze Defect' Tester3 start 1970-01-02T12:23:00.000Z\n" +
+            "1 'Analyze Defect' Tester3 complete 1970-01-02T12:30:00.000Z '' '' 6 T2\n" +
+            "1 'Repair (Complex)' SolverC1 start 1970-01-02T12:31:00.000Z\n" +
+            "1 'Repair (Complex)' SolverC1 complete 1970-01-02T12:49:00.000Z\n" +
+            "1 'Test Repair' Tester3 start 1970-01-02T12:49:00.000Z\n" +
+            "1 'Test Repair' Tester3 complete 1970-01-02T12:55:00.000Z 0 true\n" +
+            "1 'Inform User' System complete 1970-01-02T13:10:00.000Z\n" +
+            "1 'Archive Repair' System complete 1970-01-02T13:10:00.000Z 0 true\n" +
             '10 Register System complete 1970-01-01T11:09:00.000Z\n' +
-            '10 \'Analyze Defect\' Tester2 start 1970-01-01T11:09:00.000Z\n' +
-            '10 \'Analyze Defect\' Tester2 complete 1970-01-01T11:15:00.000Z \'\' \'\' 3 T1\n' +
-            '10 \'Repair (Simple)\' SolverS1 start 1970-01-01T11:35:00.000Z\n' +
-            '10 \'Repair (Simple)\' SolverS1 complete 1970-01-01T11:42:00.000Z\n' +
-            '10 \'Test Repair\' Tester6 start 1970-01-01T11:42:00.000Z\n' +
-            '10 \'Test Repair\' Tester6 complete 1970-01-01T11:48:00.000Z 1 false\n' +
-            '10 \'Restart Repair\' System complete 1970-01-01T11:54:00.000Z\n' +
-            '10 \'Repair (Simple)\' SolverS2 start 1970-01-01T11:54:00.000Z\n' +
-            '10 \'Inform User\' System complete 1970-01-01T11:55:00.000Z\n' +
-            '10 \'Repair (Simple)\' SolverS2 complete 1970-01-01T12:03:00.000Z\n' +
-            '10 \'Test Repair\' Tester4 start 1970-01-01T12:03:00.000Z\n' +
-            '10 \'Test Repair\' Tester4 complete 1970-01-01T12:09:00.000Z 2 true\n' +
-            '10 \'Archive Repair\' System complete 1970-01-01T12:14:00.000Z 2 true\n' +
+            "10 'Analyze Defect' Tester2 start 1970-01-01T11:09:00.000Z\n" +
+            "10 'Analyze Defect' Tester2 complete 1970-01-01T11:15:00.000Z '' '' 3 T1\n" +
+            "10 'Repair (Simple)' SolverS1 start 1970-01-01T11:35:00.000Z\n" +
+            "10 'Repair (Simple)' SolverS1 complete 1970-01-01T11:42:00.000Z\n" +
+            "10 'Test Repair' Tester6 start 1970-01-01T11:42:00.000Z\n" +
+            "10 'Test Repair' Tester6 complete 1970-01-01T11:48:00.000Z 1 false\n" +
+            "10 'Restart Repair' System complete 1970-01-01T11:54:00.000Z\n" +
+            "10 'Repair (Simple)' SolverS2 start 1970-01-01T11:54:00.000Z\n" +
+            "10 'Inform User' System complete 1970-01-01T11:55:00.000Z\n" +
+            "10 'Repair (Simple)' SolverS2 complete 1970-01-01T12:03:00.000Z\n" +
+            "10 'Test Repair' Tester4 start 1970-01-01T12:03:00.000Z\n" +
+            "10 'Test Repair' Tester4 complete 1970-01-01T12:09:00.000Z 2 true\n" +
+            "10 'Archive Repair' System complete 1970-01-01T12:14:00.000Z 2 true\n" +
             '100 Register System complete 1970-01-04T02:28:00.000Z\n' +
-            '100 \'Analyze Defect\' Tester4 start 1970-01-04T02:28:00.000Z\n' +
-            '100 \'Analyze Defect\' Tester4 complete 1970-01-04T02:36:00.000Z \'\' \'\' 8 T2\n' +
-            '100 \'Repair (Complex)\' SolverC1 start 1970-01-04T02:52:00.000Z\n' +
-            '100 \'Repair (Complex)\' SolverC1 complete 1970-01-04T03:09:00.000Z\n' +
-            '100 \'Test Repair\' Tester1 start 1970-01-04T03:09:00.000Z\n' +
-            '100 \'Test Repair\' Tester1 complete 1970-01-04T03:18:00.000Z 0 true\n' +
-            '100 \'Inform User\' System complete 1970-01-04T03:20:00.000Z\n' +
-            '100 \'Archive Repair\' System complete 1970-01-04T03:28:00.000Z 0 true'
-        )
+            "100 'Analyze Defect' Tester4 start 1970-01-04T02:28:00.000Z\n" +
+            "100 'Analyze Defect' Tester4 complete 1970-01-04T02:36:00.000Z '' '' 8 T2\n" +
+            "100 'Repair (Complex)' SolverC1 start 1970-01-04T02:52:00.000Z\n" +
+            "100 'Repair (Complex)' SolverC1 complete 1970-01-04T03:09:00.000Z\n" +
+            "100 'Test Repair' Tester1 start 1970-01-04T03:09:00.000Z\n" +
+            "100 'Test Repair' Tester1 complete 1970-01-04T03:18:00.000Z 0 true\n" +
+            "100 'Inform User' System complete 1970-01-04T03:20:00.000Z\n" +
+            "100 'Archive Repair' System complete 1970-01-04T03:28:00.000Z 0 true"
+        );
     }
 }
