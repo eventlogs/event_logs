@@ -52,10 +52,7 @@ export class AppComponent implements OnDestroy {
                     this.updateViews();
                 }
             );
-
         this.processLogImport(this.logExampleValue());
-
-        console.log("update views constructor");
         this.updateViews();
     }
 
@@ -81,10 +78,7 @@ export class AppComponent implements OnDestroy {
 
     private processSourceChange(newSource: string) {
         this.loadingSpinner.show();
-        console.log("Parse new source in textfield");
-        const startLogParse = Date.now();
         const result = this._logParserService.parse(newSource);
-        console.log("Done parsing new souce - took " + ((Date.now() - startLogParse)/1000) + " seconds");
         // Ausgewählte Traces zurücksetzen, wenn mindestens eine Case Id nicht mehr vorhanden ist
         for (const caseId of this._selectedTraceCaseIds) {
             const caseIdStillExists =
@@ -100,18 +94,15 @@ export class AppComponent implements OnDestroy {
         if (result !== undefined) {
             if (!this._xesImport) {
                 this._eventlogDataService.eventLog = result;
-                console.log("update views source change");
                 this.updateViews();
             }
         }
         this._xesImport = false;
         this.loadingSpinner.hide();
-        console.log("FINISHED LOADING");
     }
 
     processImport([fileExtension, fileContent]: [string, string]) {
         this.loadingSpinner.show();
-        console.log("LOADING");
         if (['log', 'txt'].includes(fileExtension)) {
             this.processLogImport(fileContent);
         } else if ('xes' === fileExtension) {
@@ -124,7 +115,6 @@ export class AppComponent implements OnDestroy {
             );
         }
         this.loadingSpinner.hide();
-        console.log("FINISHED LOADING");
     }
 
     processLogImport(fileContent: string) {
@@ -139,7 +129,6 @@ export class AppComponent implements OnDestroy {
                     if (data == null) {
                         reject(XesParser.PARSING_ERROR);
                     }
-                    console.log("WORKER USED");
                     const serializer = new TypedJSON(EventLog);
                     const result = serializer.parse(data);
                     if (result != undefined) {
@@ -209,7 +198,6 @@ export class AppComponent implements OnDestroy {
             this._eventlogDataService.eventLog
         );
         this.loadingSpinner.hide();
-        console.log("FINISHED LOADING");
     }
 
     logExampleValue() {

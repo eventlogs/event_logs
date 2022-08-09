@@ -87,11 +87,8 @@ export class DirectlyFollowsGraphService implements OnDestroy {
     }
 
     public displayDirectlyFollowsGraph(eventLog: EventLog) {
-        console.log("converting log to directly follows graph");
-        const start = Date.now();
         let net = this.convertEventLogToDirectlyFollowsGraph(eventLog);
         this._graph.next(net);
-        console.log("graph ready - took " + ((Date.now() - start)/1000) + " seconds");
     }
 
     public switchDirection() {
