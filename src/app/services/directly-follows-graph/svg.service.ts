@@ -12,7 +12,9 @@ export class SvgService {
     private _rectHeight: number = 40;
     private _offsetXValue: number = this._rectWidth * 1.5;
     private _offsetYValue: number = this._rectHeight * 2.5;
-    private maxActivityCount = 0;
+    private minValue: number = 50;
+    private maxActivityCount: number = 0;
+    private _svgElements: SVGElement[] = [];
 
     public get rectWidth(): number {
         return this._rectWidth;
@@ -30,21 +32,26 @@ export class SvgService {
         return this._offsetYValue;
     }
 
+    public get svgElements(): SVGElement[] {
+        return this._svgElements;
+    }
+
     constructor(private _displayService: DirectlyFollowsGraphService) {}
 
     public createSvgElements(graph: Graph): SVGElement[] {
-        let result: SVGElement[] = [];
+        this._svgElements = [];
 
         this.setMaxActivityCount(graph);
 
         graph.vertices.forEach(vertex => {
             let container = this.createContainer(vertex);
 
+            let box = this.createRect(vertex);
+            //Mache Elemente zu Kindern, damit sie gemeinsam manipuliert werden können.
+            container.append(box);
+
             if (!vertex.isDummy) {
                 let text = this.createTextForGraph(vertex);
-                let box = this.createRect(vertex);
-                //Mache Box und Text zu Kindern, damit sie gemeinsam manipuliert werden können.
-                container.append(box);
                 container.append(text);
             } else {
                 let path = this.createPathForDummyVertex(vertex);
@@ -52,23 +59,23 @@ export class SvgService {
             }
 
             vertex.svgElement = container;
-            result.push(container);
+            this._svgElements.push(container);
         });
 
         //Pfeilspitze für Kanten erstellen
-        let arrow = SvgService.createArrow();
-        result.push(arrow);
+        let arrow = this.createArrow();
+        this._svgElements.push(arrow);
 
         graph.edges.forEach(edge => {
             let path = this.createPath(edge, graph);
             if (!edge.endVertex.isDummy) {
-                let text = SvgService.createTextForEdge(edge);
-                result.push(text);
+                let text = this.createTextForEdge(edge);
+                this._svgElements.push(text);
             }
-            result.push(path);
+            this._svgElements.push(path);
         });
 
-        return result;
+        return this._svgElements;
     }
 
     private setMaxActivityCount(graph: Graph) {
@@ -82,37 +89,32 @@ export class SvgService {
     }
 
     private createContainer(vertex: Vertex): SVGElement {
-        let svg = SvgService.createSvgElement('svg');
+        let svg = this.createSvgElement('svg');
 
-        let x: number = 50;
-        let y: number = 50;
+        let x: number = this.minValue;
+        let y: number = this.minValue;
 
         //Setze Abstand zwischen Positionen und Ebenen basierend auf der Ausrichtung
         if (this._displayService.verticalDirection) {
-            x += vertex.position;
+            x += this.offsetXValue * (vertex.position - 1);
             y += this.offsetYValue * (vertex.layer - 1);
         } else {
             x += this.offsetXValue * (vertex.layer - 1);
-            y += vertex.position;
+            y += this.offsetYValue * (vertex.position - 1);
         }
 
+        svg.setAttribute('name', vertex.activityName.toString());
         svg.setAttribute('x', x.toString());
         svg.setAttribute('y', y.toString());
         svg.setAttribute('width', this.rectWidth.toString());
         svg.setAttribute('height', this.rectHeight.toString());
 
-        vertex.svgElement = svg;
-
         return svg;
     }
 
     private createPathForDummyVertex(vertex: Vertex): SVGElement {
-        let path = SvgService.createSvgElement('path');
+        let path = this.createSvgElement('path');
 
-        // let startX: number = vertex.getSvgElementXValue();
-        // let startY: number = vertex.getSvgElementXValue();
-        // let endX: number = vertex.getSvgElementYValue();
-        // let endY: number = vertex.getSvgElementYValue();
         let startX: number = 0;
         let startY: number = 0;
         let endX: number = 0;
@@ -135,30 +137,37 @@ export class SvgService {
         path.setAttribute('stroke-width', '1');
         path.setAttribute('stroke', 'black');
         path.setAttribute('fill', 'none');
+        path.setAttribute('pointer-events', 'none');
 
         return path;
     }
 
     private createRect(vertex: Vertex): SVGElement {
-        let rect = SvgService.createSvgElement('rect');
+        let rect = this.createSvgElement('rect');
 
+        rect.setAttribute('name', vertex.activityName.toString());
         rect.setAttribute('rx', '15');
         rect.setAttribute('ry', '15');
         rect.setAttribute('width', this.rectWidth.toString());
         rect.setAttribute('height', this.rectHeight.toString());
-        rect.setAttribute('fill', 'rgb(150, 150, 150)');
-        //Setze höhere Füllstärke, für häufiger vorkommende Knoten
-        let fillOpacity =
-            0.1 + 0.8 * (vertex.activityCount / this.maxActivityCount);
-        rect.setAttribute('fill-opacity', fillOpacity.toString());
-        rect.setAttribute('stroke-width', '2');
-        rect.setAttribute('stroke', 'black');
+
+        if (!vertex.isDummy) {
+            rect.setAttribute('fill', 'rgb(150, 150, 150)');
+            //Setze höhere Füllstärke, für häufiger vorkommende Knoten
+            let fillOpacity =
+                0.1 + 0.8 * (vertex.activityCount / this.maxActivityCount);
+            rect.setAttribute('fill-opacity', fillOpacity.toString());
+            rect.setAttribute('stroke-width', '2');
+            rect.setAttribute('stroke', 'black');
+        } else {
+            rect.setAttribute('fill-opacity', '0');
+        }
 
         return rect;
     }
 
     private createTextForGraph(vertex: Vertex): SVGElement {
-        let text = SvgService.createSvgElement('text');
+        let text = this.createSvgElement('text');
 
         text.setAttribute('x', `50%`);
         text.setAttribute('y', `50%`);
@@ -171,12 +180,13 @@ export class SvgService {
         text.appendChild(
             this.createTspanForText(vertex.activityCount.toString(), 0.5)
         );
+        text.setAttribute('pointer-events', 'none');
 
         return text;
     }
 
     private createTspanForText(text: string, offset: number): SVGElement {
-        let tspan = SvgService.createSvgElement('tspan');
+        let tspan = this.createSvgElement('tspan');
 
         tspan.setAttribute('x', (this.rectWidth / 2).toString());
         tspan.setAttribute('dy', (this.rectHeight * offset).toString());
@@ -184,21 +194,22 @@ export class SvgService {
         tspan.setAttribute('height', `100%`);
         tspan.setAttribute('text-anchor', `middle`);
         tspan.setAttribute('dominant-baseline', `middle`);
+        tspan.setAttribute('pointer-events', 'none');
 
         tspan.textContent = text;
 
         return tspan;
     }
 
-    private static createArrow(): SVGElement {
-        let defs = SvgService.createSvgElement('defs');
-        defs.append(SvgService.createMarker());
+    private createArrow(): SVGElement {
+        let defs = this.createSvgElement('defs');
+        defs.append(this.createMarker());
 
         return defs;
     }
 
-    private static createMarker(): SVGElement {
-        let marker = SvgService.createSvgElement('marker');
+    private createMarker(): SVGElement {
+        let marker = this.createSvgElement('marker');
 
         marker.setAttribute('viewBox', '0 0 10 10');
         marker.setAttribute('id', 'marker');
@@ -209,9 +220,10 @@ export class SvgService {
         marker.setAttribute('markerHeight', '10');
         marker.setAttribute('orient', 'auto');
 
-        let path = SvgService.createSvgElement('path');
+        let path = this.createSvgElement('path');
         path.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
         path.setAttribute('fill', 'context-stroke');
+        path.setAttribute('pointer-events', 'none');
 
         marker.append(path);
 
@@ -219,30 +231,31 @@ export class SvgService {
     }
 
     private createPath(edge: Edge, graph: Graph): SVGElement {
-        let path = SvgService.createSvgElement('path');
+        let path = this.createSvgElement('path');
 
         let id =
             'path' +
             edge.startVertex.activityName +
             edge.endVertex.activityName;
         path.setAttribute('id', id);
-        path.setAttribute('d', this.setCoordinates(edge, graph));
+        path.setAttribute('d', this.setPathCoordinates(edge, graph));
         path.setAttribute('stroke-width', '1');
         path.setAttribute('stroke', 'black');
         path.setAttribute('fill', 'none');
         if (!edge.endVertex.isDummy)
             path.setAttribute('marker-end', 'url(#marker)');
+        path.setAttribute('pointer-events', 'none');
 
-        edge.svgElement = path;
+        edge.pathSvgElement = path;
 
         return path;
     }
 
-    private setCoordinates(edge: Edge, graph: Graph) {
-        let startX: number;
-        let startY: number;
-        let endX: number;
-        let endY: number;
+    private setPathCoordinates(edge: Edge, graph: Graph) {
+        let startX: number = 0;
+        let startY: number = 0;
+        let endX: number = 0;
+        let endY: number = 0;
         let startXOffset: number = 0;
         let endXOffset: number = 0;
         let startYOffset: number = 0;
@@ -402,10 +415,27 @@ export class SvgService {
         return coordinates;
     }
 
-    private static createTextForEdge(edge: Edge): SVGElement {
-        let text = SvgService.createSvgElement('text');
+    private createTextForEdge(edge: Edge): SVGElement {
+        let text = this.createSvgElement('text');
 
-        let d = edge.svgElement?.getAttribute('d')?.split(' ');
+        let name = edge.pathSvgElement?.getAttribute('name') + 'Text';
+        text.setAttribute('name', name);
+
+        this.setTextCoordinates(edge, text);
+
+        text.setAttribute('text-anchor', `middle`);
+        text.setAttribute('dominant-baseline', `middle`);
+        text.setAttribute('font', 'bold 30px sans-serif');
+        text.textContent = edge.activityCount.toString();
+        text.setAttribute('pointer-events', 'none');
+
+        edge.textSvgElement = text;
+
+        return text;
+    }
+
+    private setTextCoordinates(edge: Edge, text: SVGElement): void {
+        let d = edge.pathSvgElement?.getAttribute('d')?.split(' ');
         if (d != undefined) {
             let startX: number = +d[1];
             let endX: number = +d[d.length - 2];
@@ -417,16 +447,180 @@ export class SvgService {
             let y = (startY + endY + 25) / 2;
             text.setAttribute('y', y.toString());
         }
-
-        text.setAttribute('text-anchor', `middle`);
-        text.setAttribute('dominant-baseline', `middle`);
-        text.setAttribute('font', 'bold 30px sans-serif');
-        text.textContent = edge.activityCount.toString();
-
-        return text;
     }
 
-    private static createSvgElement(name: string): SVGElement {
+    private createSvgElement(name: string): SVGElement {
         return document.createElementNS('http://www.w3.org/2000/svg', name);
+    }
+
+    public updateLayer(vertex: Vertex, graph: Graph): void {
+        let positionValue: number;
+        let offsetValue: number;
+        let axis: string;
+        let rectSize;
+
+        if (this._displayService.verticalDirection) {
+            positionValue = vertex.getSvgElementXValue();
+            offsetValue = this.offsetXValue;
+            axis = 'x';
+            rectSize = this.rectWidth;
+        } else {
+            positionValue = vertex.getSvgElementYValue();
+            offsetValue = this.offsetYValue;
+            axis = 'y';
+            rectSize = this.rectHeight;
+        }
+
+        if (positionValue < this.minValue)
+            vertex.svgElement?.setAttribute(axis, this.minValue.toString());
+
+        let vertices: Vertex[] = graph.getVerticesSortedByPosition(
+            vertex.layer
+        );
+
+        let index: number = vertices.findIndex(v => v === vertex);
+
+        //Knoten wird nach links/oben geschoben
+        if (index > 0) {
+            let previousPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[index - 1].getSvgElementXValue()
+                : vertices[index - 1].getSvgElementYValue();
+
+            if (previousPositionValue + rectSize > positionValue) {
+                let newPositionValue: number = Math.max(
+                    previousPositionValue + offsetValue,
+                    positionValue + rectSize
+                );
+
+                vertices[index - 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
+                );
+
+                vertices[index - 1].position =
+                    (newPositionValue - this.minValue) / offsetValue + 1;
+            }
+        }
+
+        //Knoten wird nach rechts/unten geschoben
+        if (index < vertices.length - 1) {
+            let nextPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[index + 1].getSvgElementXValue()
+                : vertices[index + 1].getSvgElementYValue();
+
+            if (nextPositionValue - rectSize < positionValue) {
+                let newPositionValue: number;
+
+                //Position abhängig davon setzen, ob genügend Platz ist
+                if (positionValue / rectSize > index + 1)
+                    newPositionValue = Math.min(
+                        nextPositionValue - offsetValue,
+                        positionValue - rectSize
+                    );
+                else newPositionValue = positionValue + offsetValue;
+
+                newPositionValue = Math.max(this.minValue, newPositionValue);
+                vertices[index + 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
+                );
+
+                vertices[index + 1].position =
+                    (newPositionValue - this.minValue) / this.offsetXValue + 1;
+            }
+        }
+
+        vertex.position = (positionValue - this.minValue) / offsetValue + 1;
+
+        vertices = graph.getVerticesSortedByPosition(vertex.layer);
+
+        index = vertices.findIndex(v => v === vertex);
+
+        this.updateOffset(vertices, offsetValue, rectSize, axis, index);
+
+        this.updateEdges(graph);
+    }
+
+    private updateOffset(
+        vertices: Vertex[],
+        offsetValue: number,
+        rectSize: number,
+        axis: string,
+        index: number
+    ): void {
+        for (let i = index - 1; i > 0; i--) {
+            let currentPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i].getSvgElementXValue()
+                : vertices[i].getSvgElementYValue();
+
+            let previousPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i - 1].getSvgElementXValue()
+                : vertices[i - 1].getSvgElementYValue();
+
+            if (previousPositionValue + rectSize > currentPositionValue) {
+                let newPositionValue: number = currentPositionValue - rectSize;
+
+                vertices[i - 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
+                );
+
+                previousPositionValue = this._displayService.verticalDirection
+                    ? vertices[i - 1].getSvgElementXValue()
+                    : vertices[i - 1].getSvgElementYValue();
+
+                vertices[i - 1].position =
+                    (previousPositionValue - this.minValue) / offsetValue + 1;
+            } else {
+                break;
+            }
+        }
+
+        for (let i = index + 1; i < vertices.length - 1; i++) {
+            let currentPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i].getSvgElementXValue()
+                : vertices[i].getSvgElementYValue();
+
+            let nextPositionValue: number = this._displayService
+                .verticalDirection
+                ? vertices[i + 1].getSvgElementXValue()
+                : vertices[i + 1].getSvgElementYValue();
+
+            if (currentPositionValue + rectSize > nextPositionValue) {
+                let newPositionValue: number = currentPositionValue + rectSize;
+
+                vertices[i + 1].svgElement?.setAttribute(
+                    axis,
+                    newPositionValue.toString()
+                );
+
+                nextPositionValue = this._displayService.verticalDirection
+                    ? vertices[i + 1].getSvgElementXValue()
+                    : vertices[i + 1].getSvgElementYValue();
+
+                vertices[i + 1].position =
+                    (nextPositionValue - this.minValue) / offsetValue + 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private updateEdges(graph: Graph): void {
+        graph.edges.forEach(edge => {
+            edge.pathSvgElement?.setAttribute(
+                'd',
+                this.setPathCoordinates(edge, graph)
+            );
+            if (!edge.endVertex.isDummy) {
+                let text = edge.textSvgElement;
+                if (text != undefined) this.setTextCoordinates(edge, text);
+            }
+        });
     }
 }
