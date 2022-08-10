@@ -31,6 +31,11 @@ export class SvgService {
     private readonly xTraceBorderOffset = -5;
     private readonly yTraceBorderOffset = -23;
 
+    private readonly xCheckboxOffset = -35;
+    private readonly yCheckboxOffset = -10;
+
+    private readonly yDescriptionLabelOffset = 4;
+
     private readonly midPointOfHeight = 0;
     private readonly peakOffset = 10;
 
@@ -74,7 +79,8 @@ export class SvgService {
     public createSvgElements(
         diagram: Diagram,
         selectedTraceCaseIds: Array<number>,
-        reuseColors = true
+        reuseColors = true,
+        isExport: boolean = false
     ): Array<SVGElement> {
         if (!reuseColors) {
             SvgService.activityColorMap.clear();
@@ -82,19 +88,40 @@ export class SvgService {
         const result: Array<SVGElement> = [];
 
         diagram.traces.forEach(trace => {
-            // Rahmen um die ausgewählten Traces
-            if (trace.caseIds.some(val => selectedTraceCaseIds.includes(val))) {
+            if (!isExport) {
+                // Rahmen um die ausgewählten Traces
+                let partiallySelected = trace.caseIds.some(val =>
+                    selectedTraceCaseIds.includes(val)
+                );
                 let allSelected = trace.caseIds.every(val =>
                     selectedTraceCaseIds.includes(val)
                 );
-                let traceBorder = SvgService.createSelectedTraceBorder(
-                    trace.svgElements[0].x + this.xTraceBorderOffset,
-                    trace.svgElements[0].y + this.yTraceBorderOffset,
-                    trace.events.length * this.layoutService.xStep +
-                        (this.layoutService.xLabelSize - 5),
-                    allSelected
+                if (partiallySelected) {
+                    let traceBorder = SvgService.createSelectedTraceBorder(
+                        trace.svgElements[0].x + this.xTraceBorderOffset,
+                        trace.svgElements[0].y + this.yTraceBorderOffset,
+                        trace.events.length * this.layoutService.xStep +
+                            (this.layoutService.xLabelSize - 5),
+                        allSelected
+                    );
+                    result.push(traceBorder);
+                }
+                // Checkboxen für Traces
+                let traceCheckboxBorder = SvgService.createTraceCheckboxBorder(
+                    trace.svgElements[0],
+                    trace.svgElements[0].x + this.xCheckboxOffset,
+                    trace.svgElements[0].y + this.yCheckboxOffset
                 );
-                result.push(traceBorder);
+                result.push(traceCheckboxBorder);
+                if (partiallySelected) {
+                    let traceCheckboxCheck =
+                        SvgService.createTraceCheckboxCheck(
+                            trace.svgElements[0].x + this.xCheckboxOffset,
+                            trace.svgElements[0].y + this.yCheckboxOffset,
+                            allSelected
+                        );
+                    result.push(traceCheckboxCheck);
+                }
             }
 
             const descriptionLabel = this.createSvgForDescriptionLabel(
@@ -148,6 +175,42 @@ export class SvgService {
         svg.setAttribute('stroke', 'black');
         if (!allSelected) {
             svg.setAttribute('stroke-dasharray', '6 3');
+        }
+        return svg;
+    }
+
+    private static createTraceCheckboxBorder(
+        element: Element,
+        x: number,
+        y: number
+    ) {
+        const svg = SvgService.createSvgElement('polygon');
+        svg.setAttribute(
+            'points',
+            `${x},${y} ${x},${y + 20} ${x + 20},${y + 20} ${x + 20},${y}`
+        );
+        svg.setAttribute('fill', '#ffffff');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke', 'black');
+        element.registerSvg(svg);
+        return svg;
+    }
+
+    private static createTraceCheckboxCheck(
+        x: number,
+        y: number,
+        allSelected: boolean
+    ) {
+        const svg = SvgService.createSvgElement('polyline');
+        svg.setAttribute(
+            'points',
+            `${x + 4},${y + 10} ${x + 8},${y + 14} ${x + 16},${y + 4}`
+        );
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke', 'black');
+        if (!allSelected) {
+            svg.setAttribute('stroke-dasharray', '2 2');
         }
         return svg;
     }
@@ -210,7 +273,7 @@ export class SvgService {
     ): SVGElement {
         const svg = SvgService.createSvgElement('text');
         svg.setAttribute('x', `${element.x}`);
-        svg.setAttribute('y', `${element.y}`);
+        svg.setAttribute('y', `${element.y + this.yDescriptionLabelOffset}`);
         svg.setAttribute('font', this.FONT);
         svg.textContent = text.toString();
         element.registerSvg(svg);

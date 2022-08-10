@@ -7,7 +7,8 @@
     </div>
     <hr class="header-divider" />
     <div class="main-app-body">
-        <app-drawing-area></app-drawing-area>
+        <app-drawing-area
+            (filterChanged)="updateFilter($event)"></app-drawing-area>
         <div class="menubar" fxLayoutGap="20px">
             <div class="menu-buttons" fxLayoutGap="20px" fxFlex="1 0 auto">
                 <app-upload-button
