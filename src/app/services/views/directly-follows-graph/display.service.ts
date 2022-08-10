@@ -13,10 +13,11 @@ import { EventlogDataService } from '../../common/data/eventlog-data.service';
 })
 export class DirectlyFollowsGraphService implements OnDestroy {
     private _graph: BehaviorSubject<Graph>;
-    private _verticalDirection: boolean = true;
+    private _verticalDirection: BehaviorSubject<boolean>;
 
     constructor(private _eventLogDataService: EventlogDataService) {
         this._graph = new BehaviorSubject<Graph>(new Graph([], []));
+        this._verticalDirection = new BehaviorSubject<boolean>(true);
     }
 
     ngOnDestroy(): void {
@@ -31,8 +32,12 @@ export class DirectlyFollowsGraphService implements OnDestroy {
         return this._graph.getValue();
     }
 
+    public get verticalDirection$(): Observable<boolean> {
+        return this._verticalDirection.asObservable();
+    }
+
     public get verticalDirection(): boolean {
-        return this._verticalDirection;
+        return this._verticalDirection.getValue();
     }
 
     private convertEventLogToDirectlyFollowsGraph(eventLog: EventLog): Graph {
@@ -92,10 +97,6 @@ export class DirectlyFollowsGraphService implements OnDestroy {
     }
 
     public switchDirection() {
-        this._verticalDirection = !this._verticalDirection;
-        let net = this.convertEventLogToDirectlyFollowsGraph(
-            this._eventLogDataService.eventLog
-        );
-        this._graph.next(net);
+        this._verticalDirection.next(!this._verticalDirection.value);
     }
 }

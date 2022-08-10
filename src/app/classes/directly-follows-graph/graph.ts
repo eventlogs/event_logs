@@ -128,4 +128,20 @@ export class Graph {
             else return 0;
         });
     }
+
+    public getMaxPosition(): number {
+        let maxPosition = Number.MIN_VALUE;
+        this.vertices.forEach(
+            vertex => (maxPosition = Math.max(vertex.position, maxPosition))
+        );
+        return maxPosition;
+    }
+
+    public getMinPosition(): number {
+        let minPosition = Number.MAX_VALUE;
+        this.vertices.forEach(
+            vertex => (minPosition = Math.min(vertex.position, minPosition))
+        );
+        return minPosition;
+    }
 }

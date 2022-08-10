@@ -72,6 +72,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     clickDrawArea() {
-        this._traceCaseSelectionService.selectTraceCaseIds([]);
+        if (this.direktfolgegraphHidden)
+            this._traceCaseSelectionService.selectTraceCaseIds([]);
     }
 }
