@@ -6,13 +6,12 @@ import {
     ViewChild,
     EventEmitter,
 } from '@angular/core';
-import { DisplayService } from 'src/app/services/chain/value-chain/display-service/display.service';
-import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
-import { EventlogDataService } from 'src/app/services/eventlog-data.service';
+import { DirectlyFollowsGraphService } from 'src/app/services/views/directly-follows-graph/display.service';
+import { EventlogDataService } from 'src/app/services/common/data/eventlog-data.service';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
-import { TracesDetailViewComponent } from '../traces-detail-view/traces-detail-view.component';
-import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
 import { FilterArgument } from '../filter-area/filter-area.component';
+import { LoadingService } from '../../services/views/loading/loading.service';
 
 @Component({
     selector: 'app-drawing-area',
@@ -21,8 +20,8 @@ import { FilterArgument } from '../filter-area/filter-area.component';
 })
 export class DrawingAreaComponent implements AfterContentChecked {
     @ViewChild('drawingArea') drawingArea!: ElementRef;
-    @ViewChild('tracesDetailView') tracesDetailView?: TracesDetailViewComponent;
 
+    loading$ = this.loader.loading$;
     public canvasWidth: number = 0;
     wertschoepfungsketteHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
@@ -31,10 +30,10 @@ export class DrawingAreaComponent implements AfterContentChecked {
     @Output() filterChanged = new EventEmitter();
 
     constructor(
-        private _displayService: DisplayService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
+        private _traceCaseSelectionService: TraceCaseSelectionService,
         private _eventlogDataService: EventlogDataService,
-        private _traceCaseSelectionService: TraceCaseSelectionService
+        public loader: LoadingService
     ) {}
 
     ngAfterContentChecked() {
@@ -75,9 +74,5 @@ export class DrawingAreaComponent implements AfterContentChecked {
     clickDrawArea() {
         if (this.direktfolgegraphHidden)
             this._traceCaseSelectionService.selectTraceCaseIds([]);
-    }
-
-    refresh() {
-        this.tracesDetailView?.refresh();
     }
 }

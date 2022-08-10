@@ -12,7 +12,7 @@ import {
 import { AppModule } from '../../app.module';
 import { NgModule } from '@angular/core';
 import { LogInformationViewComponent } from '../log-information-view/log-information-view.component';
-import { Overlay, OverlayModule } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { MatDialogModule } from '@angular/material/dialog';
 
 describe('DrawingAreaComponent', () => {

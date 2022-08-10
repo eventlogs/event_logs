@@ -1,78 +1,60 @@
 import {
     Component,
     ElementRef,
-    Inject,
     Input,
+    OnInit,
     OnDestroy,
     ViewChild,
 } from '@angular/core';
-import { DisplayService } from '../../services/chain/value-chain/display-service/display.service';
+import { DisplayService } from '../../services/views/value-chain/display-service/display.service';
+import { ValueChainControllerService } from '../../services/views/value-chain/value-chain-controller.service';
 import { Subscription } from 'rxjs';
-import { Diagram } from '../../classes/diagram/diagram';
-import { LayoutService } from '../../services/chain/common/layout-service/layout.service';
-import { SvgService } from '../../services/chain/common/svg-service/svg.service';
-import { TraceCaseSelectionService } from '../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-wertschoepfungskette',
     templateUrl: './wertschoepfungskette.component.html',
     styleUrls: ['./wertschoepfungskette.component.scss'],
 })
-export class WertschoepfungsketteComponent implements OnDestroy {
+export class WertschoepfungsketteComponent implements OnInit, OnDestroy {
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
     @Input() clientWidth: number | undefined;
 
-    private _sub: Subscription;
-    private _diagram: Diagram | undefined;
-    private _subSelectedTraces: Subscription;
-    private _selectedTraceCaseIds: Array<number> = [];
-    public heightPx: number = 390;
-    public widthPx: number = 1080;
+    private _sub: Subscription | undefined;
+    private _subSelectedTraces: Subscription | undefined;
+    public heightPx: number = this._valueChainControllerService.heightPx;
+    public widthPx: number = this._valueChainControllerService.widthPx;
 
     constructor(
-        @Inject(LayoutService.VALUE_CHAIN_INSTANCE)
-        private _layoutService: LayoutService,
-        @Inject(SvgService.VALUE_CHAIN_INSTANCE)
-        private _svgService: SvgService,
         private _traceCaseSelectionService: TraceCaseSelectionService,
-        private _displayService: DisplayService
-    ) {
-        this._sub = this._displayService.diagram$.subscribe(diagram => {
-            this._diagram = diagram;
-            [this.widthPx, this.heightPx] = this._layoutService.layout(
-                this._diagram
-            );
-            if (this.canvas == undefined) {
-                console.log('UNDEFINED DRAWING AREA');
-            }
-            this.draw();
-        });
-        this._subSelectedTraces =
-            this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
-                selectedTraceCaseIds => {
-                    this._selectedTraceCaseIds = selectedTraceCaseIds;
-                    this.draw();
+        private _displayService: DisplayService,
+        private _valueChainControllerService: ValueChainControllerService
+    ) {}
+
+    ngOnInit(): void {
+        this._sub = this._valueChainControllerService._elements$.subscribe(
+            elements => {
+                if (this.canvas == undefined) {
+                    console.log('UNDEFINED DRAWING AREA');
                 }
-            );
+                this.widthPx = this._valueChainControllerService.widthPx;
+                this.heightPx = this._valueChainControllerService.heightPx;
+                this.draw(elements);
+            }
+        );
     }
 
     ngOnDestroy(): void {
-        this._sub.unsubscribe();
-        this._subSelectedTraces.unsubscribe();
+        this._sub?.unsubscribe();
+        this._subSelectedTraces?.unsubscribe();
     }
 
-    private draw() {
+    private draw(elements: SVGElement[]) {
         if (this.canvas === undefined) {
             console.debug('drawing area not ready yet');
             return;
         }
-
         this.clearDrawingArea();
-        const elements = this._svgService.createSvgElements(
-            this._displayService.diagram,
-            this._selectedTraceCaseIds,
-            false
-        );
         for (const element of elements) {
             this.canvas.nativeElement.appendChild(element);
         }

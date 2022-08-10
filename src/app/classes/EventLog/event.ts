@@ -1,7 +1,27 @@
-import { EventLogAttribute } from './eventlogattribute';
+import {
+    BooleanAttribute,
+    DateAttribute,
+    EventLogAttribute,
+    FloatAttribute,
+    IntAttribute,
+    StringAttribute,
+} from './eventlogattribute';
+import 'reflect-metadata';
+import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
+@jsonObject({
+    knownTypes: [
+        StringAttribute,
+        DateAttribute,
+        IntAttribute,
+        FloatAttribute,
+        BooleanAttribute,
+    ],
+})
 export class Event {
+    @jsonArrayMember(EventLogAttribute)
     private _attributes: Array<EventLogAttribute>;
+    @jsonMember
     private _activity: string;
 
     public get attributes(): Array<EventLogAttribute> {

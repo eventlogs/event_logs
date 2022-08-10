@@ -1,4 +1,4 @@
-import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
+import { DirectlyFollowsGraphService } from 'src/app/services/views/directly-follows-graph/display.service';
 import { Edge } from './edge';
 
 export class Vertex {

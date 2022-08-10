@@ -1,14 +1,19 @@
 import { Component, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { LogParserService } from './services/log-parser.service';
-import { DisplayService } from './services/chain/value-chain/display-service/display.service';
+import { LogParserService } from './services/file-operations/log/log-parser.service';
+import { DisplayService } from './services/views/value-chain/display-service/display.service';
 import { debounceTime, Subscription } from 'rxjs';
-import { DirectlyFollowsGraphService } from './services/directly-follows-graph/display.service';
-import { EventlogDataService } from './services/eventlog-data.service';
-import { XesParserService } from './services/xes-parser.service';
-import { LogService } from './services/log.service';
+import { DirectlyFollowsGraphService } from './services/views/directly-follows-graph/display.service';
+import { EventlogDataService } from './services/common/data/eventlog-data.service';
+import { XesParserService } from './services/file-operations/xes/xes-parser.service';
+import { LogService } from './services/file-operations/log/log.service';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
-import { TraceCaseSelectionService } from './services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { TraceCaseSelectionService } from './services/common/trace-case-selection-service/trace-case-selection.service';
+import { LoadingService } from './services/views/loading/loading.service';
+import { ValueChainControllerService } from './services/views/value-chain/value-chain-controller.service';
+import { EventLog } from './classes/EventLog/eventlog';
+import { XesParser } from './classes/EventLog/xesParser';
+import { TypedJSON } from 'typedjson';
 
 @Component({
     selector: 'app-root',
@@ -28,25 +33,26 @@ export class AppComponent implements OnDestroy {
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
         private _displayService: DisplayService,
-        private traceCaseSelectionService: TraceCaseSelectionService,
+        private _valueChainControllerService: ValueChainControllerService,
+        private _traceCaseSelectionService: TraceCaseSelectionService,
         private _logService: LogService,
         private _directlyFollowsGraphService: DirectlyFollowsGraphService,
-        public _eventlogDataService: EventlogDataService
+        public _eventlogDataService: EventlogDataService,
+        private loadingSpinner: LoadingService
     ) {
         this.textareaFc = new FormControl();
         this._sub = this.textareaFc.valueChanges
             .pipe(debounceTime(400))
             .subscribe(val => this.processSourceChange(val));
 
-        this.processXesImport(this.xesExampleValue());
-
         this._subSelectedTraces =
-            this.traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
+            this._traceCaseSelectionService.selectedTraceCaseIds$.subscribe(
                 selectedTraceCaseIds => {
                     this._selectedTraceCaseIds = selectedTraceCaseIds;
                     this.updateViews();
                 }
             );
+        this.processLogImport(this.logExampleValue());
         this.updateViews();
     }
 
@@ -67,13 +73,12 @@ export class AppComponent implements OnDestroy {
         }
 
         if (event.key == 'Escape') {
-            this.traceCaseSelectionService.selectTraceCaseIds([]);
+            this._traceCaseSelectionService.selectTraceCaseIds([]);
         }
     }
 
     private processSourceChange(newSource: string) {
         const result = this._logParserService.parse(newSource);
-
         // Ausgewählte Traces zurücksetzen, wenn mindestens eine Case Id nicht mehr vorhanden ist
         for (const caseId of this._selectedTraceCaseIds) {
             const caseIdStillExists =
@@ -81,7 +86,7 @@ export class AppComponent implements OnDestroy {
                     trace => [caseId].indexOf(trace.caseId) !== -1
                 ).length > 0;
             if (!caseIdStillExists) {
-                this.traceCaseSelectionService.selectTraceCaseIds([]);
+                this._traceCaseSelectionService.selectTraceCaseIds([]);
                 break;
             }
         }
@@ -89,8 +94,8 @@ export class AppComponent implements OnDestroy {
         if (result !== undefined) {
             if (!this._xesImport) {
                 this._eventlogDataService.eventLog = result;
+                this.updateViews();
             }
-            this.updateViews();
         }
         this._xesImport = false;
     }
@@ -113,18 +118,57 @@ export class AppComponent implements OnDestroy {
         this.updateTextarea(fileContent);
     }
 
-    processXesImport(fileContent: string) {
-        try {
-            const result = this._xesParserService.parse(fileContent);
-            this._xesImport = true;
-            if (result !== undefined) {
-                this._eventlogDataService.eventLog = result;
-                this.updateTextarea(this._logService.generate(result));
-                this.updateViews();
+    parseXesFile(fileContent: string) {
+        return new Promise<EventLog>((resolve, reject) => {
+            if (typeof Worker !== 'undefined') {
+                const worker = new Worker(
+                    new URL('./workers/xes-parser.worker', import.meta.url)
+                );
+                worker.onmessage = ({ data }) => {
+                    if (data == null) {
+                        reject(XesParser.PARSING_ERROR);
+                    }
+                    const serializer = new TypedJSON(EventLog);
+                    const result = serializer.parse(data);
+                    if (result != undefined) {
+                        resolve(result);
+                    }
+                };
+                worker.postMessage(fileContent);
+            } else {
+                // web worker not available, fallback option
+                try {
+                    const result = this._xesParserService.parse(fileContent);
+                    resolve(result);
+                } catch (e) {
+                    this._xesImport = false;
+                    if (e === XesParser.PARSING_ERROR) {
+                        alert(
+                            'The uploaded XES file could not be parsed.\n' +
+                                'Check the file for valid XES syntax and try again.'
+                        );
+                    } else {
+                        throw e;
+                    }
+                }
             }
+        });
+    }
+
+    async processXesImport(fileContent: string) {
+        try {
+            this.loadingSpinner.show();
+            this.parseXesFile(fileContent).then(result => {
+                this._xesImport = true;
+                if (result !== undefined) {
+                    this._eventlogDataService.eventLog = result;
+                    this.updateTextarea(this._logService.generate(result));
+                    this.updateViews();
+                }
+            });
         } catch (e) {
             this._xesImport = false;
-            if (e === XesParserService.PARSING_ERROR) {
+            if (e === XesParser.PARSING_ERROR) {
                 alert(
                     'The uploaded XES file could not be parsed.\n' +
                         'Check the file for valid XES syntax and try again.'
@@ -144,268 +188,65 @@ export class AppComponent implements OnDestroy {
     }
 
     updateViews() {
-        this._displayService.displayEventLog(
+        this._valueChainControllerService.updateValueChain(
             this._eventlogDataService.eventLog
         );
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
             this._eventlogDataService.eventLog
         );
-        this.drawingArea?.refresh();
+        this.loadingSpinner.hide();
     }
 
     updateFilter(filter: String) {
         this.updateViews();
     }
 
-    xesExampleValue() {
+    logExampleValue() {
         return (
-            '<?xml version="1.0" encoding="UTF-8"?>' +
-            '<log xes.version="1.0" xes.features="nested-attributes">' +
-            '<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>' +
-            '<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>' +
-            '<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>' +
-            '<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>' +
-            '<extension name="Semantic" prefix="semantic" uri="http://www.xes-standard.org/semantic.xesext"/>' +
-            '<global scope="trace">' +
-            '<string key="concept:name" value="__INVALID__"/>' +
-            '</global>' +
-            '<global scope="event">' +
-            '<string key="concept:name" value="__INVALID__"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '</global>' +
-            '<classifier name="MXML_Legacy_Classifier" keys="concept:name lifecycle:transition"/>' +
-            '<classifier name="Event_Name" keys="concept:name"/>' +
-            '<classifier name="Resource" keys="org:resource"/>' +
-            '<classifier name="Event_Name_AND_Resource" keys="concept:name org:resource"/>' +
-            '<string key="source" value="CPN Tools simulation"/>' +
-            '<string key="concept:name" value="repairExample.mxml"/>' +
-            '<string key="lifecycle:model" value="standard"/>' +
-            '<string key="description" value="Simulated process"/>' +
-            '<trace>' +
-            '<string key="concept:name" value="1"/>' +
-            '<string key="description" value="Simulated process instance"/>' +
-            '<event>' +
-            '<string key="concept:name" value="Register"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:23:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Analyze Defect"/>' +
-            '<string key="org:resource" value="Tester3"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:23:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Analyze Defect"/>' +
-            '<string key="defectType" value="6"/>' +
-            '<string key="org:resource" value="Tester3"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="phoneType" value="T2"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:30:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Complex)"/>' +
-            '<string key="org:resource" value="SolverC1"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:31:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Complex)"/>' +
-            '<string key="org:resource" value="SolverC1"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:49:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="org:resource" value="Tester3"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:49:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="numberRepairs" value="0"/>' +
-            '<string key="org:resource" value="Tester3"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="true"/>' +
-            '<date key="time:timestamp" value="1970-01-02T12:55:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Inform User"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-02T13:10:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Archive Repair"/>' +
-            '<string key="numberRepairs" value="0"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="true"/>' +
-            '<date key="time:timestamp" value="1970-01-02T13:10:00.000Z"/>' +
-            '</event>' +
-            '</trace>' +
-            '<trace>' +
-            '<string key="concept:name" value="10"/>' +
-            '<string key="description" value="Simulated process instance"/>' +
-            '<event>' +
-            '<string key="concept:name" value="Register"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:09:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Analyze Defect"/>' +
-            '<string key="org:resource" value="Tester2"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:09:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Analyze Defect"/>' +
-            '<string key="defectType" value="3"/>' +
-            '<string key="org:resource" value="Tester2"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="phoneType" value="T1"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:15:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Simple)"/>' +
-            '<string key="org:resource" value="SolverS1"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:35:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Simple)"/>' +
-            '<string key="org:resource" value="SolverS1"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:42:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="org:resource" value="Tester6"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:42:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="numberRepairs" value="1"/>' +
-            '<string key="org:resource" value="Tester6"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="false"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:48:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Restart Repair"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:54:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Simple)"/>' +
-            '<string key="org:resource" value="SolverS2"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:54:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Inform User"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-01T11:55:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Simple)"/>' +
-            '<string key="org:resource" value="SolverS2"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-01T12:03:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="org:resource" value="Tester4"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-01T12:03:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="numberRepairs" value="2"/>' +
-            '<string key="org:resource" value="Tester4"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="true"/>' +
-            '<date key="time:timestamp" value="1970-01-01T12:09:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Archive Repair"/>' +
-            '<string key="numberRepairs" value="2"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="true"/>' +
-            '<date key="time:timestamp" value="1970-01-01T12:14:00.000Z"/>' +
-            '</event>' +
-            '</trace>' +
-            '<trace>' +
-            '<string key="concept:name" value="100"/>' +
-            '<string key="description" value="Simulated process instance"/>' +
-            '<event>' +
-            '<string key="concept:name" value="Register"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-04T02:28:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Analyze Defect"/>' +
-            '<string key="org:resource" value="Tester4"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-04T02:28:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Analyze Defect"/>' +
-            '<string key="defectType" value="8"/>' +
-            '<string key="org:resource" value="Tester4"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="phoneType" value="T2"/>' +
-            '<date key="time:timestamp" value="1970-01-04T02:36:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Complex)"/>' +
-            '<string key="org:resource" value="SolverC1"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-04T02:52:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Repair (Complex)"/>' +
-            '<string key="org:resource" value="SolverC1"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-04T03:09:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="org:resource" value="Tester1"/>' +
-            '<string key="lifecycle:transition" value="start"/>' +
-            '<date key="time:timestamp" value="1970-01-04T03:09:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Test Repair"/>' +
-            '<string key="numberRepairs" value="0"/>' +
-            '<string key="org:resource" value="Tester1"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="true"/>' +
-            '<date key="time:timestamp" value="1970-01-04T03:18:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Inform User"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<date key="time:timestamp" value="1970-01-04T03:20:00.000Z"/>' +
-            '</event>' +
-            '<event>' +
-            '<string key="concept:name" value="Archive Repair"/>' +
-            '<string key="numberRepairs" value="0"/>' +
-            '<string key="org:resource" value="System"/>' +
-            '<string key="lifecycle:transition" value="complete"/>' +
-            '<string key="defectFixed" value="true"/>' +
-            '<date key="time:timestamp" value="1970-01-04T03:28:00.000Z"/>' +
-            '</event>' +
-            '</trace>' +
-            '</log>'
+            '.type log\n' +
+            '.attributes\n' +
+            'case-id\n' +
+            'concept:name\n' +
+            'org:resource\n' +
+            'lifecycle:transition\n' +
+            'time:timestamp\n' +
+            'numberRepairs\n' +
+            'defectFixed\n' +
+            'defectType\n' +
+            'phoneType\n' +
+            '.events\n' +
+            '1 Register System complete 1970-01-02T12:23:00.000Z\n' +
+            "1 'Analyze Defect' Tester3 start 1970-01-02T12:23:00.000Z\n" +
+            "1 'Analyze Defect' Tester3 complete 1970-01-02T12:30:00.000Z '' '' 6 T2\n" +
+            "1 'Repair (Complex)' SolverC1 start 1970-01-02T12:31:00.000Z\n" +
+            "1 'Repair (Complex)' SolverC1 complete 1970-01-02T12:49:00.000Z\n" +
+            "1 'Test Repair' Tester3 start 1970-01-02T12:49:00.000Z\n" +
+            "1 'Test Repair' Tester3 complete 1970-01-02T12:55:00.000Z 0 true\n" +
+            "1 'Inform User' System complete 1970-01-02T13:10:00.000Z\n" +
+            "1 'Archive Repair' System complete 1970-01-02T13:10:00.000Z 0 true\n" +
+            '10 Register System complete 1970-01-01T11:09:00.000Z\n' +
+            "10 'Analyze Defect' Tester2 start 1970-01-01T11:09:00.000Z\n" +
+            "10 'Analyze Defect' Tester2 complete 1970-01-01T11:15:00.000Z '' '' 3 T1\n" +
+            "10 'Repair (Simple)' SolverS1 start 1970-01-01T11:35:00.000Z\n" +
+            "10 'Repair (Simple)' SolverS1 complete 1970-01-01T11:42:00.000Z\n" +
+            "10 'Test Repair' Tester6 start 1970-01-01T11:42:00.000Z\n" +
+            "10 'Test Repair' Tester6 complete 1970-01-01T11:48:00.000Z 1 false\n" +
+            "10 'Restart Repair' System complete 1970-01-01T11:54:00.000Z\n" +
+            "10 'Repair (Simple)' SolverS2 start 1970-01-01T11:54:00.000Z\n" +
+            "10 'Inform User' System complete 1970-01-01T11:55:00.000Z\n" +
+            "10 'Repair (Simple)' SolverS2 complete 1970-01-01T12:03:00.000Z\n" +
+            "10 'Test Repair' Tester4 start 1970-01-01T12:03:00.000Z\n" +
+            "10 'Test Repair' Tester4 complete 1970-01-01T12:09:00.000Z 2 true\n" +
+            "10 'Archive Repair' System complete 1970-01-01T12:14:00.000Z 2 true\n" +
+            '100 Register System complete 1970-01-04T02:28:00.000Z\n' +
+            "100 'Analyze Defect' Tester4 start 1970-01-04T02:28:00.000Z\n" +
+            "100 'Analyze Defect' Tester4 complete 1970-01-04T02:36:00.000Z '' '' 8 T2\n" +
+            "100 'Repair (Complex)' SolverC1 start 1970-01-04T02:52:00.000Z\n" +
+            "100 'Repair (Complex)' SolverC1 complete 1970-01-04T03:09:00.000Z\n" +
+            "100 'Test Repair' Tester1 start 1970-01-04T03:09:00.000Z\n" +
+            "100 'Test Repair' Tester1 complete 1970-01-04T03:18:00.000Z 0 true\n" +
+            "100 'Inform User' System complete 1970-01-04T03:20:00.000Z\n" +
+            "100 'Archive Repair' System complete 1970-01-04T03:28:00.000Z 0 true"
         );
     }
 }

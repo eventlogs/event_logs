@@ -8,9 +8,9 @@ import {
 import { Subscription } from 'rxjs';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
-import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
-import { LayoutService } from 'src/app/services/directly-follows-graph/layout.service';
-import { SvgService } from 'src/app/services/directly-follows-graph/svg.service';
+import { DirectlyFollowsGraphService } from 'src/app/services/views/directly-follows-graph/display.service';
+import { LayoutService } from 'src/app/services/views/directly-follows-graph/layout.service';
+import { SvgService } from 'src/app/services/views/directly-follows-graph/svg.service';
 
 @Component({
     selector: 'app-directly-follows-graph',

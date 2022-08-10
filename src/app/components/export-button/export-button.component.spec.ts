@@ -11,11 +11,6 @@ import { NgModule } from '@angular/core';
 import { AppModule } from '../../app.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { DrawingAreaComponent } from '../drawingArea/drawingArea.component';
-import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
-import { WertschoepfungsketteComponent } from '../wertschoepfungskette/wertschoepfungskette.component';
-import { DirectlyFollowsGraphComponent } from '../directly-follows-graph/directly-follows-graph.component';
-import { LogInformationViewComponent } from '../log-information-view/log-information-view.component';
 import { ExportMenuItemComponent } from './export-menu-item/export-menu-item.component';
 import { MatFormField } from '@angular/material/form-field';
 

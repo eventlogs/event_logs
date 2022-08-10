@@ -20,7 +20,6 @@ import { ExportMenuItemComponent } from './components/export-button/export-menu-
 import { DirectlyFollowsGraphComponent } from './components/directly-follows-graph/directly-follows-graph.component';
 import { ChangeViewButtonComponent } from './components/change-view-button/change-view-button.component';
 import { APP_BASE_HREF } from '@angular/common';
-import { TracesDetailViewComponent } from './components/traces-detail-view/traces-detail-view.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -30,8 +29,10 @@ import { SwitchDirectionButtonComponent } from './components/switch-direction-bu
 import { FilterAreaComponent } from './components/filter-area/filter-area.component';
 import { LogTraceCaseComponent } from './components/log-information-view/log-case/log-trace-case.component';
 import { LogInformationViewComponent } from './components/log-information-view/log-information-view.component';
-import { LayoutService } from './services/chain/common/layout-service/layout.service';
-import { SvgService } from './services/chain/common/svg-service/svg.service';
+import { LayoutService } from './services/common/layout-service/layout.service';
+import { SvgService } from './services/common/svg-service/svg.service';
+import { AttributeValuePipe } from './pipes/attribute-value.pipe';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [
@@ -44,13 +45,13 @@ import { SvgService } from './services/chain/common/svg-service/svg.service';
         ExportMenuItemComponent,
         DirectlyFollowsGraphComponent,
         ChangeViewButtonComponent,
-        TracesDetailViewComponent,
         DrawingAreaComponent,
         ExportButtonComponent,
         SwitchDirectionButtonComponent,
         FilterAreaComponent,
         LogInformationViewComponent,
         LogTraceCaseComponent,
+        AttributeValuePipe,
     ],
     imports: [
         BrowserModule,
@@ -68,6 +69,7 @@ import { SvgService } from './services/chain/common/svg-service/svg.service';
         MatPaginatorModule,
         MatSortModule,
         MatMenuModule,
+        MatProgressSpinnerModule,
         MatCheckboxModule,
     ],
     providers: [
