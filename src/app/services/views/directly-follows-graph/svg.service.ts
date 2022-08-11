@@ -200,13 +200,18 @@ export class SvgService {
         rect.setAttribute('ry', '15');
         rect.setAttribute('width', this.rectWidth.toString());
         rect.setAttribute('height', this.rectHeight.toString());
-        rect.setAttribute(
-            'fill',
-            "url('#" + vertex.activityName + "Gradient')"
-        );
-        rect.setAttribute('fill-opacity', '1');
-        rect.setAttribute('stroke-width', '2');
-        rect.setAttribute('stroke', 'black');
+
+        if (!vertex.isDummy) {
+            rect.setAttribute(
+                'fill',
+                "url('#" + vertex.activityName + "Gradient')"
+            );
+            rect.setAttribute('fill-opacity', '1');
+            rect.setAttribute('stroke-width', '2');
+            rect.setAttribute('stroke', 'black');
+        } else {
+            rect.setAttribute('fill-opacity', '0');
+        }
 
         return rect;
     }
