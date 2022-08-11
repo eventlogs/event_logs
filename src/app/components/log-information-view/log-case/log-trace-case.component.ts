@@ -9,16 +9,12 @@ import {
     ViewChild,
 } from '@angular/core';
 import { Trace } from '../../../classes/EventLog/trace';
-import { DisplayService } from '../../../services/chain/log-information/display-service/display.service';
+import { DisplayService } from '../../../services/views/log-information/display-service/display.service';
 import { Subscription } from 'rxjs';
 import { Diagram } from '../../../classes/diagram/diagram';
-import { LayoutService } from '../../../services/chain/common/layout-service/layout.service';
-import { SvgService } from '../../../services/chain/common/svg-service/svg.service';
-import {
-    DateAttribute,
-    EventLogAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
-import { TraceCaseSelectionService } from '../../../services/chain/common/trace-case-selection-service/trace-case-selection.service';
+import { LayoutService } from '../../../services/common/layout-service/layout.service';
+import { SvgService } from '../../../services/common/svg-service/svg.service';
+import { TraceCaseSelectionService } from '../../../services/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
     selector: 'app-log-trace-case',
@@ -120,21 +116,6 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             this.status = this.closedStatus;
         }
-    }
-
-    public getAttributeValue(attribute: EventLogAttribute): any {
-        if (attribute instanceof DateAttribute) {
-            return attribute.value.toLocaleDateString('de-De', {
-                timeZone: 'UTC',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-            });
-        }
-        return attribute.value;
     }
 
     public getDataWidthStyle() {

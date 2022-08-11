@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIcon } from '@angular/material/icon';
 import { UploadButtonComponent } from './upload-button.component';
-import any = jasmine.any;
 
 describe('UploadButtonComponent', () => {
     let component: UploadButtonComponent;

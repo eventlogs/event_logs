@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChangeViewButtonComponent } from './change-view-button.component';
-import { MatMenu, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
 

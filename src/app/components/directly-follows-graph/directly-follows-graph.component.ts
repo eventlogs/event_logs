@@ -1,24 +1,34 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
-import { DirectlyFollowsGraphService } from 'src/app/services/directly-follows-graph/display.service';
-import { LayoutService } from 'src/app/services/directly-follows-graph/layout.service';
-import { SvgService } from 'src/app/services/directly-follows-graph/svg.service';
+import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
+import { DirectlyFollowsGraphService } from 'src/app/services/views/directly-follows-graph/display.service';
+import { LayoutService } from 'src/app/services/views/directly-follows-graph/layout.service';
+import { SvgService } from 'src/app/services/views/directly-follows-graph/svg.service';
 
 @Component({
     selector: 'app-directly-follows-graph',
     templateUrl: './directly-follows-graph.component.html',
     styleUrls: ['./directly-follows-graph.component.scss'],
 })
-export class DirectlyFollowsGraphComponent implements OnDestroy {
+export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
     @ViewChild('directlyFollowsGraph') directlyFollowsGraph:
         | ElementRef<SVGElement>
         | undefined;
 
     private _graphSubscription: Subscription;
     private _graph: Graph | undefined;
+    private _directionSubscription: Subscription;
     public heightPx: number = 390;
     public widthPx: number = 100;
+    private _svg: SVGElement | undefined;
+    private _draggingVertex: Vertex | undefined;
 
     constructor(
         private _layoutService: LayoutService,
@@ -32,10 +42,85 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
                 this.draw();
             }
         );
+        this._directionSubscription =
+            this._displayService.verticalDirection$.subscribe(direction =>
+                this.draw()
+            );
+    }
+
+    ngAfterViewInit(): void {
+        this._svg = this.directlyFollowsGraph?.nativeElement as SVGElement;
+        this._svg.onmousedown = event => {
+            this.processMouseDown(event);
+        };
+        this._svg.onmouseup = event => {
+            this.processMouseUp(event);
+        };
+    }
+
+    private processMouseDown(event: MouseEvent) {
+        this.calcGraphSize(this._graph);
+
+        let target = event.target as SVGElement;
+        this._draggingVertex = this._graph?.vertices.find(
+            vertex => vertex.activityName === target.getAttribute('name')
+        );
+
+        let current: string | null | undefined;
+        let mouseStart: number;
+
+        if (this._displayService.verticalDirection) {
+            current = this._draggingVertex?.svgElement?.getAttribute('x');
+            mouseStart = event.clientX;
+        } else {
+            current = this._draggingVertex?.svgElement?.getAttribute('y');
+            mouseStart = event.clientY;
+        }
+
+        if (this._svg == undefined || current == undefined) return;
+
+        this._svg.onmousemove = event => {
+            this.processMouseMove(event, current!, mouseStart);
+        };
+    }
+
+    private processMouseMove(
+        event: MouseEvent,
+        current: string | null,
+        mouseStart: number
+    ) {
+        if (
+            this._draggingVertex == undefined ||
+            this._draggingVertex.svgElement === undefined ||
+            this._graph == undefined ||
+            current == undefined
+        )
+            return;
+
+        event.preventDefault();
+
+        if (this._displayService.verticalDirection) {
+            let x: number = +current + event.clientX - mouseStart;
+            this._draggingVertex.svgElement.setAttribute('x', x.toString());
+        } else {
+            let y: number = +current + event.clientY - mouseStart;
+            this._draggingVertex.svgElement.setAttribute('y', y.toString());
+        }
+
+        this._svgService.updateLayer(this._draggingVertex, this._graph);
+
+        this.calcGraphSize(this._graph);
+    }
+
+    private processMouseUp(event: MouseEvent) {
+        if (this._svg !== undefined) this._svg.onmousemove = null;
+
+        this._draggingVertex = undefined;
     }
 
     ngOnDestroy(): void {
         this._graphSubscription.unsubscribe();
+        this._directionSubscription.unsubscribe();
     }
 
     private draw() {
@@ -52,14 +137,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
 
-        this.widthPx =
-            this._layoutService.graphWidth + this._svgService.offsetXValue;
-        this.heightPx =
-            this._layoutService.graphHeight + this._svgService.offsetYValue;
-
-        if (this._displayService.verticalDirection)
-            this.widthPx += this._svgService.offsetXValue;
-        else this.heightPx += this._svgService.offsetYValue;
+        this.calcGraphSize(this._graph);
     }
 
     private clearDrawingArea() {
@@ -73,6 +151,46 @@ export class DirectlyFollowsGraphComponent implements OnDestroy {
 
         while (drawingArea?.childElementCount > 0) {
             drawingArea.removeChild(drawingArea.lastChild as ChildNode);
+        }
+    }
+
+    private calcGraphSize(graph: Graph | undefined) {
+        if (this._graph != undefined) {
+            this.calcGraphWidth(this._graph);
+            this.calcGraphHeight(this._graph);
+        }
+    }
+
+    private calcGraphWidth(graph: Graph): void {
+        if (this._displayService.verticalDirection)
+            this.widthPx =
+                (graph.getMaxPosition() + 1) * this._svgService.offsetXValue;
+        else this.widthPx = graph.getMaxLayer() * this._svgService.offsetXValue;
+
+        if (this.directlyFollowsGraph !== undefined) {
+            let drawingArea = document.getElementsByClassName('drawingArea');
+            if (drawingArea !== undefined)
+                this.widthPx = Math.max(
+                    this.widthPx,
+                    drawingArea[0].getBoundingClientRect().width * 0.95
+                );
+        }
+    }
+
+    private calcGraphHeight(graph: Graph): void {
+        if (this._displayService.verticalDirection)
+            this.heightPx = graph.getMaxLayer() * this._svgService.offsetYValue;
+        else
+            this.heightPx =
+                (graph.getMaxPosition() + 1) * this._svgService.offsetYValue;
+
+        if (this.directlyFollowsGraph !== undefined) {
+            let drawingArea = document.getElementsByClassName('drawingArea');
+            if (drawingArea !== undefined)
+                this.heightPx = Math.max(
+                    this.heightPx,
+                    drawingArea[0].getBoundingClientRect().height * 0.95
+                );
         }
     }
 }

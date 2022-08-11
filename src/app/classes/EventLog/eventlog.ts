@@ -1,12 +1,35 @@
-import { EventLogAttribute } from './eventlogattribute';
+import {
+    BooleanAttribute,
+    DateAttribute,
+    EventLogAttribute,
+    FloatAttribute,
+    IntAttribute,
+    StringAttribute,
+} from './eventlogattribute';
 import { Classifier } from './classifier';
 import { Trace } from './trace';
+import 'reflect-metadata';
+import { jsonObject, jsonArrayMember } from 'typedjson';
 
+@jsonObject({
+    knownTypes: [
+        StringAttribute,
+        DateAttribute,
+        IntAttribute,
+        FloatAttribute,
+        BooleanAttribute,
+    ],
+})
 export class EventLog {
+    @jsonArrayMember(Classifier)
     private _classifiers: Array<Classifier>;
+    @jsonArrayMember(EventLogAttribute)
     private _globalEventAttributes: Array<EventLogAttribute>;
+    @jsonArrayMember(EventLogAttribute)
     private _globalTraceAttributes: Array<EventLogAttribute>;
+    @jsonArrayMember(EventLogAttribute)
     private _attributes: Array<EventLogAttribute>;
+    @jsonArrayMember(Trace)
     private _traces: Array<Trace>;
 
     public get classifiers(): Array<Classifier> {
