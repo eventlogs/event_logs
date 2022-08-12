@@ -9,7 +9,7 @@
     <div>
         <details
             (toggle)="toggleStatus()"
-            [style.width]="getDataWidthStyle() + 'px'"
+            [style.width.px]="_dataWidth"
             class="xlabelsize-10-size">
             <summary>{{ status }} attributes</summary>
             <div>
