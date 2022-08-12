@@ -129,6 +129,16 @@ export class Graph {
         });
     }
 
+    public getMaxActivityCountVertex(): number {
+        let max = 0;
+
+        this.vertices.forEach(vertex => {
+            max = Math.max(vertex.activityCount, max);
+        });
+
+        return max;
+    }
+
     public getMaxPosition(): number {
         let maxPosition = Number.MIN_VALUE;
         this.vertices.forEach(
