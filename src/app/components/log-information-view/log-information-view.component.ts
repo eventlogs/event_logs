@@ -8,10 +8,14 @@ import { Trace } from '../../classes/EventLog/trace';
     styleUrls: ['./log-information-view.component.scss'],
 })
 export class LogInformationViewComponent {
+    public sortedTraces = this.sortTraces(
+        this._eventlogDataService.eventLog.traces
+    );
     constructor(public _eventlogDataService: EventlogDataService) {}
 
     sortTraces(traces: Array<Trace>): Array<Trace> {
-        return traces.sort((a, b) => {
+        const start = Date.now();
+        let sortedTraces = traces.sort((a, b) => {
             if (a.events.length != b.events.length) {
                 return a.events.length - b.events.length;
             }
@@ -28,5 +32,8 @@ export class LogInformationViewComponent {
             }
             return 0;
         });
+        const end = Date.now();
+        console.log("Sorting traces took " + (end-start)/1000 + "seconds");
+        return sortedTraces;
     }
 }

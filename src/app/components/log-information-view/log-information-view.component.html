@@ -1,9 +1,7 @@
 <table>
     <tr
         *ngFor="
-            let traceCaseItem of sortTraces(
-                _eventlogDataService.eventLog.traces
-            )
+            let traceCaseItem of sortedTraces
         ">
         <app-log-trace-case
             [traceCaseItem]="traceCaseItem"></app-log-trace-case>
