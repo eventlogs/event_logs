@@ -4,7 +4,7 @@
             <app-change-view-button
                 (changeViewEvent)="changeView($event)"></app-change-view-button>
             <app-switch-direction-button
-                *ngIf="!direktfolgegraphHidden"
+                *ngIf="!directlyFollowsGraphHidden"
                 (switchDirectionEvent)="
                     switchDirection()
                 "></app-switch-direction-button>
@@ -21,7 +21,7 @@
         [hidden]="valueChainHidden"
         class="padding full-size"></app-value-chain>
     <app-directly-follows-graph
-        [hidden]="direktfolgegraphHidden"
+        [hidden]="directlyFollowsGraphHidden"
         class="padding full-size"></app-directly-follows-graph>
     <app-log-information-view
         [hidden]="logInformationHidden"></app-log-information-view>

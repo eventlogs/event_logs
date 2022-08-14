@@ -24,7 +24,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
     loading$ = this.loader.loading$;
     public canvasWidth: number = 0;
     valueChainHidden: boolean = false;
-    direktfolgegraphHidden: boolean = true;
+    directlyFollowsGraphHidden: boolean = true;
     logInformationHidden: boolean = true;
 
     @Output() filterChanged = new EventEmitter();
@@ -50,16 +50,16 @@ export class DrawingAreaComponent implements AfterContentChecked {
         switch (nextView) {
             case ChangeViewButtonComponent.valueChainView:
                 this.valueChainHidden = false;
-                this.direktfolgegraphHidden = true;
+                this.directlyFollowsGraphHidden = true;
                 this.logInformationHidden = true;
                 break;
             case ChangeViewButtonComponent.directlyFollowsGraphView:
                 this.valueChainHidden = true;
-                this.direktfolgegraphHidden = false;
+                this.directlyFollowsGraphHidden = false;
                 this.logInformationHidden = true;
                 break;
             case ChangeViewButtonComponent.logInformationView:
-                this.direktfolgegraphHidden = true;
+                this.directlyFollowsGraphHidden = true;
                 this.valueChainHidden = true;
                 this.logInformationHidden = false;
                 break;
@@ -72,7 +72,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
     }
 
     clickDrawArea() {
-        if (this.direktfolgegraphHidden)
+        if (this.directlyFollowsGraphHidden)
             this._traceCaseSelectionService.selectTraceCaseIds([]);
     }
 }
