@@ -82,7 +82,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
                     LayoutService.Y_OFFSET_VALUE_CHAIN,
                     LayoutService.X_STEP_VALUE_CHAIN,
                     LayoutService.Y_STEP_VALUE_CHAIN,
-                    LayoutService.X_LABELSIZE_VALUE_CHAIN
+                    LayoutService.X_LABELSIZE_VALUE_CHAIN,
+                    trace => trace.caseIds.length.toString().length
                 ),
         },
         {
@@ -93,7 +94,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
                     LayoutService.Y_OFFSET_LOG_INFORMATION,
                     LayoutService.X_STEP_LOG_INFORMATION,
                     LayoutService.Y_STEP_LOG_INFORMATION,
-                    LayoutService.X_LABELSIZE_LOG_INFORMATION
+                    LayoutService.X_LABELSIZE_LOG_INFORMATION,
+                    trace => trace.caseIds[0].toString().length
                 ),
         },
         {
@@ -106,7 +108,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
                     SvgService.BOX_HEIGHT_VALUE_CHAIN,
                     trace =>
                         trace.count.toString() +
-                        (trace.count == 1 ? ' trace' : ' traces')
+                        (trace.count == 1 ? ' case' : ' cases')
                 ),
             deps: [LayoutService.VALUE_CHAIN_INSTANCE],
         },
