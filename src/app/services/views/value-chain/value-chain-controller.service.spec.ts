@@ -17,7 +17,8 @@ describe('ValueChainControllerService', () => {
                             LayoutService.Y_OFFSET_VALUE_CHAIN,
                             LayoutService.X_STEP_VALUE_CHAIN,
                             LayoutService.Y_STEP_VALUE_CHAIN,
-                            LayoutService.X_LABELSIZE_VALUE_CHAIN
+                            LayoutService.X_LABELSIZE_VALUE_CHAIN,
+                            trace => 10
                         ),
                 },
                 {
