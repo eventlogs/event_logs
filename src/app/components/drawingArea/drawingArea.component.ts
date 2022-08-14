@@ -23,7 +23,7 @@ export class DrawingAreaComponent implements AfterContentChecked {
 
     loading$ = this.loader.loading$;
     public canvasWidth: number = 0;
-    wertschoepfungsketteHidden: boolean = false;
+    valueChainHidden: boolean = false;
     direktfolgegraphHidden: boolean = true;
     logInformationHidden: boolean = true;
 
@@ -49,18 +49,18 @@ export class DrawingAreaComponent implements AfterContentChecked {
     changeView(nextView: string) {
         switch (nextView) {
             case ChangeViewButtonComponent.valueChainView:
-                this.wertschoepfungsketteHidden = false;
+                this.valueChainHidden = false;
                 this.direktfolgegraphHidden = true;
                 this.logInformationHidden = true;
                 break;
             case ChangeViewButtonComponent.directlyFollowsGraphView:
-                this.wertschoepfungsketteHidden = true;
+                this.valueChainHidden = true;
                 this.direktfolgegraphHidden = false;
                 this.logInformationHidden = true;
                 break;
             case ChangeViewButtonComponent.logInformationView:
                 this.direktfolgegraphHidden = true;
-                this.wertschoepfungsketteHidden = true;
+                this.valueChainHidden = true;
                 this.logInformationHidden = false;
                 break;
         }

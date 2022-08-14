@@ -3,7 +3,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { WertschoepfungsketteComponent } from './components/wertschoepfungskette/wertschoepfungskette.component';
+import { ValueChainComponent } from './components/value-chain/value-chain.component';
 import { ExportMenuItemComponent } from './components/export-button/export-menu-item/export-menu-item.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
@@ -26,7 +26,7 @@ describe('AppComponent', () => {
             ).providers,
             declarations: [
                 AppComponent,
-                WertschoepfungsketteComponent,
+                ValueChainComponent,
                 DrawingAreaComponent,
                 ExportMenuItemComponent,
                 FooterComponent,

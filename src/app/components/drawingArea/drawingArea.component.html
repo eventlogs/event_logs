@@ -16,10 +16,10 @@
     <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
 </div>
 <div #drawingArea class="drawingArea" (click)="clickDrawArea()">
-    <app-wertschoepfungskette
+    <app-value-chain
         [clientWidth]="canvasWidth"
-        [hidden]="wertschoepfungsketteHidden"
-        class="padding full-size"></app-wertschoepfungskette>
+        [hidden]="valueChainHidden"
+        class="padding full-size"></app-value-chain>
     <app-directly-follows-graph
         [hidden]="direktfolgegraphHidden"
         class="padding full-size"></app-directly-follows-graph>
