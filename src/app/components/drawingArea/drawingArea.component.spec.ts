@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingAreaComponent } from './drawingArea.component';
-import { WertschoepfungsketteComponent } from '../wertschoepfungskette/wertschoepfungskette.component';
+import { ValueChainComponent } from '../value-chain/value-chain.component';
 import { ChangeViewButtonComponent } from '../change-view-button/change-view-button.component';
 import { DirectlyFollowsGraphComponent } from '../directly-follows-graph/directly-follows-graph.component';
 import {
@@ -25,7 +25,7 @@ describe('DrawingAreaComponent', () => {
             declarations: [
                 DrawingAreaComponent,
                 ChangeViewButtonComponent,
-                WertschoepfungsketteComponent,
+                ValueChainComponent,
                 DirectlyFollowsGraphComponent,
                 MatMenu,
                 LogInformationViewComponent,

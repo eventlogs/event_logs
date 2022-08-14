@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WertschoepfungsketteComponent } from './wertschoepfungskette.component';
+import { ValueChainComponent } from './value-chain.component';
 import { AppModule } from '../../app.module';
 import { NgModule } from '@angular/core';
 
-describe('WertschoepfungsketteComponent', () => {
-    let component: WertschoepfungsketteComponent;
-    let fixture: ComponentFixture<WertschoepfungsketteComponent>;
+describe('ValueChainComponent', () => {
+    let component: ValueChainComponent;
+    let fixture: ComponentFixture<ValueChainComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [WertschoepfungsketteComponent],
+            declarations: [ValueChainComponent],
             providers: (
                 Reflect.getOwnPropertyDescriptor(AppModule, '__annotations__')
                     ?.value[0] as NgModule
@@ -18,7 +18,7 @@ describe('WertschoepfungsketteComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(WertschoepfungsketteComponent);
+        fixture = TestBed.createComponent(ValueChainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

@@ -12,11 +12,11 @@ import { Subscription } from 'rxjs';
 import { TraceCaseSelectionService } from '../../services/common/trace-case-selection-service/trace-case-selection.service';
 
 @Component({
-    selector: 'app-wertschoepfungskette',
-    templateUrl: './wertschoepfungskette.component.html',
-    styleUrls: ['./wertschoepfungskette.component.scss'],
+    selector: 'app-value-chain',
+    templateUrl: './value-chain.component.html',
+    styleUrls: ['./value-chain.component.scss'],
 })
-export class WertschoepfungsketteComponent implements OnInit, OnDestroy {
+export class ValueChainComponent implements OnInit, OnDestroy {
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
     @Input() clientWidth: number | undefined;
 

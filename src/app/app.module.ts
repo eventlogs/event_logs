@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
-import { WertschoepfungsketteComponent } from './components/wertschoepfungskette/wertschoepfungskette.component';
+import { ValueChainComponent } from './components/value-chain/value-chain.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,7 +37,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @NgModule({
     declarations: [
         AppComponent,
-        WertschoepfungsketteComponent,
+        ValueChainComponent,
         DrawingAreaComponent,
         FooterComponent,
         UploadButtonComponent,
