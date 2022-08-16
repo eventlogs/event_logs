@@ -12,7 +12,7 @@ export class SvgService {
     private _rectWidth: number = 150;
     private _rectHeight: number = 40;
     private _offsetXValue: number = this._rectWidth * 1.5;
-    private _offsetYValue: number = this._rectHeight * 2.5;
+    private _offsetYValue: number = this._rectHeight * 4;
     private maxActivityCountVertex = 0;
     private minValue: number = 50;
     private _svgElements: SVGElement[] = [];
@@ -56,7 +56,10 @@ export class SvgService {
             if (!vertex.isDummy) {
                 let text = this.createTextForGraph(vertex);
                 container.append(text);
-            } else {
+            } else if (
+                vertex.layer !== 1 &&
+                vertex.layer !== graph.getMaxLayer()
+            ) {
                 let path = this.createPathForDummyVertex(vertex);
                 container.append(path);
             }
@@ -71,7 +74,7 @@ export class SvgService {
 
         graph.edges.forEach(edge => {
             let path = this.createPath(edge, graph);
-            if (!edge.endVertex.isDummy) {
+            if (!edge.endVertex.isDummy || edge.endVertex.isEnd) {
                 let text = this.createTextForEdge(edge);
                 this._svgElements.push(text);
             }
@@ -292,7 +295,7 @@ export class SvgService {
         path.setAttribute('stroke-width', '1');
         path.setAttribute('stroke', 'black');
         path.setAttribute('fill', 'none');
-        if (!edge.endVertex.isDummy)
+        if (!edge.endVertex.isDummy || edge.endVertex.isEnd)
             path.setAttribute('marker-end', 'url(#marker)');
         path.setAttribute('pointer-events', 'none');
 
@@ -667,7 +670,7 @@ export class SvgService {
                 'd',
                 this.setPathCoordinates(edge, graph)
             );
-            if (!edge.endVertex.isDummy) {
+            if (!edge.endVertex.isDummy || edge.endVertex.isEnd) {
                 let text = edge.textSvgElement;
                 if (text != undefined) this.setTextCoordinates(edge, text);
             }

@@ -8,6 +8,8 @@ export class Vertex {
     private _position: number;
     private _svgElement: SVGElement | undefined;
     private _isDummy: boolean;
+    private _isStart: boolean = false;
+    private _isEnd: boolean = false;
 
     public get activityName(): String {
         return this._activityName;
@@ -71,6 +73,22 @@ export class Vertex {
 
     public get isDummy(): boolean {
         return this._isDummy;
+    }
+
+    public get isStart(): boolean {
+        return this._isStart;
+    }
+
+    public set isStart(value: boolean) {
+        this._isStart = value;
+    }
+
+    public get isEnd(): boolean {
+        return this._isEnd;
+    }
+
+    public set isEnd(value: boolean) {
+        this._isEnd = value;
     }
 
     constructor(

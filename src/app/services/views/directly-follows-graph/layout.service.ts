@@ -10,10 +10,7 @@ import { SvgService } from './svg.service';
 })
 //Layout mittels Sugiyama Algorithmus
 export class LayoutService {
-    constructor(
-        private _displayService: DirectlyFollowsGraphService,
-        private _svgService: SvgService
-    ) {}
+    constructor() {}
 
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
@@ -29,10 +26,7 @@ export class LayoutService {
 
     private setPositions(graph: Graph): void {
         let minPosition = graph.getMinPosition();
-        if (minPosition < 1)
-            graph.vertices.forEach(
-                vertex => (vertex.position += -minPosition + 1)
-            );
+        graph.vertices.forEach(vertex => (vertex.position += -minPosition + 1));
     }
 
     private makeGraphAcyclic(graph: Graph): void {
@@ -93,12 +87,19 @@ export class LayoutService {
     }
 
     private setLayers(graph: Graph): void {
-        graph.vertices.forEach(vertex => (vertex.layer = 1));
+        graph.vertices.forEach(vertex => {
+            if (vertex.isStart) vertex.layer = 1;
+            else vertex.layer = 2;
+        });
 
         let sinks: Vertex[] = graph.getSinks();
 
         sinks.forEach(vertex => {
             this.calculateLayer(vertex, graph);
+        });
+
+        graph.vertices.forEach(vertex => {
+            if (vertex.isEnd) vertex.layer = graph.getMaxLayer();
         });
     }
 
@@ -195,6 +196,8 @@ export class LayoutService {
         let crossings: number = Number.MAX_VALUE;
         let improved: boolean = false;
 
+        console.log('minimizeCrossings');
+
         //Teste zufällige Permutation für die erste Ebene
         do {
             differentStartingPermutation++;
@@ -228,6 +231,12 @@ export class LayoutService {
                 }
 
                 let crossingsCloneNew = this.countCrossings(graphCloneNew);
+                console.log(
+                    'differentStartingPermutation: ' +
+                        differentStartingPermutation
+                );
+                console.log('crossingsCloneNew: ' + crossingsCloneNew);
+                console.log('graphCloneNew: ' + graphCloneNew);
 
                 if (crossingsCloneNew < crossingsClone) {
                     crossingsClone = crossingsCloneNew;
@@ -249,12 +258,7 @@ export class LayoutService {
         );
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
-            if (this._displayService.verticalDirection)
-                firstLayerVertices[i].position =
-                    i * this._svgService.offsetXValue;
-            else
-                firstLayerVertices[i].position =
-                    i * this._svgService.offsetYValue;
+            firstLayerVertices[i].position = i * 2;
         }
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
@@ -318,8 +322,6 @@ export class LayoutService {
     private setPositionOffset(graph: Graph, layer: number): void {
         let sortedVertices: Vertex[] = graph.getVerticesSortedByPosition(layer);
 
-        for (let i = 0; i < sortedVertices.length; i++) {}
-
         //Setze Knoten mit gleicher Position verteilt um die Position
         for (let i = 0; i < sortedVertices.length; i++) {
             let sameValue: number = 0;
@@ -344,7 +346,7 @@ export class LayoutService {
                 sortedVertices[i - 1].position + 1
             );
 
-        let maxSize: number = graph.getMaxVerticesOnLayer();
+        let maxSize: number = 2 * graph.getMaxVerticesOnLayer();
 
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
         if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
