@@ -94,7 +94,10 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         this.clearDrawingArea();
         const elements = this._svgService.createSvgElements(
             this._displayService.diagram,
-            this._selectedTraceCaseIds
+            this._selectedTraceCaseIds,
+            true,
+            false,
+            this.maxCaseIdsLetters
         );
         for (const element of elements) {
             this.canvas.nativeElement.appendChild(element);
