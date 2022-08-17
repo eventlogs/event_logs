@@ -29,6 +29,7 @@ XPS -> App: XES file contents as\nevent log representation
 App -> ELDS: update event log internal representation
 App -> LS: generate log string for textarea
 App -> App: update textarea
+note over App: Update Textarea additionally triggers\nall operations triggered by log file import:
 else Log file
 User -> App: imports log file
 App -> LPS: parse file
