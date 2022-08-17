@@ -10,7 +10,7 @@
         <details
             (toggle)="toggleStatus()"
             [style.width]="getDataWidthStyle() + 'px'"
-            class="xlabelsize-10-size">
+            [style.margin-left]="getTableMarginLeftPx() + 'px'">
             <summary>{{ status }} attributes</summary>
             <div>
                 <span *ngFor="let event of traceCaseItem?.events">

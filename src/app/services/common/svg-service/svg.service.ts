@@ -53,6 +53,7 @@ export class SvgService {
     private readonly boxWidth;
     private readonly boxHeight;
     private readonly labelExtractor;
+    private readonly labelExtraSizeExtractor;
     private readonly topXCoordinate;
 
     constructor(
@@ -60,12 +61,14 @@ export class SvgService {
         maxFontWidth: number,
         boxWidth: number,
         boxHeight: number,
-        labelExtractor: (trace: GraphTrace) => string
+        labelExtractor: (trace: GraphTrace) => string,
+        labelExtraSizeExtractor: (trace: GraphTrace) => number
     ) {
         this.maxFontWidth = maxFontWidth;
         this.boxWidth = boxWidth;
         this.boxHeight = boxHeight;
         this.labelExtractor = labelExtractor;
+        this.labelExtraSizeExtractor = labelExtraSizeExtractor;
         this.topXCoordinate = 0 - this.boxHeight / 2;
     }
 
@@ -80,12 +83,18 @@ export class SvgService {
         diagram: Diagram,
         selectedTraceCaseIds: Array<number>,
         reuseColors = true,
-        isExport: boolean = false
+        isExport: boolean = false,
+        maxLabelExtraLettersOpt: number = -1
     ): Array<SVGElement> {
         if (!reuseColors) {
             SvgService.activityColorMap.clear();
         }
         const result: Array<SVGElement> = [];
+
+        const maxLabelExtraLetters =
+            maxLabelExtraLettersOpt === -1
+                ? Math.max(...diagram.traces.map(this.labelExtraSizeExtractor))
+                : maxLabelExtraLettersOpt;
 
         diagram.traces.forEach(trace => {
             if (!isExport) {
@@ -101,7 +110,9 @@ export class SvgService {
                         trace.svgElements[0].x + this.xTraceBorderOffset,
                         trace.svgElements[0].y + this.yTraceBorderOffset,
                         trace.events.length * this.layoutService.xStep +
-                            (this.layoutService.xLabelSize - 5),
+                            (this.layoutService.xLabelSize - 5) +
+                            LayoutService.X_LABEL_CHAR_EXTRA_OFFSET *
+                                maxLabelExtraLetters,
                         allSelected
                     );
                     result.push(traceBorder);

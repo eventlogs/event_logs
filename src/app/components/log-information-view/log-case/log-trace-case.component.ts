@@ -26,6 +26,7 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
 
     @Input() traceCaseItem?: Trace;
+    @Input() maxCaseIdsLetters?: number;
     @Input() closedStatus: string = 'show';
     @Input() openStatus: string = 'hide';
 
@@ -58,7 +59,8 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
             [this.svgWidthPx, this.svgHeightPx] = this._layoutService.layout(
-                this._diagram
+                this._diagram,
+                this.maxCaseIdsLetters
             );
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
@@ -92,7 +94,10 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         this.clearDrawingArea();
         const elements = this._svgService.createSvgElements(
             this._displayService.diagram,
-            this._selectedTraceCaseIds
+            this._selectedTraceCaseIds,
+            true,
+            false,
+            this.maxCaseIdsLetters
         );
         for (const element of elements) {
             this.canvas.nativeElement.appendChild(element);
@@ -122,7 +127,15 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         return (
             this.svgWidthPx -
             LayoutService.X_LABELSIZE_LOG_INFORMATION -
+            (this.maxCaseIdsLetters == null ? 1 : this.maxCaseIdsLetters) *
+                LayoutService.X_LABEL_CHAR_EXTRA_OFFSET -
             LayoutService.X_OFFSET_LOG_INFORMATION
         );
+    }
+
+    public getTableMarginLeftPx() {
+        const maxLetters =
+            this.maxCaseIdsLetters == null ? 1 : this.maxCaseIdsLetters;
+        return 98 + maxLetters * LayoutService.X_LABEL_CHAR_EXTRA_OFFSET;
     }
 }
