@@ -1,0 +1,61 @@
+@startuml
+actor User
+participant App #green
+box "Parser Services"
+participant XesParserService as XPS #lightblue
+participant LogParserService as LPS #lightblue
+end box
+participant EventLogDataService as ELDS #lightblue
+participant LogService as LS #lightblue
+participant TraceCaseSelectionService as TCSS #lightblue
+box "Value Chain View Services"
+participant ValueChainControllerService as VCCS #lightblue
+participant ValueChainDisplayService as VCDS #lightblue
+participant ValueChainLayoutService as VCLS #lightblue
+participant ValueChainSvgService as VCSS #lightblue
+end box
+participant ValueChainComponent as VCC #lightgreen
+collections LogCaseViewComponent as LCV #lightgreen
+box "Log Information View Services"
+participant LogInformationLayoutService as LILS #lightblue
+participant LogInformationSvgService as LISS #lightblue
+end box
+participant DirectlyFollowsGraphService as DFGS #lightblue
+group Read File
+alt XES file
+User -> App: imports XES file
+App -> XPS: parse file
+XPS -> App: XES file contents as\nevent log representation
+App -> ELDS: update event log internal representation
+App -> LS: generate log string for textarea
+App -> App: update textarea
+else Log file
+User -> App: imports log file
+App -> LPS: parse file
+XPS -> App: file contents as\nevent log representation
+App -> ELDS: update event log internal\nrepresentation
+end
+group Update Value-Chain-based Views
+App -> VCCS: update Value Chain diagram representation
+VCCS -> VCDS: convert Event Log representation\nto Value Chain Diagram
+VCCS -> VCLS: calculate drawing width and\ncoordinates for diagram elements
+VCCS -> TCSS: get IDs for selected traces
+VCCS -> VCSS: generate SVG elements for\ndiagram elements
+hnote over VCCS #lightgreen
+    Emit new value
+    for diagram elements
+end note
+VCCS <<-- VCC: <font color=green>subscribe to diagram elements change
+VCC -> VCC: update drawing width and height
+VCC -> VCC: display diagram SVG elements
+VCCS <<-- LCV: <font color=green>subscribe to diagram elements change
+LCV -> LILS: calculate drawing width and\ncoordinates for diagram elements
+LCV -> LISS: generate SVG elements for\ndiagram elements
+LCV -> LCV: display diagram SVG elements
+end
+group Update Directly-Follows-Graph
+note right of App #red: WIP
+App -> DFGS: update Directly-Follows-Graph
+end
+
+@enduml
