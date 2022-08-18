@@ -154,4 +154,18 @@ export class Graph {
         );
         return minPosition;
     }
+
+    public getEdgesByStartVertex(vertex: Vertex): Edge[] {
+        let edges: Edge[] = this.edges.filter(
+            edge => edge.startVertex === vertex
+        );
+        return edges;
+    }
+
+    public getEdgesByEndVertex(vertex: Vertex): Edge[] {
+        let edges: Edge[] = this.edges.filter(
+            edge => edge.endVertex === vertex
+        );
+        return edges;
+    }
 }

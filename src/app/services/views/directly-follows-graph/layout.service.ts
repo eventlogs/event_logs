@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
-import { DirectlyFollowsGraphService } from './display.service';
-import { SvgService } from './svg.service';
 
 @Injectable({
     providedIn: 'root',
@@ -25,6 +23,66 @@ export class LayoutService {
     }
 
     private setPositions(graph: Graph): void {
+        let layer: number = 0;
+        let maxLayerVertices: Vertex[] = [];
+        let maxSize: number = graph.getMaxVerticesOnLayer() * 1.2;
+
+        for (let i = 1; i < graph.getMaxLayer(); i++) {
+            maxLayerVertices = graph.getVerticesSortedByPosition(i);
+            if (maxLayerVertices.length === graph.getMaxVerticesOnLayer()) {
+                layer = i;
+                break;
+            }
+        }
+
+        for (let i = 0; i < maxLayerVertices.length; i++) {
+            maxLayerVertices[i].position = 1.2 * i;
+        }
+
+        for (let i = layer - 1; i > 0; i--) {
+            let vertices: Vertex[] = graph.getVerticesSortedByPosition(i);
+            for (let i = 0; i < vertices.length; i++) {
+                let edges = graph.getEdgesByStartVertex(vertices[i]);
+
+                let neighbours: Vertex[] = [];
+                edges.forEach(edge => neighbours.push(edge.endVertex));
+
+                if (neighbours.length > 0) {
+                    let value: number = 0;
+                    neighbours.forEach(
+                        neighbour => (value += neighbour.position)
+                    );
+
+                    vertices[i].position = value / neighbours.length;
+                }
+            }
+
+            this.setPositionGap(vertices);
+            this.reduceSize(vertices, maxSize);
+        }
+
+        for (let i = layer + 1; i <= graph.getMaxLayer(); i++) {
+            let vertices: Vertex[] = graph.getVerticesSortedByPosition(i);
+            for (let i = 0; i < vertices.length; i++) {
+                let edges = graph.getEdgesByEndVertex(vertices[i]);
+
+                let neighbours: Vertex[] = [];
+                edges.forEach(edge => neighbours.push(edge.startVertex));
+
+                if (neighbours.length > 0) {
+                    let value: number = 0;
+                    neighbours.forEach(
+                        neighbour => (value += neighbour.position)
+                    );
+
+                    vertices[i].position = value / neighbours.length;
+                }
+            }
+
+            this.setPositionGap(vertices);
+            this.reduceSize(vertices, maxSize);
+        }
+
         let minPosition = graph.getMinPosition();
         graph.vertices.forEach(vertex => (vertex.position += -minPosition + 1));
     }
@@ -196,8 +254,6 @@ export class LayoutService {
         let crossings: number = Number.MAX_VALUE;
         let improved: boolean = false;
 
-        console.log('minimizeCrossings');
-
         //Teste zufällige Permutation für die erste Ebene
         do {
             differentStartingPermutation++;
@@ -231,12 +287,6 @@ export class LayoutService {
                 }
 
                 let crossingsCloneNew = this.countCrossings(graphCloneNew);
-                console.log(
-                    'differentStartingPermutation: ' +
-                        differentStartingPermutation
-                );
-                console.log('crossingsCloneNew: ' + crossingsCloneNew);
-                console.log('graphCloneNew: ' + graphCloneNew);
 
                 if (crossingsCloneNew < crossingsClone) {
                     crossingsClone = crossingsCloneNew;
@@ -340,21 +390,29 @@ export class LayoutService {
         }
 
         //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
-        for (let i = 1; i < sortedVertices.length; i++)
-            sortedVertices[i].position = Math.max(
-                sortedVertices[i].position,
-                sortedVertices[i - 1].position + 1
-            );
+        this.setPositionGap(sortedVertices);
 
         let maxSize: number = 2 * graph.getMaxVerticesOnLayer();
 
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
-        if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
-            sortedVertices[sortedVertices.length - 1].position = maxSize;
-            for (let i = sortedVertices.length - 2; i >= 0; i--)
-                sortedVertices[i].position = Math.min(
-                    sortedVertices[i].position,
-                    sortedVertices[i + 1].position - 1
+        this.reduceSize(sortedVertices, maxSize);
+    }
+
+    private setPositionGap(vertices: Vertex[]) {
+        for (let i = 1; i < vertices.length; i++)
+            vertices[i].position = Math.max(
+                vertices[i].position,
+                vertices[i - 1].position + 1
+            );
+    }
+
+    private reduceSize(vertices: Vertex[], maxSize: number) {
+        if (vertices[vertices.length - 1].position > maxSize) {
+            vertices[vertices.length - 1].position = maxSize;
+            for (let i = vertices.length - 2; i >= 0; i--)
+                vertices[i].position = Math.min(
+                    vertices[i].position,
+                    vertices[i + 1].position - 1
                 );
         }
     }

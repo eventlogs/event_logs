@@ -12,7 +12,7 @@ export class SvgService {
     private _rectWidth: number = 150;
     private _rectHeight: number = 40;
     private _offsetXValue: number = this._rectWidth * 1.5;
-    private _offsetYValue: number = this._rectHeight * 4;
+    private _offsetYValue: number = this._rectHeight * 2.5;
     private maxActivityCountVertex = 0;
     private minValue: number = 50;
     private _svgElements: SVGElement[] = [];
@@ -40,6 +40,7 @@ export class SvgService {
     constructor(private _displayService: DirectlyFollowsGraphService) {}
 
     public createSvgElements(graph: Graph): SVGElement[] {
+        console.log('CreateSvgElements');
         this._svgElements = [];
 
         this.maxActivityCountVertex = graph.getMaxActivityCountVertex();
@@ -492,13 +493,30 @@ export class SvgService {
         if (d != undefined) {
             let startX: number = +d[1];
             let endX: number = +d[d.length - 2];
-            let x = (startX + endX + 25) / 2;
-            text.setAttribute('x', x.toString());
 
             let startY: number = +d[2];
             let endY: number = +d[d.length - 1];
-            let y = (startY + endY + 25) / 2;
+
+            let xOffset: number = 25;
+            if (edge.startVertex === edge.endVertex) {
+                if (!this._displayService.verticalDirection) xOffset = 0;
+                else xOffset = 50;
+            } else if (startY < endY) xOffset = -25;
+
+            let yOffset: number = 25;
+            if (edge.startVertex === edge.endVertex) {
+                if (this._displayService.verticalDirection) yOffset = 0;
+                else yOffset = 50;
+            } else if (startX > endX) yOffset = -25;
+
+            let x = (startX + endX + xOffset) / 2;
+            text.setAttribute('x', x.toString());
+
+            let y = (startY + endY + yOffset) / 2;
             text.setAttribute('y', y.toString());
+
+            let transformOrigin = x.toString() + 'px ' + y.toString() + 'px';
+            text.setAttribute('transform-origin', transformOrigin);
         }
     }
 
