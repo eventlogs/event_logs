@@ -14,7 +14,7 @@ export class LogInformationViewComponent {
     constructor(public _eventlogDataService: EventlogDataService) {}
 
     sortTraces(traces: Array<Trace>): Array<Trace> {
-        const start = Date.now();
+        console.log("sorting");
         let sortedTraces = traces.sort((a, b) => {
             if (a.events.length != b.events.length) {
                 return a.events.length - b.events.length;
@@ -32,8 +32,6 @@ export class LogInformationViewComponent {
             }
             return 0;
         });
-        const end = Date.now();
-        console.log("Sorting traces took " + (end-start)/1000 + "seconds");
         return sortedTraces;
     }
 }
