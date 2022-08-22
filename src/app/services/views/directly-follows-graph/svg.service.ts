@@ -12,7 +12,7 @@ export class SvgService {
     private _rectWidth: number = 150;
     private _rectHeight: number = 40;
     private _offsetXValue: number = this._rectWidth * 1.5;
-    private _offsetYValue: number = this._rectHeight * 2.5;
+    private _offsetYValue: number = this._rectHeight * 3;
     private maxActivityCountVertex = 0;
     private minValue: number = 50;
     private _svgElements: SVGElement[] = [];
@@ -40,7 +40,6 @@ export class SvgService {
     constructor(private _displayService: DirectlyFollowsGraphService) {}
 
     public createSvgElements(graph: Graph): SVGElement[] {
-        console.log('CreateSvgElements');
         this._svgElements = [];
 
         this.maxActivityCountVertex = graph.getMaxActivityCountVertex();
@@ -497,17 +496,22 @@ export class SvgService {
             let startY: number = +d[2];
             let endY: number = +d[d.length - 1];
 
-            let xOffset: number = 25;
-            if (edge.startVertex === edge.endVertex) {
-                if (!this._displayService.verticalDirection) xOffset = 0;
-                else xOffset = 50;
-            } else if (startY < endY) xOffset = -25;
+            let xOffset: number = 12;
+            let yOffset: number = -12;
 
-            let yOffset: number = 25;
             if (edge.startVertex === edge.endVertex) {
-                if (this._displayService.verticalDirection) yOffset = 0;
-                else yOffset = 50;
-            } else if (startX > endX) yOffset = -25;
+                if (!this._displayService.verticalDirection) {
+                    xOffset = 0;
+                    yOffset = 50;
+                } else {
+                    xOffset = 50;
+                    yOffset = 0;
+                }
+            } else if (
+                (startY < endY && startX > endX) ||
+                (startY > endY && startX < endX)
+            )
+                xOffset = -12;
 
             let x = (startX + endX + xOffset) / 2;
             text.setAttribute('x', x.toString());
@@ -517,6 +521,11 @@ export class SvgService {
 
             let transformOrigin = x.toString() + 'px ' + y.toString() + 'px';
             text.setAttribute('transform-origin', transformOrigin);
+
+            let rotation = 0;
+            if (startX !== endX && startY !== endY)
+                rotation = 90 * Math.atan((endY - startY) / (endX - startX));
+            text.setAttribute('transform', 'rotate(' + rotation + ')');
         }
     }
 
