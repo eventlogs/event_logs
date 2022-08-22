@@ -78,7 +78,10 @@ export class AppComponent implements OnDestroy {
     }
 
     private processSourceChange(newSource: string) {
-        const result = this._logParserService.parse(newSource);
+        let result = this._eventlogDataService.eventLog;
+        if (!this._xesImport) {
+            result = this._logParserService.parse(newSource);
+        }
         // Ausgewählte Traces zurücksetzen, wenn mindestens eine Case Id nicht mehr vorhanden ist
         for (const caseId of this._selectedTraceCaseIds) {
             const caseIdStillExists =
