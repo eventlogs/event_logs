@@ -14,7 +14,6 @@ export class LogInformationViewComponent {
     constructor(public _eventlogDataService: EventlogDataService) {}
 
     sortTraces(traces: Array<Trace>): Array<Trace> {
-        console.log("sorting");
         let sortedTraces = traces.sort((a, b) => {
             if (a.events.length != b.events.length) {
                 return a.events.length - b.events.length;
