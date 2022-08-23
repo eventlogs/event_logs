@@ -1,9 +1,11 @@
-<table>
-    <tr
-        *ngFor="
-            let traceCaseItem of sortedTraces
-        ">
-        <app-log-trace-case
-            [traceCaseItem]="traceCaseItem"></app-log-trace-case>
-    </tr>
-</table>
+<cdk-virtual-scroll-viewport itemSize="4" class="virtual-viewport">
+    <table>
+        <tr
+            *cdkVirtualFor="
+                let traceCaseItem of sortedTraces
+            ">
+            <app-log-trace-case
+                [traceCaseItem]="traceCaseItem"></app-log-trace-case>
+        </tr>
+    </table>
+</cdk-virtual-scroll-viewport>

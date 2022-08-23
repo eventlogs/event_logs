@@ -33,6 +33,7 @@ import { LayoutService } from './services/common/layout-service/layout.service';
 import { SvgService } from './services/common/svg-service/svg.service';
 import { AttributeValuePipe } from './pipes/attribute-value.pipe';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ScrollingModule } from "@angular/cdk/scrolling";
 
 @NgModule({
     declarations: [
@@ -53,25 +54,26 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         LogTraceCaseComponent,
         AttributeValuePipe,
     ],
-    imports: [
-        BrowserModule,
-        FlexLayoutModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatButtonToggleModule,
-        MatIconModule,
-        MatSidenavModule,
-        ReactiveFormsModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatMenuModule,
-        MatProgressSpinnerModule,
-        MatCheckboxModule,
-    ],
+  imports: [
+    BrowserModule,
+    FlexLayoutModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatSidenavModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
+    ScrollingModule
+  ],
     providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         {
