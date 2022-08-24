@@ -729,7 +729,8 @@ export class SvgService {
             );
             if (!edge.endVertex.isDummy || edge.endVertex.isEnd) {
                 let text = edge.textSvgElement;
-                if (text !== undefined) this.setTextCoordinates(edge, text);
+                if (text !== undefined && text !== null)
+                    this.setTextCoordinates(edge, text);
             }
         });
     }
