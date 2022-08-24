@@ -34,22 +34,22 @@ describe('TracesDetailViewComponent', () => {
         fixture = TestBed.createComponent(LogInformationViewComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        });
+    });
 
-        it('should compile', () => {
-            expect(component).toBeTruthy();
-        });
+    it('should compile', () => {
+        expect(component).toBeTruthy();
+    });
 
-        it('should sort trace-cases correctly', () => {
-            const example = [
-                new Trace([], [new Event([], 'A'), new Event([], 'B')], 0),
-                new Trace([], [new Event([], 'A'), new Event([], 'C')], 1),
-                new Trace([], [new Event([], 'A')], 2),
-                new Trace([], [new Event([], 'A'), new Event([], 'A')], 3),
-            ];
+    it('should sort trace-cases correctly', () => {
+        const example = [
+            new Trace([], [new Event([], 'A'), new Event([], 'B')], 0),
+            new Trace([], [new Event([], 'A'), new Event([], 'C')], 1),
+            new Trace([], [new Event([], 'A')], 2),
+            new Trace([], [new Event([], 'A'), new Event([], 'A')], 3),
+        ];
 
-            expect(
-                component.sortTraces(example).map(value => value.caseId)
-            ).toEqual([2, 3, 0, 1]);
-        });
+        expect(
+            component.sortTraces(example).map(value => value.caseId)
+        ).toEqual([2, 3, 0, 1]);
+    });
 });
