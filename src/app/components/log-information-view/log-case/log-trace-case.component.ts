@@ -39,7 +39,8 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     private _diagram: Diagram | undefined;
     private _subSelectedTraces: Subscription | undefined;
     private _selectedTraceCaseIds: Array<number> = [];
-    public dataWidth: number = this.getDataWidthStyle();
+    public dataWidthPx: number = this.getDataWidthStyle();
+    public tableLeftMarginPx: number = this.getTableMarginLeftPx();
 
     status: string = this.closedStatus;
 
@@ -59,7 +60,8 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
                 this._diagram,
                 this.maxCaseIdsLetters
             );
-            this.dataWidth = this.getDataWidthStyle();
+            this.dataWidthPx = this.getDataWidthStyle();
+            this.tableLeftMarginPx = this.getTableMarginLeftPx();
 
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');

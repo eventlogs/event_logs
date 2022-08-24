@@ -9,8 +9,8 @@
     <div>
         <details
             (toggle)="toggleStatus()"
-            [style.width.px]="dataWidth"
-            [style.margin-left]="getTableMarginLeftPx() + 'px'">
+            [style.width.px]="dataWidthPx"
+            [style.margin-left.px]="tableLeftMarginPx">
             <summary>{{ status }} attributes</summary>
             <div>
                 <span *ngFor="let event of traceCaseItem?.events">
