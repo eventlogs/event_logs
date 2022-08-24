@@ -4,6 +4,7 @@ import {
     ElementRef,
     Inject,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -22,7 +23,9 @@ import { TraceCaseSelectionService } from '../../../services/common/trace-case-s
     templateUrl: './log-trace-case.component.html',
     styleUrls: ['./log-trace-case.component.scss'],
 })
-export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LogTraceCaseComponent
+    implements OnInit, AfterViewInit, OnChanges, OnDestroy
+{
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
 
     @Input() traceCaseItem?: Trace;
