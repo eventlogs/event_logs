@@ -16,6 +16,8 @@ export class SvgService {
     private maxActivityCountVertex = 0;
     private minValue: number = 50;
     private _svgElements: SVGElement[] = [];
+    private font: string = '15px sans-Serif';
+    private maxFontWidth: number = 130;
 
     public get rectWidth(): number {
         return this._rectWidth;
@@ -249,9 +251,28 @@ export class SvgService {
         tspan.setAttribute('dominant-baseline', `middle`);
         tspan.setAttribute('pointer-events', 'none');
 
-        tspan.textContent = text;
+        tspan.textContent = this.getSubString(text);
 
         return tspan;
+    }
+
+    private getSubString(text: string): string {
+        for (let i = 0; i <= text.length; i++) {
+            let length = this.getStringWidth(text.substring(0, i));
+            if (length > this.maxFontWidth) {
+                return text.substring(0, i - 2) + '...';
+            }
+        }
+        return text;
+    }
+
+    private getStringWidth(text: string): number {
+        var canvas = document.createElement('canvas');
+        canvas.setAttribute('width', '100%');
+        canvas.setAttribute('height', '380px');
+        var ctx = canvas.getContext('2d');
+        ctx!.font = this.font;
+        return ctx!.measureText(text.toString()).width;
     }
 
     private createArrow(): SVGElement {
@@ -496,27 +517,27 @@ export class SvgService {
             let startY: number = +d[2];
             let endY: number = +d[d.length - 1];
 
-            let xOffset: number = 12;
-            let yOffset: number = -12;
+            let xOffset: number = 4.5;
+            let yOffset: number = -4.5;
 
             if (edge.startVertex === edge.endVertex) {
                 if (!this._displayService.verticalDirection) {
                     xOffset = 0;
-                    yOffset = 50;
+                    yOffset = 25;
                 } else {
-                    xOffset = 50;
+                    xOffset = 25;
                     yOffset = 0;
                 }
             } else if (
                 (startY < endY && startX > endX) ||
                 (startY > endY && startX < endX)
             )
-                xOffset = -12;
+                xOffset *= -1;
 
-            let x = (startX + endX + xOffset) / 2;
+            let x = 0.4 * startX + 0.6 * endX + xOffset;
             text.setAttribute('x', x.toString());
 
-            let y = (startY + endY + yOffset) / 2;
+            let y = 0.4 * startY + 0.6 * endY + yOffset;
             text.setAttribute('y', y.toString());
 
             let transformOrigin = x.toString() + 'px ' + y.toString() + 'px';
@@ -524,7 +545,9 @@ export class SvgService {
 
             let rotation = 0;
             if (startX !== endX && startY !== endY)
-                rotation = 90 * Math.atan((endY - startY) / (endX - startX));
+                rotation =
+                    (360 / (2 * Math.PI)) *
+                    Math.atan(((endY - startY) ^ 2) / ((endX - startX) ^ 2));
             text.setAttribute('transform', 'rotate(' + rotation + ')');
         }
     }
