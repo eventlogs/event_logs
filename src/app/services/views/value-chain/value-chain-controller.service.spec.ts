@@ -1,7 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { ValueChainControllerService } from './value-chain-controller.service';
-import { LayoutService } from '../../common/layout-service/layout.service';
-import { SvgService } from '../../common/svg-service/svg.service';
 import { AppModule } from '../../../app.module';
 import { NgModule } from '@angular/core';
 
