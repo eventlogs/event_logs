@@ -54,7 +54,7 @@ export class Vertex {
             let rect: SVGElement = this._svgElement?.children[0] as SVGElement;
 
             //Anzeige von Dummyknoten, wenn sie ausgewählt werden sollen
-            if (this._isDummy && rect != undefined) {
+            if (this._isDummy && rect !== undefined) {
                 this._svgElement.onmouseenter = event => {
                     rect.setAttribute('fill', 'rgb(150, 150, 150)');
                     rect.setAttribute('fill-opacity', '1');

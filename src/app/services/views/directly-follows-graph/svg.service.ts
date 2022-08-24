@@ -510,7 +510,7 @@ export class SvgService {
 
     private setTextCoordinates(edge: Edge, text: SVGElement): void {
         let d = edge.pathSvgElement?.getAttribute('d')?.split(' ');
-        if (d != undefined) {
+        if (d !== undefined) {
             let startX: number = +d[1];
             let endX: number = +d[d.length - 2];
 
@@ -543,7 +543,12 @@ export class SvgService {
             let transformOrigin = x.toString() + 'px ' + y.toString() + 'px';
             text.setAttribute('transform-origin', transformOrigin);
 
-            let rotation = 0;
+            let rotation: number = 0;
+
+            if (this._displayService.verticalDirection) {
+                if (edge.startVertex !== edge.endVertex) rotation = 90;
+            }
+
             if (startX !== endX && startY !== endY)
                 rotation =
                     (360 / (2 * Math.PI)) *
@@ -722,7 +727,7 @@ export class SvgService {
             );
             if (!edge.endVertex.isDummy || edge.endVertex.isEnd) {
                 let text = edge.textSvgElement;
-                if (text != undefined) this.setTextCoordinates(edge, text);
+                if (text !== undefined) this.setTextCoordinates(edge, text);
             }
         });
     }
