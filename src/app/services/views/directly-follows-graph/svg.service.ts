@@ -525,7 +525,7 @@ export class SvgService {
                     xOffset = 0;
                     yOffset = 25;
                 } else {
-                    xOffset = 25;
+                    xOffset = 27.5;
                     yOffset = 0;
                 }
             } else if (
@@ -648,7 +648,7 @@ export class SvgService {
 
         this.updateOffset(vertices, offsetValue, rectSize, axis, index);
 
-        this.updateEdges(graph);
+        this.updateEdges(graph, vertex.layer);
     }
 
     private updateOffset(
@@ -719,8 +719,10 @@ export class SvgService {
         }
     }
 
-    private updateEdges(graph: Graph): void {
-        graph.edges.forEach(edge => {
+    private updateEdges(graph: Graph, layer: number): void {
+        let edges = graph.getEdgesByLayer(layer);
+
+        edges.forEach(edge => {
             edge.pathSvgElement?.setAttribute(
                 'd',
                 this.setPathCoordinates(edge, graph)

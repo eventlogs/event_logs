@@ -168,4 +168,13 @@ export class Graph {
         );
         return edges;
     }
+
+    public getEdgesByLayer(layer: number): Edge[] {
+        let edges: Edge[] = this.edges.filter(
+            edge =>
+                edge.startVertex.layer === layer ||
+                edge.endVertex.layer === layer
+        );
+        return edges;
+    }
 }
