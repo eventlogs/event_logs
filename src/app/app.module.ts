@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { DrawingAreaComponent } from './components/drawingArea/drawingArea.component';
-import { WertschoepfungsketteComponent } from './components/wertschoepfungskette/wertschoepfungskette.component';
+import { ValueChainComponent } from './components/value-chain/value-chain.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,7 +12,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { DragDropFileUploadDirective } from './directives/drag-drop-file/drag-drop-file-upload.directive';
@@ -33,12 +33,24 @@ import { LayoutService } from './services/common/layout-service/layout.service';
 import { SvgService } from './services/common/svg-service/svg.service';
 import { AttributeValuePipe } from './pipes/attribute-value.pipe';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GraphTrace } from './classes/diagram/GraphTrace';
 import { ScrollingModule } from "@angular/cdk/scrolling";
+
+const logInformationLabelExtractor: (trace: GraphTrace) => string = trace =>
+    'case ' + trace.caseIds[0];
+const logInformationLabelExtraSizeExtractor: (
+    trace: GraphTrace
+) => number = trace => trace.caseIds[0].toString().length;
+const valueChainLabelExtractor: (trace: GraphTrace) => string = trace =>
+    trace.count + (trace.count == 1 ? ' case' : ' cases');
+const valueChainLabelExtraSizeExtractor: (
+    trace: GraphTrace
+) => number = trace => trace.caseIds.length.toString().length;
 
 @NgModule({
     declarations: [
         AppComponent,
-        WertschoepfungsketteComponent,
+        ValueChainComponent,
         DrawingAreaComponent,
         FooterComponent,
         UploadButtonComponent,
@@ -84,7 +96,8 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
                     LayoutService.Y_OFFSET_VALUE_CHAIN,
                     LayoutService.X_STEP_VALUE_CHAIN,
                     LayoutService.Y_STEP_VALUE_CHAIN,
-                    LayoutService.X_LABELSIZE_VALUE_CHAIN
+                    LayoutService.X_LABELSIZE_VALUE_CHAIN,
+                    valueChainLabelExtraSizeExtractor
                 ),
         },
         {
@@ -95,7 +108,8 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
                     LayoutService.Y_OFFSET_LOG_INFORMATION,
                     LayoutService.X_STEP_LOG_INFORMATION,
                     LayoutService.Y_STEP_LOG_INFORMATION,
-                    LayoutService.X_LABELSIZE_LOG_INFORMATION
+                    LayoutService.X_LABELSIZE_LOG_INFORMATION,
+                    logInformationLabelExtraSizeExtractor
                 ),
         },
         {
@@ -106,9 +120,8 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
                     SvgService.MAXFONTWIDTH_VALUE_CHAIN,
                     SvgService.BOX_WIDTH_VALUE_CHAIN,
                     SvgService.BOX_HEIGHT_VALUE_CHAIN,
-                    trace =>
-                        trace.count.toString() +
-                        (trace.count == 1 ? ' trace' : ' traces')
+                    valueChainLabelExtractor,
+                    valueChainLabelExtraSizeExtractor
                 ),
             deps: [LayoutService.VALUE_CHAIN_INSTANCE],
         },
@@ -120,7 +133,8 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
                     SvgService.MAXFONTWIDTH_LOG_INFOMRATION,
                     SvgService.BOX_WIDTH_LOG_INFORMATION,
                     SvgService.BOX_HEIGHT_LOG_INFORMATION,
-                    trace => 'case ' + trace.caseIds[0]
+                    logInformationLabelExtractor,
+                    logInformationLabelExtraSizeExtractor
                 ),
             deps: [LayoutService.LOG_INFORMATION_INSTANCE],
         },

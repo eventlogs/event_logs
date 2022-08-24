@@ -5,7 +5,8 @@
                 let traceCaseItem of sortedTraces; templateCacheSize: 0
             ">
             <app-log-trace-case
-                [traceCaseItem]="traceCaseItem"></app-log-trace-case>
+                [traceCaseItem]="traceCaseItem"
+                [maxCaseIdsLetters]="getMaxCaseIdLetters()"></app-log-trace-case>
         </tr>
     </table>
 </cdk-virtual-scroll-viewport>

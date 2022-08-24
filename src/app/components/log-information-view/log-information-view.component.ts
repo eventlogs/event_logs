@@ -51,4 +51,12 @@ export class LogInformationViewComponent implements OnInit, OnDestroy {
             return 0;
         });
     }
+
+    getMaxCaseIdLetters(): number {
+        return Math.max(
+            ...this._eventlogDataService.eventLog.traces
+                .map(trace => trace.caseId)
+                .map(caseId => caseId.toString().length)
+        );
+    }
 }
