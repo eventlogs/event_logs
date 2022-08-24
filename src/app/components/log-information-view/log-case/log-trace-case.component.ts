@@ -52,10 +52,6 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        if (this.traceCaseItem) {
-            this._displayService.displayLogTraceCase(this.traceCaseItem);
-        }
-
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
             [this.svgWidthPx, this.svgHeightPx] = this._layoutService.layout(
@@ -79,6 +75,12 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.draw();
+    }
+
+    ngOnChanges(): void {
+        if (this.traceCaseItem) {
+            this._displayService.displayLogTraceCase(this.traceCaseItem);
+        }
     }
 
     ngOnDestroy(): void {
