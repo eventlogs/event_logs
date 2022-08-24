@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { EventlogDataService } from "src/app/services/common/data/eventlog-data.service";
-import { Trace } from "../../classes/EventLog/trace";
-import { Subscription } from "rxjs";
-import { ValueChainControllerService } from "../../services/views/value-chain/value-chain-controller.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EventlogDataService } from 'src/app/services/common/data/eventlog-data.service';
+import { Trace } from '../../classes/EventLog/trace';
+import { Subscription } from 'rxjs';
+import { ValueChainControllerService } from '../../services/views/value-chain/value-chain-controller.service';
 
 @Component({
     selector: 'app-log-information-view',
@@ -14,8 +14,9 @@ export class LogInformationViewComponent implements OnInit, OnDestroy {
     public sortedTraces = this.sortTraces(
         this._eventlogDataService.eventLog.traces
     );
-    constructor(public _eventlogDataService: EventlogDataService,
-                private _valueChainControllerService: ValueChainControllerService
+    constructor(
+        public _eventlogDataService: EventlogDataService,
+        private _valueChainControllerService: ValueChainControllerService
     ) {}
 
     ngOnInit(): void {

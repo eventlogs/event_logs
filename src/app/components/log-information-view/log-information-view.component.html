@@ -1,12 +1,19 @@
-<cdk-virtual-scroll-viewport itemSize="90" minBufferPx="1000" maxBufferPx="1200" class="virtual-viewport">
+<cdk-virtual-scroll-viewport
+    itemSize="90"
+    minBufferPx="1000"
+    maxBufferPx="1200"
+    class="virtual-viewport">
     <table>
         <tr
             *cdkVirtualFor="
-                let traceCaseItem of sortedTraces; templateCacheSize: 0
+                let traceCaseItem of sortedTraces;
+                templateCacheSize: 0
             ">
             <app-log-trace-case
                 [traceCaseItem]="traceCaseItem"
-                [maxCaseIdsLetters]="getMaxCaseIdLetters()"></app-log-trace-case>
+                [maxCaseIdsLetters]="
+                    getMaxCaseIdLetters()
+                "></app-log-trace-case>
         </tr>
     </table>
 </cdk-virtual-scroll-viewport>

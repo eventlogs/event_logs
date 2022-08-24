@@ -34,7 +34,7 @@ import { SvgService } from './services/common/svg-service/svg.service';
 import { AttributeValuePipe } from './pipes/attribute-value.pipe';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GraphTrace } from './classes/diagram/GraphTrace';
-import { ScrollingModule } from "@angular/cdk/scrolling";
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const logInformationLabelExtractor: (trace: GraphTrace) => string = trace =>
     'case ' + trace.caseIds[0];
@@ -66,26 +66,26 @@ const valueChainLabelExtraSizeExtractor: (
         LogTraceCaseComponent,
         AttributeValuePipe,
     ],
-  imports: [
-    BrowserModule,
-    FlexLayoutModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    MatSidenavModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatCheckboxModule,
-    ScrollingModule
-  ],
+    imports: [
+        BrowserModule,
+        FlexLayoutModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+        MatIconModule,
+        MatSidenavModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        MatCheckboxModule,
+        ScrollingModule,
+    ],
     providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         {
