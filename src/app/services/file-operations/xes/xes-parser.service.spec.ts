@@ -11,7 +11,7 @@ import {
 } from '../../../classes/EventLog/eventlogattribute';
 import { Classifier } from '../../../classes/EventLog/classifier';
 import { MatFormField } from '@angular/material/form-field';
-import { XesParser } from '../../../classes/EventLog/xesParser';
+import { XesParser } from '../../../classes/parser/xesParser';
 
 describe('XesParserService', () => {
     let service: XesParserService;
