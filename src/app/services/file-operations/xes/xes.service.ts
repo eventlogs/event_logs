@@ -45,8 +45,6 @@ export class XesService {
             xesString += '</global>';
         }
 
-        console.log("Test");
-
         if (eventLog.globalEventAttributes.length > 0) {
             xesString += '<global scope="event">';
             eventLog.globalEventAttributes.forEach(attribute => {
