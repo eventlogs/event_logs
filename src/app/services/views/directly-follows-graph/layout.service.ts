@@ -41,11 +41,14 @@ export class LayoutService {
 
         for (let i = layer - 1; i > 0; i--) {
             let vertices: Vertex[] = graph.getVerticesSortedByPosition(i);
-            for (let i = 0; i < vertices.length; i++) {
-                let edges = graph.getEdgesByStartVertex(vertices[i]);
+            for (let j = 0; j < vertices.length; j++) {
+                let edges = graph.getEdgesByStartVertex(vertices[j]);
 
                 let neighbours: Vertex[] = [];
-                edges.forEach(edge => neighbours.push(edge.endVertex));
+                edges.forEach(edge => {
+                    if (edge.startVertex !== edge.endVertex)
+                        neighbours.push(edge.endVertex);
+                });
 
                 if (neighbours.length > 0) {
                     let value: number = 0;
@@ -53,7 +56,9 @@ export class LayoutService {
                         neighbour => (value += neighbour.position)
                     );
 
-                    vertices[i].position = value / neighbours.length;
+                    vertices[j].position = value / neighbours.length;
+                    console.log(vertices[j].activityName);
+                    console.log(neighbours.length);
                 }
             }
 
@@ -63,11 +68,14 @@ export class LayoutService {
 
         for (let i = layer + 1; i <= graph.getMaxLayer(); i++) {
             let vertices: Vertex[] = graph.getVerticesSortedByPosition(i);
-            for (let i = 0; i < vertices.length; i++) {
-                let edges = graph.getEdgesByEndVertex(vertices[i]);
+            for (let j = 0; j < vertices.length; j++) {
+                let edges = graph.getEdgesByEndVertex(vertices[j]);
 
                 let neighbours: Vertex[] = [];
-                edges.forEach(edge => neighbours.push(edge.startVertex));
+                edges.forEach(edge => {
+                    if (edge.startVertex !== edge.endVertex)
+                        neighbours.push(edge.startVertex);
+                });
 
                 if (neighbours.length > 0) {
                     let value: number = 0;
@@ -75,7 +83,7 @@ export class LayoutService {
                         neighbour => (value += neighbour.position)
                     );
 
-                    vertices[i].position = value / neighbours.length;
+                    vertices[j].position = value / neighbours.length;
                 }
             }
 
