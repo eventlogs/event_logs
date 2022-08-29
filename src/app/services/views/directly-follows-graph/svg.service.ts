@@ -223,7 +223,7 @@ export class SvgService {
         text.setAttribute('y', `50%`);
         text.setAttribute('text-anchor', `middle`);
         text.setAttribute('dominant-baseline', `middle`);
-        text.setAttribute('font', 'bold 30px sans-serif');
+        text.setAttribute('font-family', 'sans-serif');
         text.appendChild(
             this.createTspanForText(vertex.activityName.toString(), -0.2)
         );

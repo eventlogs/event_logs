@@ -18,7 +18,7 @@
     border: none;
     width: 246px;
     font-size: 12px;
-    font-family: Verdana, sans-serif;
+    font-family: sans-serif;
     padding-left: 2px;
 }
 
@@ -42,7 +42,7 @@
 
 .table-data {
     font-size: 12px;
-    font-family: Verdana, sans-serif;
+    font-family: sans-serif;
     border: 1px solid #888888;
 }
 
@@ -61,6 +61,7 @@ summary {
     padding: 3px 3px 3px 2.2rem;
     position: relative;
     cursor: pointer;
+    font-family: sans-serif;
 }
 
 summary:before {
