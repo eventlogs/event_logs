@@ -3,7 +3,7 @@ import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
 @jsonObject
 export class Classifier {
-    @jsonMember
+    @jsonMember(String)
     private _name: string;
     @jsonArrayMember(String)
     private _keys: Array<string>;
