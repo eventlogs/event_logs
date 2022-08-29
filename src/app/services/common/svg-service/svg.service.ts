@@ -21,7 +21,8 @@ export class SvgService {
         'LogInformationSvgService';
     public static readonly VALUE_CHAIN_INSTANCE = 'ValueChainSvgService';
 
-    private readonly FONT = '15px sans-Serif';
+    private readonly FONTFAMILY = 'sans-Serif';
+    private readonly FONTSIZE = '15px';
     private readonly XTEXTOFFSET = 5;
     private readonly YTEXTOFFSET = 4;
     private readonly YNEXTROWOFFSET = 20;
@@ -285,7 +286,8 @@ export class SvgService {
         const svg = SvgService.createSvgElement('text');
         svg.setAttribute('x', `${element.x}`);
         svg.setAttribute('y', `${element.y + this.yDescriptionLabelOffset}`);
-        svg.setAttribute('font', this.FONT);
+        svg.setAttribute('font-size', this.FONTSIZE);
+        svg.setAttribute('font-family', this.FONTFAMILY);
         svg.textContent = text.toString();
         element.registerSvg(svg);
         return svg;
@@ -299,17 +301,20 @@ export class SvgService {
         if (stringWidth > this.maxFontWidth) {
             let subStrings = this.getSubStrings(text);
             const svg1 = SvgService.createSvgElement('tspan');
-            svg1.setAttribute('font', this.FONT);
+            svg1.setAttribute('font-size', this.FONTSIZE);
+            svg1.setAttribute('font-family', this.FONTFAMILY);
             svg1.textContent = subStrings[0].toString();
             const svg2 = SvgService.createSvgElement('tspan');
-            svg2.setAttribute('font', this.FONT);
+            svg2.setAttribute('font-size', this.FONTSIZE);
+            svg2.setAttribute('font-family', this.FONTFAMILY);
             svg2.textContent = subStrings[1].toString();
             svg2.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
             svg2.setAttribute('dy', `${this.YNEXTROWOFFSET}` + 'px');
             svg.appendChild(svg1);
             svg.appendChild(svg2);
         } else {
-            svg.setAttribute('font', this.FONT);
+            svg.setAttribute('font-size', this.FONTSIZE);
+            svg.setAttribute('font-family', this.FONTFAMILY);
             svg.textContent = text.toString();
         }
         element.registerSvg(svg);
@@ -321,7 +326,7 @@ export class SvgService {
         canvas.setAttribute('width', '100%');
         canvas.setAttribute('height', '380px');
         var ctx = canvas.getContext('2d');
-        ctx!.font = this.FONT;
+        ctx!.font = this.FONTSIZE + ' ' + this.FONTFAMILY;
         return ctx!.measureText(text.toString()).width;
     }
 
