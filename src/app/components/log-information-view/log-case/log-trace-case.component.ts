@@ -4,6 +4,7 @@ import {
     ElementRef,
     Inject,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -22,7 +23,9 @@ import { TraceCaseSelectionService } from '../../../services/common/trace-case-s
     templateUrl: './log-trace-case.component.html',
     styleUrls: ['./log-trace-case.component.scss'],
 })
-export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LogTraceCaseComponent
+    implements OnInit, AfterViewInit, OnChanges, OnDestroy
+{
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
 
     @Input() traceCaseItem?: Trace;
@@ -39,6 +42,8 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     private _diagram: Diagram | undefined;
     private _subSelectedTraces: Subscription | undefined;
     private _selectedTraceCaseIds: Array<number> = [];
+    public dataWidthPx: number = this.getDataWidthStyle();
+    public tableLeftMarginPx: number = this.getTableMarginLeftPx();
 
     status: string = this.closedStatus;
 
@@ -52,16 +57,15 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        if (this.traceCaseItem) {
-            this._displayService.displayLogTraceCase(this.traceCaseItem);
-        }
-
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
             [this.svgWidthPx, this.svgHeightPx] = this._layoutService.layout(
                 this._diagram,
                 this.maxCaseIdsLetters
             );
+            this.dataWidthPx = this.getDataWidthStyle();
+            this.tableLeftMarginPx = this.getTableMarginLeftPx();
+
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
@@ -78,6 +82,12 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.draw();
+    }
+
+    ngOnChanges(): void {
+        if (this.traceCaseItem) {
+            this._displayService.displayLogTraceCase(this.traceCaseItem);
+        }
     }
 
     ngOnDestroy(): void {
