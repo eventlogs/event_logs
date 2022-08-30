@@ -294,12 +294,10 @@ export class SvgService {
         marker.setAttribute('markerHeight', '10');
         marker.setAttribute('orient', 'auto');
 
-        let path = this.createSvgElement('path');
-        path.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-        path.setAttribute('fill', 'context-stroke');
-        path.setAttribute('pointer-events', 'none');
+        let polygon = this.createSvgElement('polygon');
+        polygon.setAttribute('points', '0 0, 10 5, 0 10');
 
-        marker.append(path);
+        marker.append(polygon);
 
         return marker;
     }
