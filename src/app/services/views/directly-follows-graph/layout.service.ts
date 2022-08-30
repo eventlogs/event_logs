@@ -133,7 +133,7 @@ export class LayoutService {
                     newGraph.removeVertex(vertex);
                     newGraph.removeEdges(outgoingEdges);
 
-                    sources = newGraph.getSinks();
+                    sources = newGraph.getSources();
                 });
             }
 
