@@ -153,16 +153,29 @@ export class SvgService {
         if (this._displayService.verticalDirection) {
             x += this.offsetXValue * (vertex.position - 1);
             y += this.offsetYValue * (vertex.layer - 1);
+            if (vertex.isStart) y += this.rectHeight / 2;
+            if (vertex.isStart || vertex.isEnd) x += this.rectWidth / 4;
         } else {
             x += this.offsetXValue * (vertex.layer - 1);
             y += this.offsetYValue * (vertex.position - 1);
+            if (vertex.isStart) x += this.rectWidth / 2;
+            if (vertex.isStart || vertex.isEnd) y += this.rectHeight / 4;
         }
 
         svg.setAttribute('name', vertex.activityName.toString());
         svg.setAttribute('x', x.toString());
         svg.setAttribute('y', y.toString());
-        svg.setAttribute('width', this.rectWidth.toString());
-        svg.setAttribute('height', this.rectHeight.toString());
+
+        let width: number = this.rectWidth;
+        let height: number = this.rectHeight;
+
+        if (vertex.isStart || vertex.isEnd) {
+            height /= 2;
+            width /= 2;
+        }
+
+        svg.setAttribute('width', width.toString());
+        svg.setAttribute('height', height.toString());
 
         return svg;
     }
@@ -203,8 +216,9 @@ export class SvgService {
         rect.setAttribute('name', vertex.activityName.toString());
         rect.setAttribute('rx', '15');
         rect.setAttribute('ry', '15');
-        rect.setAttribute('width', this.rectWidth.toString());
-        rect.setAttribute('height', this.rectHeight.toString());
+
+        let width: number = this.rectWidth;
+        let height: number = this.rectHeight;
 
         if (!vertex.isDummy) {
             rect.setAttribute(
@@ -214,9 +228,22 @@ export class SvgService {
             rect.setAttribute('fill-opacity', '1');
             rect.setAttribute('stroke-width', '2');
             rect.setAttribute('stroke', 'black');
+        } else if (vertex.isStart || vertex.isEnd) {
+            if (vertex.isStart || vertex.isEnd) {
+                width /= 2;
+                height /= 2;
+            }
+
+            rect.setAttribute('fill', 'rgb(125,125,125)');
+            rect.setAttribute('fill-opacity', '1');
+            rect.setAttribute('stroke-width', '2');
+            rect.setAttribute('stroke', 'black');
         } else {
             rect.setAttribute('fill-opacity', '0');
         }
+
+        rect.setAttribute('width', width.toString());
+        rect.setAttribute('height', height.toString());
 
         return rect;
     }
@@ -451,6 +478,23 @@ export class SvgService {
                 endYOffset = this.rectHeight;
             }
         }
+
+        if (edge.startVertex.isStart) {
+            if (this._displayService.verticalDirection) {
+                startXOffset -= this.rectWidth / 4;
+                startYOffset -= this.rectHeight / 2;
+            } else {
+                startXOffset -= this.rectWidth / 2;
+                startYOffset -= this.rectHeight / 4;
+            }
+        }
+
+        if (edge.endVertex.isEnd)
+            if (this._displayService.verticalDirection) {
+                endXOffset -= this.rectWidth / 4;
+            } else {
+                endYOffset -= this.rectHeight / 4;
+            }
 
         startX = edge.startVertex.getSvgElementXValue() + startXOffset;
         endX = edge.endVertex.getSvgElementXValue() + endXOffset;
