@@ -12,10 +12,12 @@ export class SvgService {
     private _rectWidth: number = 150;
     private _rectHeight: number = 40;
     private _offsetXValue: number = this._rectWidth * 1.5;
-    private _offsetYValue: number = this._rectHeight * 2.5;
+    private _offsetYValue: number = this._rectHeight * 3;
     private maxActivityCountVertex = 0;
     private minValue: number = 50;
     private _svgElements: SVGElement[] = [];
+    private font: string = '15px sans-Serif';
+    private maxFontWidth: number = 130;
 
     public get rectWidth(): number {
         return this._rectWidth;
@@ -56,7 +58,10 @@ export class SvgService {
             if (!vertex.isDummy) {
                 let text = this.createTextForGraph(vertex);
                 container.append(text);
-            } else {
+            } else if (
+                vertex.layer !== 1 &&
+                vertex.layer !== graph.getMaxLayer()
+            ) {
                 let path = this.createPathForDummyVertex(vertex);
                 container.append(path);
             }
@@ -71,7 +76,7 @@ export class SvgService {
 
         graph.edges.forEach(edge => {
             let path = this.createPath(edge, graph);
-            if (!edge.endVertex.isDummy) {
+            if (!edge.endVertex.isDummy || edge.endVertex.isEnd) {
                 let text = this.createTextForEdge(edge);
                 this._svgElements.push(text);
             }
@@ -246,9 +251,28 @@ export class SvgService {
         tspan.setAttribute('dominant-baseline', `middle`);
         tspan.setAttribute('pointer-events', 'none');
 
-        tspan.textContent = text;
+        tspan.textContent = this.getSubString(text);
 
         return tspan;
+    }
+
+    private getSubString(text: string): string {
+        for (let i = 0; i <= text.length; i++) {
+            let length = this.getStringWidth(text.substring(0, i));
+            if (length > this.maxFontWidth) {
+                return text.substring(0, i - 2) + '...';
+            }
+        }
+        return text;
+    }
+
+    private getStringWidth(text: string): number {
+        var canvas = document.createElement('canvas');
+        canvas.setAttribute('width', '100%');
+        canvas.setAttribute('height', '380px');
+        var ctx = canvas.getContext('2d');
+        ctx!.font = this.font;
+        return ctx!.measureText(text.toString()).width;
     }
 
     private createArrow(): SVGElement {
@@ -292,7 +316,7 @@ export class SvgService {
         path.setAttribute('stroke-width', '1');
         path.setAttribute('stroke', 'black');
         path.setAttribute('fill', 'none');
-        if (!edge.endVertex.isDummy)
+        if (!edge.endVertex.isDummy || edge.endVertex.isEnd)
             path.setAttribute('marker-end', 'url(#marker)');
         path.setAttribute('pointer-events', 'none');
 
@@ -486,16 +510,50 @@ export class SvgService {
 
     private setTextCoordinates(edge: Edge, text: SVGElement): void {
         let d = edge.pathSvgElement?.getAttribute('d')?.split(' ');
-        if (d != undefined) {
+        if (d !== undefined) {
             let startX: number = +d[1];
             let endX: number = +d[d.length - 2];
-            let x = (startX + endX + 25) / 2;
-            text.setAttribute('x', x.toString());
 
             let startY: number = +d[2];
             let endY: number = +d[d.length - 1];
-            let y = (startY + endY + 25) / 2;
+
+            let xOffset: number = 4.5;
+            let yOffset: number = -4.5;
+
+            if (edge.startVertex === edge.endVertex) {
+                if (!this._displayService.verticalDirection) {
+                    xOffset = 0;
+                    yOffset = 25;
+                } else {
+                    xOffset = 27.5;
+                    yOffset = 0;
+                }
+            } else if (
+                (startY < endY && startX > endX) ||
+                (startY > endY && startX < endX)
+            )
+                xOffset *= -1;
+
+            let x = 0.4 * startX + 0.6 * endX + xOffset;
+            text.setAttribute('x', x.toString());
+
+            let y = 0.4 * startY + 0.6 * endY + yOffset;
             text.setAttribute('y', y.toString());
+
+            let transformOrigin = x.toString() + 'px ' + y.toString() + 'px';
+            text.setAttribute('transform-origin', transformOrigin);
+
+            let rotation: number = 0;
+
+            if (this._displayService.verticalDirection) {
+                if (edge.startVertex !== edge.endVertex) rotation = 90;
+            }
+
+            if (startX !== endX && startY !== endY)
+                rotation =
+                    (360 / (2 * Math.PI)) *
+                    Math.atan(((endY - startY) ^ 2) / ((endX - startX) ^ 2));
+            text.setAttribute('transform', 'rotate(' + rotation + ')');
         }
     }
 
@@ -590,7 +648,7 @@ export class SvgService {
 
         this.updateOffset(vertices, offsetValue, rectSize, axis, index);
 
-        this.updateEdges(graph);
+        this.updateEdges(graph, vertex.layer);
     }
 
     private updateOffset(
@@ -661,15 +719,18 @@ export class SvgService {
         }
     }
 
-    private updateEdges(graph: Graph): void {
-        graph.edges.forEach(edge => {
+    private updateEdges(graph: Graph, layer: number): void {
+        let edges = graph.getEdgesByLayer(layer);
+
+        edges.forEach(edge => {
             edge.pathSvgElement?.setAttribute(
                 'd',
                 this.setPathCoordinates(edge, graph)
             );
-            if (!edge.endVertex.isDummy) {
+            if (!edge.endVertex.isDummy || edge.endVertex.isEnd) {
                 let text = edge.textSvgElement;
-                if (text != undefined) this.setTextCoordinates(edge, text);
+                if (text !== undefined && text !== null)
+                    this.setTextCoordinates(edge, text);
             }
         });
     }

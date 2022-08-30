@@ -53,13 +53,11 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         this._svg.onmousedown = event => {
             this.processMouseDown(event);
         };
-        this._svg.onmouseup = event => {
-            this.processMouseUp(event);
-        };
     }
 
     private processMouseDown(event: MouseEvent) {
-        this.calcGraphSize(this._graph);
+        event.preventDefault();
+        this.calcGraphSize();
 
         let target = event.target as SVGElement;
         this._draggingVertex = this._graph?.vertices.find(
@@ -77,7 +75,11 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
             mouseStart = event.clientY;
         }
 
-        if (this._svg == undefined || current == undefined) return;
+        if (this._svg === undefined || current === undefined) return;
+
+        this._svg.onmouseup = event => {
+            this.processMouseUp(event);
+        };
 
         this._svg.onmousemove = event => {
             this.processMouseMove(event, current!, mouseStart);
@@ -89,15 +91,16 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         current: string | null,
         mouseStart: number
     ) {
+        event.preventDefault();
+
         if (
-            this._draggingVertex == undefined ||
+            this._draggingVertex === undefined ||
             this._draggingVertex.svgElement === undefined ||
-            this._graph == undefined ||
-            current == undefined
+            this._graph === undefined ||
+            current === undefined ||
+            current === null
         )
             return;
-
-        event.preventDefault();
 
         if (this._displayService.verticalDirection) {
             let x: number = +current + event.clientX - mouseStart;
@@ -109,10 +112,11 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
 
         this._svgService.updateLayer(this._draggingVertex, this._graph);
 
-        this.calcGraphSize(this._graph);
+        this.calcGraphSize();
     }
 
     private processMouseUp(event: MouseEvent) {
+        event.preventDefault();
         if (this._svg !== undefined) this._svg.onmousemove = null;
 
         this._draggingVertex = undefined;
@@ -137,7 +141,7 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
             this.directlyFollowsGraph.nativeElement.appendChild(svgElement);
         }
 
-        this.calcGraphSize(this._graph);
+        this.calcGraphSize();
     }
 
     private clearDrawingArea() {
@@ -154,8 +158,8 @@ export class DirectlyFollowsGraphComponent implements OnDestroy, AfterViewInit {
         }
     }
 
-    private calcGraphSize(graph: Graph | undefined) {
-        if (this._graph != undefined) {
+    private calcGraphSize() {
+        if (this._graph !== undefined) {
             this.calcGraphWidth(this._graph);
             this.calcGraphHeight(this._graph);
         }

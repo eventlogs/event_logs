@@ -2,18 +2,13 @@ import { Injectable } from '@angular/core';
 import { Edge } from 'src/app/classes/directly-follows-graph/edge';
 import { Graph } from 'src/app/classes/directly-follows-graph/graph';
 import { Vertex } from 'src/app/classes/directly-follows-graph/vertex';
-import { DirectlyFollowsGraphService } from './display.service';
-import { SvgService } from './svg.service';
 
 @Injectable({
     providedIn: 'root',
 })
 //Layout mittels Sugiyama Algorithmus
 export class LayoutService {
-    constructor(
-        private _displayService: DirectlyFollowsGraphService,
-        private _svgService: SvgService
-    ) {}
+    constructor() {}
 
     public layout(graph: Graph): void {
         this.makeGraphAcyclic(graph);
@@ -28,11 +23,76 @@ export class LayoutService {
     }
 
     private setPositions(graph: Graph): void {
+        let layer: number = 0;
+        let maxLayerVertices: Vertex[] = [];
+        let maxSize: number = graph.getMaxVerticesOnLayer() * 1.2;
+
+        for (let i = 1; i < graph.getMaxLayer(); i++) {
+            maxLayerVertices = graph.getVerticesSortedByPosition(i);
+            if (maxLayerVertices.length === graph.getMaxVerticesOnLayer()) {
+                layer = i;
+                break;
+            }
+        }
+
+        for (let i = 0; i < maxLayerVertices.length; i++) {
+            maxLayerVertices[i].position = 1.2 * i;
+        }
+
+        for (let i = layer - 1; i > 0; i--) {
+            let vertices: Vertex[] = graph.getVerticesSortedByPosition(i);
+            for (let j = 0; j < vertices.length; j++) {
+                let edges = graph.getEdgesByStartVertex(vertices[j]);
+
+                let neighbours: Vertex[] = [];
+                edges.forEach(edge => {
+                    if (edge.startVertex !== edge.endVertex)
+                        neighbours.push(edge.endVertex);
+                });
+
+                if (neighbours.length > 0) {
+                    let value: number = 0;
+                    neighbours.forEach(
+                        neighbour => (value += neighbour.position)
+                    );
+
+                    vertices[j].position = value / neighbours.length;
+                    console.log(vertices[j].activityName);
+                    console.log(neighbours.length);
+                }
+            }
+
+            this.setPositionGap(vertices);
+            this.reduceSize(vertices, maxSize);
+        }
+
+        for (let i = layer + 1; i <= graph.getMaxLayer(); i++) {
+            let vertices: Vertex[] = graph.getVerticesSortedByPosition(i);
+            for (let j = 0; j < vertices.length; j++) {
+                let edges = graph.getEdgesByEndVertex(vertices[j]);
+
+                let neighbours: Vertex[] = [];
+                edges.forEach(edge => {
+                    if (edge.startVertex !== edge.endVertex)
+                        neighbours.push(edge.startVertex);
+                });
+
+                if (neighbours.length > 0) {
+                    let value: number = 0;
+                    neighbours.forEach(
+                        neighbour => (value += neighbour.position)
+                    );
+
+                    vertices[j].position = value / neighbours.length;
+                }
+            }
+
+            this.setPositionGap(vertices);
+            this.reduceSize(vertices, maxSize);
+        }
+
         let minPosition = graph.getMinPosition();
-        if (minPosition < 1)
-            graph.vertices.forEach(
-                vertex => (vertex.position += -minPosition + 1)
-            );
+        graph.vertices.forEach(vertex => (vertex.position += -minPosition + 1));
     }
 
     private makeGraphAcyclic(graph: Graph): void {
@@ -93,12 +153,19 @@ export class LayoutService {
     }
 
     private setLayers(graph: Graph): void {
-        graph.vertices.forEach(vertex => (vertex.layer = 1));
+        graph.vertices.forEach(vertex => {
+            if (vertex.isStart) vertex.layer = 1;
+            else vertex.layer = 2;
+        });
 
         let sinks: Vertex[] = graph.getSinks();
 
         sinks.forEach(vertex => {
             this.calculateLayer(vertex, graph);
+        });
+
+        graph.vertices.forEach(vertex => {
+            if (vertex.isEnd) vertex.layer = graph.getMaxLayer();
         });
     }
 
@@ -249,12 +316,7 @@ export class LayoutService {
         );
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
-            if (this._displayService.verticalDirection)
-                firstLayerVertices[i].position =
-                    i * this._svgService.offsetXValue;
-            else
-                firstLayerVertices[i].position =
-                    i * this._svgService.offsetYValue;
+            firstLayerVertices[i].position = i * 2;
         }
 
         for (let i = 0; i < firstLayerVertices.length; i++) {
@@ -318,8 +380,6 @@ export class LayoutService {
     private setPositionOffset(graph: Graph, layer: number): void {
         let sortedVertices: Vertex[] = graph.getVerticesSortedByPosition(layer);
 
-        for (let i = 0; i < sortedVertices.length; i++) {}
-
         //Setze Knoten mit gleicher Position verteilt um die Position
         for (let i = 0; i < sortedVertices.length; i++) {
             let sameValue: number = 0;
@@ -338,21 +398,29 @@ export class LayoutService {
         }
 
         //Setze Position der Knoten, dass genügend Abstand zwischen ihnen besteht
-        for (let i = 1; i < sortedVertices.length; i++)
-            sortedVertices[i].position = Math.max(
-                sortedVertices[i].position,
-                sortedVertices[i - 1].position + 1
-            );
+        this.setPositionGap(sortedVertices);
 
-        let maxSize: number = graph.getMaxVerticesOnLayer();
+        let maxSize: number = 2 * graph.getMaxVerticesOnLayer();
 
         //Setze Position der Knoten, dass sie nicht über die maximale Größe hinausgehen
-        if (sortedVertices[sortedVertices.length - 1].position > maxSize) {
-            sortedVertices[sortedVertices.length - 1].position = maxSize;
-            for (let i = sortedVertices.length - 2; i >= 0; i--)
-                sortedVertices[i].position = Math.min(
-                    sortedVertices[i].position,
-                    sortedVertices[i + 1].position - 1
+        this.reduceSize(sortedVertices, maxSize);
+    }
+
+    private setPositionGap(vertices: Vertex[]) {
+        for (let i = 1; i < vertices.length; i++)
+            vertices[i].position = Math.max(
+                vertices[i].position,
+                vertices[i - 1].position + 1
+            );
+    }
+
+    private reduceSize(vertices: Vertex[], maxSize: number) {
+        if (vertices[vertices.length - 1].position > maxSize) {
+            vertices[vertices.length - 1].position = maxSize;
+            for (let i = vertices.length - 2; i >= 0; i--)
+                vertices[i].position = Math.min(
+                    vertices[i].position,
+                    vertices[i + 1].position - 1
                 );
         }
     }

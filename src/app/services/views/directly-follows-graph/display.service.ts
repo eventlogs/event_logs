@@ -85,6 +85,84 @@ export class DirectlyFollowsGraphService implements OnDestroy {
                             );
                     }
                 }
+
+                //Startknoten erstellen oder wiederverwenden
+                if (i == 0) {
+                    let startVertex: Vertex | undefined = vertices.find(
+                        vertex =>
+                            vertex.activityName === event.activity + 'Start'
+                    );
+
+                    if (startVertex === undefined) {
+                        startVertex = new Vertex(
+                            event.activity + 'Start',
+                            traces.length,
+                            true
+                        );
+                        startVertex.isStart = true;
+
+                        vertices.push(startVertex);
+
+                        let endVertex: Vertex | undefined = vertices.find(
+                            vertex => vertex.activityName === event.activity
+                        );
+
+                        if (endVertex !== undefined)
+                            edges.push(
+                                new Edge(startVertex, endVertex, traces.length)
+                            );
+                    } else {
+                        startVertex.activityCount += traces.length;
+
+                        let startEdge: Edge | undefined = edges.find(
+                            edge =>
+                                edge.startVertex?.activityName ===
+                                    startVertex?.activityName &&
+                                edge.endVertex.activityName === event.activity
+                        );
+                        if (startEdge !== undefined)
+                            startEdge.activityCount += traces.length;
+                    }
+                }
+
+                //Endknoten erstellen oder wiederverwenden
+                if (i == traces[0].events.length - 1) {
+                    let endVertex: Vertex | undefined = vertices.find(
+                        vertex => vertex.activityName === event.activity + 'End'
+                    );
+
+                    if (endVertex === undefined) {
+                        endVertex = new Vertex(
+                            event.activity + 'End',
+                            traces.length,
+                            true
+                        );
+                        endVertex.isEnd = true;
+
+                        vertices.push(endVertex);
+
+                        let startVertex: Vertex | undefined = vertices.find(
+                            vertex => vertex.activityName === event.activity
+                        );
+
+                        if (startVertex !== undefined)
+                            edges.push(
+                                new Edge(startVertex, endVertex, traces.length)
+                            );
+                    } else {
+                        endVertex.activityCount += traces.length;
+
+                        let endEdge: Edge | undefined = edges.find(
+                            edge =>
+                                edge.startVertex?.activityName ===
+                                    event.activity &&
+                                edge.endVertex.activityName ===
+                                    endVertex?.activityName
+                        );
+                        if (endEdge !== undefined)
+                            endEdge.activityCount += traces.length;
+                    }
+                }
             }
         });
 
