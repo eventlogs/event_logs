@@ -12,6 +12,7 @@ import {
 import { Trace } from '../../../classes/EventLog/trace';
 import { EventLog } from '../../../classes/EventLog/eventlog';
 import { DrawingAreaComponent } from '../../../components/drawingArea/drawingArea.component';
+import { LogParser } from '../../../classes/parser/logParser';
 
 describe('LogParserService', () => {
     let service: LogParserService;
@@ -142,8 +143,6 @@ describe('LogParserService', () => {
     });
 
     it('should throw parsing error on invalid file', () => {
-        expect(() => service.parse('INVALID')).toThrow(
-            LogParserService.PARSING_ERROR
-        );
+        expect(() => service.parse('INVALID')).toThrow(LogParser.PARSING_ERROR);
     });
 });

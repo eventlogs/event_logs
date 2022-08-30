@@ -67,7 +67,7 @@ describe('XesService', () => {
 
         let expected_string = format(
             '<?xml version="1.0" encoding="UTF-8" ?>' +
-                '<log xes.version="1.0" xes.features="nested-attributes">' +
+                '<log xes.version="1.0" xes.features="">' +
                 '<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>' +
                 '<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>' +
                 '<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>' +

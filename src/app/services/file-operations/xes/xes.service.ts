@@ -25,7 +25,7 @@ export class XesService {
      */
     public generate(eventLog: EventLog): string {
         let xesString = '<?xml version="1.0" encoding="UTF-8" ?>';
-        xesString += '<log xes.version="1.0" xes.features="nested-attributes">';
+        xesString += '<log xes.version="1.0" xes.features="">';
         xesString +=
             '<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>';
         xesString +=

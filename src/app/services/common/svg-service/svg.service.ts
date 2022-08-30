@@ -21,7 +21,8 @@ export class SvgService {
         'LogInformationSvgService';
     public static readonly VALUE_CHAIN_INSTANCE = 'ValueChainSvgService';
 
-    private readonly FONT = '15px sans-Serif';
+    private readonly FONTFAMILY = 'sans-Serif';
+    private readonly FONTSIZE = '15px';
     private readonly XTEXTOFFSET = 5;
     private readonly YTEXTOFFSET = 4;
     private readonly YNEXTROWOFFSET = 20;
@@ -53,6 +54,7 @@ export class SvgService {
     private readonly boxWidth;
     private readonly boxHeight;
     private readonly labelExtractor;
+    private readonly labelExtraSizeExtractor;
     private readonly topXCoordinate;
 
     constructor(
@@ -60,12 +62,14 @@ export class SvgService {
         maxFontWidth: number,
         boxWidth: number,
         boxHeight: number,
-        labelExtractor: (trace: GraphTrace) => string
+        labelExtractor: (trace: GraphTrace) => string,
+        labelExtraSizeExtractor: (trace: GraphTrace) => number
     ) {
         this.maxFontWidth = maxFontWidth;
         this.boxWidth = boxWidth;
         this.boxHeight = boxHeight;
         this.labelExtractor = labelExtractor;
+        this.labelExtraSizeExtractor = labelExtraSizeExtractor;
         this.topXCoordinate = 0 - this.boxHeight / 2;
     }
 
@@ -80,12 +84,18 @@ export class SvgService {
         diagram: Diagram,
         selectedTraceCaseIds: Array<number>,
         reuseColors = true,
-        isExport: boolean = false
+        isExport: boolean = false,
+        maxLabelExtraLettersOpt: number = -1
     ): Array<SVGElement> {
         if (!reuseColors) {
             SvgService.activityColorMap.clear();
         }
         const result: Array<SVGElement> = [];
+
+        const maxLabelExtraLetters =
+            maxLabelExtraLettersOpt === -1
+                ? Math.max(...diagram.traces.map(this.labelExtraSizeExtractor))
+                : maxLabelExtraLettersOpt;
 
         diagram.traces.forEach(trace => {
             if (!isExport) {
@@ -101,7 +111,9 @@ export class SvgService {
                         trace.svgElements[0].x + this.xTraceBorderOffset,
                         trace.svgElements[0].y + this.yTraceBorderOffset,
                         trace.events.length * this.layoutService.xStep +
-                            (this.layoutService.xLabelSize - 5),
+                            (this.layoutService.xLabelSize - 5) +
+                            LayoutService.X_LABEL_CHAR_EXTRA_OFFSET *
+                                maxLabelExtraLetters,
                         allSelected
                     );
                     result.push(traceBorder);
@@ -274,7 +286,8 @@ export class SvgService {
         const svg = SvgService.createSvgElement('text');
         svg.setAttribute('x', `${element.x}`);
         svg.setAttribute('y', `${element.y + this.yDescriptionLabelOffset}`);
-        svg.setAttribute('font', this.FONT);
+        svg.setAttribute('font-size', this.FONTSIZE);
+        svg.setAttribute('font-family', this.FONTFAMILY);
         svg.textContent = text.toString();
         element.registerSvg(svg);
         return svg;
@@ -288,17 +301,20 @@ export class SvgService {
         if (stringWidth > this.maxFontWidth) {
             let subStrings = this.getSubStrings(text);
             const svg1 = SvgService.createSvgElement('tspan');
-            svg1.setAttribute('font', this.FONT);
+            svg1.setAttribute('font-size', this.FONTSIZE);
+            svg1.setAttribute('font-family', this.FONTFAMILY);
             svg1.textContent = subStrings[0].toString();
             const svg2 = SvgService.createSvgElement('tspan');
-            svg2.setAttribute('font', this.FONT);
+            svg2.setAttribute('font-size', this.FONTSIZE);
+            svg2.setAttribute('font-family', this.FONTFAMILY);
             svg2.textContent = subStrings[1].toString();
             svg2.setAttribute('x', `${element.x - this.XTEXTOFFSET}`);
             svg2.setAttribute('dy', `${this.YNEXTROWOFFSET}` + 'px');
             svg.appendChild(svg1);
             svg.appendChild(svg2);
         } else {
-            svg.setAttribute('font', this.FONT);
+            svg.setAttribute('font-size', this.FONTSIZE);
+            svg.setAttribute('font-family', this.FONTFAMILY);
             svg.textContent = text.toString();
         }
         element.registerSvg(svg);
@@ -310,7 +326,7 @@ export class SvgService {
         canvas.setAttribute('width', '100%');
         canvas.setAttribute('height', '380px');
         var ctx = canvas.getContext('2d');
-        ctx!.font = this.FONT;
+        ctx!.font = this.FONTSIZE + ' ' + this.FONTFAMILY;
         return ctx!.measureText(text.toString()).width;
     }
 
