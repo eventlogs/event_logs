@@ -1,6 +1,6 @@
-import { EventLog } from './eventlog';
+import { EventLog } from '../EventLog/eventlog';
 import * as xml2js from 'xml2js';
-import { Classifier } from './classifier';
+import { Classifier } from '../EventLog/classifier';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -8,9 +8,9 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from './eventlogattribute';
-import { Trace } from './trace';
-import { Event } from './event';
+} from '../EventLog/eventlogattribute';
+import { Trace } from '../EventLog/trace';
+import { Event } from '../EventLog/event';
 
 export class XesParser {
     public static PARSING_ERROR = new Error(

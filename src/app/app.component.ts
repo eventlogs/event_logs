@@ -12,8 +12,9 @@ import { TraceCaseSelectionService } from './services/common/trace-case-selectio
 import { LoadingService } from './services/views/loading/loading.service';
 import { ValueChainControllerService } from './services/views/value-chain/value-chain-controller.service';
 import { EventLog } from './classes/EventLog/eventlog';
-import { XesParser } from './classes/EventLog/xesParser';
+import { XesParser } from './classes/parser/xesParser';
 import { TypedJSON } from 'typedjson';
+import { LogParser } from './classes/parser/logParser';
 
 @Component({
     selector: 'app-root',
@@ -27,7 +28,6 @@ export class AppComponent implements OnDestroy {
     private _sub: Subscription;
     private _subSelectedTraces: Subscription;
     public _selectedTraceCaseIds: Array<number> = [];
-    private _xesImport: boolean = false;
 
     constructor(
         private _logParserService: LogParserService,
@@ -52,7 +52,7 @@ export class AppComponent implements OnDestroy {
                     this.updateViews();
                 }
             );
-        this.processLogImport(this.logExampleValue());
+        this.textareaFc.setValue(this.logExampleValue());
         this.updateViews();
     }
 
@@ -78,17 +78,23 @@ export class AppComponent implements OnDestroy {
     }
 
     private processSourceChange(newSource: string) {
-        const result = this._logParserService.parse(newSource);
+        try {
+            const result = this._logParserService.parse(newSource);
 
-        this._traceCaseSelectionService.selectTraceCaseIds([]);
+            this._traceCaseSelectionService.selectTraceCaseIds([]);
 
-        if (result !== undefined) {
-            if (!this._xesImport) {
+            if (result !== undefined) {
                 this._eventlogDataService.eventLog = result;
                 this.updateViews();
             }
+        } catch (e) {
+            if (e !== LogParser.PARSING_ERROR) {
+                alert(
+                    'Unexpected error occured while parsing a .log file ' + e
+                );
+                throw e;
+            }
         }
-        this._xesImport = false;
     }
 
     processImport([fileExtension, fileContent]: [string, string]) {
@@ -105,8 +111,87 @@ export class AppComponent implements OnDestroy {
         }
     }
 
-    processLogImport(fileContent: string) {
-        this.updateTextarea(fileContent);
+    async processLogImport(fileContent: string) {
+        this.loadingSpinner.show();
+        this.parseLogFile(fileContent)
+            .then(result => {
+                this._eventlogDataService.eventLog = result;
+                this.updateTextarea(fileContent, false);
+                this.updateViews();
+            })
+            .catch(reason => {
+                let message;
+                if (reason === LogParser.PARSING_ERROR) {
+                    message =
+                        'The uploaded .log file could not be parsed.\n' +
+                        'Check the file for valid .log syntax and try again.';
+                } else {
+                    message =
+                        'Unexpected error occurred when parsing given .log file';
+                }
+                alert(message);
+            })
+            .finally(() => {
+                this.loadingSpinner.hide();
+            });
+    }
+
+    async processXesImport(fileContent: string) {
+        this.loadingSpinner.show();
+        this.parseXesFile(fileContent)
+            .then(result => {
+                this._eventlogDataService.eventLog = result;
+                this.updateTextarea(this._logService.generate(result), false);
+                this.updateViews();
+            })
+            .catch(reason => {
+                let message;
+                if (reason === XesParser.PARSING_ERROR) {
+                    message =
+                        'The uploaded XES file could not be parsed.\n' +
+                        'Check the file for valid XES syntax and try again.';
+                } else {
+                    message =
+                        'Unexpected error occurred when parsing given XES file';
+                }
+                alert(message);
+            })
+            .finally(() => this.loadingSpinner.hide());
+    }
+
+    parseLogFile(fileContent: string) {
+        return new Promise<EventLog>((resolve, reject) => {
+            if (typeof Worker !== 'undefined') {
+                const worker = new Worker(
+                    new URL('./workers/log-parser.worker', import.meta.url)
+                );
+                worker.onmessage = ({ data }) => {
+                    if (data == null) {
+                        reject(LogParser.PARSING_ERROR);
+                    }
+                    const serializer = new TypedJSON(EventLog);
+                    const result = serializer.parse(data);
+                    if (result != undefined) {
+                        resolve(result);
+                    } else {
+                        reject(LogParser.PARSING_ERROR);
+                    }
+                };
+                worker.onerror = event => {
+                    event.preventDefault();
+                    reject(LogParser.PARSING_ERROR);
+                };
+                worker.postMessage(fileContent);
+            } else {
+                // web worker not available, fallback option
+                try {
+                    const result = this._logParserService.parse(fileContent);
+                    resolve(result);
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        });
     }
 
     parseXesFile(fileContent: string) {
@@ -123,7 +208,13 @@ export class AppComponent implements OnDestroy {
                     const result = serializer.parse(data);
                     if (result != undefined) {
                         resolve(result);
+                    } else {
+                        reject(XesParser.PARSING_ERROR);
                     }
+                };
+                worker.onerror = event => {
+                    event.preventDefault();
+                    reject(XesParser.PARSING_ERROR);
                 };
                 worker.postMessage(fileContent);
             } else {
@@ -132,46 +223,14 @@ export class AppComponent implements OnDestroy {
                     const result = this._xesParserService.parse(fileContent);
                     resolve(result);
                 } catch (e) {
-                    this._xesImport = false;
-                    if (e === XesParser.PARSING_ERROR) {
-                        alert(
-                            'The uploaded XES file could not be parsed.\n' +
-                                'Check the file for valid XES syntax and try again.'
-                        );
-                    } else {
-                        throw e;
-                    }
+                    reject(e);
                 }
             }
         });
     }
 
-    async processXesImport(fileContent: string) {
-        try {
-            this.loadingSpinner.show();
-            this.parseXesFile(fileContent).then(result => {
-                this._xesImport = true;
-                if (result !== undefined) {
-                    this._eventlogDataService.eventLog = result;
-                    this.updateTextarea(this._logService.generate(result));
-                    this.updateViews();
-                }
-            });
-        } catch (e) {
-            this._xesImport = false;
-            if (e === XesParser.PARSING_ERROR) {
-                alert(
-                    'The uploaded XES file could not be parsed.\n' +
-                        'Check the file for valid XES syntax and try again.'
-                );
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    updateTextarea(fileContent: string) {
-        this.textareaFc.setValue(fileContent);
+    updateTextarea(fileContent: string, emitUpdateEvent = true) {
+        this.textareaFc.setValue(fileContent, { emitEvent: emitUpdateEvent });
     }
 
     getTextareaValue() {
@@ -185,7 +244,6 @@ export class AppComponent implements OnDestroy {
         this._directlyFollowsGraphService.displayDirectlyFollowsGraph(
             this._eventlogDataService.eventLog
         );
-        this.loadingSpinner.hide();
     }
 
     updateFilter(filter: String) {

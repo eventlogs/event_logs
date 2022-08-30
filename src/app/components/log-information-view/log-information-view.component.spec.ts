@@ -8,6 +8,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { Trace } from '../../classes/EventLog/trace';
 import { Event } from '../../classes/EventLog/event';
+import { AppModule } from '../../app.module';
+import { NgModule } from '@angular/core';
 
 describe('TracesDetailViewComponent', () => {
     let component: LogInformationViewComponent;
@@ -21,6 +23,10 @@ describe('TracesDetailViewComponent', () => {
                 DrawingAreaComponent,
                 MatFormField,
             ],
+            providers: (
+                Reflect.getOwnPropertyDescriptor(AppModule, '__annotations__')
+                    ?.value[0] as NgModule
+            ).providers,
         }).compileComponents();
     }));
 

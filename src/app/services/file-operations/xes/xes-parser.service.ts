@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { EventLog } from '../../../classes/EventLog/eventlog';
-import { XesParser } from '../../../classes/EventLog/xesParser';
+import { XesParser } from '../../../classes/parser/xesParser';
 
 @Injectable({
     providedIn: 'root',
 })
 export class XesParserService {
+    private readonly parser = new XesParser();
+
     constructor() {}
 
     /**
@@ -15,7 +17,6 @@ export class XesParserService {
      * @return interne Darstellung als {@link EventLog}
      */
     public parse(xmlString: string): EventLog {
-        const parser = new XesParser();
-        return parser.parse(xmlString);
+        return this.parser.parse(xmlString);
     }
 }

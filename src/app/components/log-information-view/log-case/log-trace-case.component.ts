@@ -4,6 +4,7 @@ import {
     ElementRef,
     Inject,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -22,10 +23,13 @@ import { TraceCaseSelectionService } from '../../../services/common/trace-case-s
     templateUrl: './log-trace-case.component.html',
     styleUrls: ['./log-trace-case.component.scss'],
 })
-export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LogTraceCaseComponent
+    implements OnInit, AfterViewInit, OnChanges, OnDestroy
+{
     @ViewChild('canvas') canvas: ElementRef<SVGElement> | undefined;
 
     @Input() traceCaseItem?: Trace;
+    @Input() maxCaseIdsLetters?: number;
     @Input() closedStatus: string = 'show';
     @Input() openStatus: string = 'hide';
 
@@ -38,6 +42,8 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     private _diagram: Diagram | undefined;
     private _subSelectedTraces: Subscription | undefined;
     private _selectedTraceCaseIds: Array<number> = [];
+    public dataWidthPx: number = this.getDataWidthStyle();
+    public tableLeftMarginPx: number = this.getTableMarginLeftPx();
 
     status: string = this.closedStatus;
 
@@ -51,15 +57,15 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        if (this.traceCaseItem) {
-            this._displayService.displayLogTraceCase(this.traceCaseItem);
-        }
-
         this._sub = this._displayService.diagram$.subscribe(diagram => {
             this._diagram = diagram;
             [this.svgWidthPx, this.svgHeightPx] = this._layoutService.layout(
-                this._diagram
+                this._diagram,
+                this.maxCaseIdsLetters
             );
+            this.dataWidthPx = this.getDataWidthStyle();
+            this.tableLeftMarginPx = this.getTableMarginLeftPx();
+
             if (this.canvas == undefined) {
                 console.log('UNDEFINED DRAWING AREA');
             }
@@ -78,6 +84,12 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         this.draw();
     }
 
+    ngOnChanges(): void {
+        if (this.traceCaseItem) {
+            this._displayService.displayLogTraceCase(this.traceCaseItem);
+        }
+    }
+
     ngOnDestroy(): void {
         this._sub?.unsubscribe();
         this._subSelectedTraces?.unsubscribe();
@@ -92,7 +104,10 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         this.clearDrawingArea();
         const elements = this._svgService.createSvgElements(
             this._displayService.diagram,
-            this._selectedTraceCaseIds
+            this._selectedTraceCaseIds,
+            true,
+            false,
+            this.maxCaseIdsLetters
         );
         for (const element of elements) {
             this.canvas.nativeElement.appendChild(element);
@@ -122,7 +137,15 @@ export class LogTraceCaseComponent implements OnInit, AfterViewInit, OnDestroy {
         return (
             this.svgWidthPx -
             LayoutService.X_LABELSIZE_LOG_INFORMATION -
+            (this.maxCaseIdsLetters == null ? 1 : this.maxCaseIdsLetters) *
+                LayoutService.X_LABEL_CHAR_EXTRA_OFFSET -
             LayoutService.X_OFFSET_LOG_INFORMATION
         );
+    }
+
+    public getTableMarginLeftPx() {
+        const maxLetters =
+            this.maxCaseIdsLetters == null ? 1 : this.maxCaseIdsLetters;
+        return 98 + maxLetters * LayoutService.X_LABEL_CHAR_EXTRA_OFFSET;
     }
 }
