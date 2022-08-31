@@ -41,10 +41,15 @@ export class LogParser {
 
         const lines: string[] = text.split(/\r?\n/);
 
-        const indexLog = LogParser.indexOfTokenIfExists(
-            lines,
-            this._typeLogElement
-        );
+        let indexLog;
+        try {
+            indexLog = LogParser.indexOfTokenIfExists(
+                lines,
+                this._typeLogElement
+            );
+        } catch (e) {
+            indexLog = -1;
+        }
         const indexAttributes = LogParser.indexOfTokenIfExists(
             lines,
             this._attributesElement
