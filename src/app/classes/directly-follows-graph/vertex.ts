@@ -57,7 +57,7 @@ export class Vertex {
             if (
                 this._isDummy &&
                 rect !== undefined &&
-                !(this.isStart || this.isDummy)
+                !(this.isStart || this.isEnd)
             ) {
                 this._svgElement.onmouseenter = event => {
                     rect.setAttribute('fill', 'rgb(150, 150, 150)');
