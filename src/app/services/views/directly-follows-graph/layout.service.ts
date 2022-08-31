@@ -57,8 +57,6 @@ export class LayoutService {
                     );
 
                     vertices[j].position = value / neighbours.length;
-                    console.log(vertices[j].activityName);
-                    console.log(neighbours.length);
                 }
             }
 
