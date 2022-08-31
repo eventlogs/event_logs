@@ -230,6 +230,7 @@ export class AppComponent implements OnDestroy {
     }
 
     updateTextarea(fileContent: string, emitUpdateEvent = true) {
+        this._traceCaseSelectionService.selectTraceCaseIds([]);
         this.textareaFc.setValue(fileContent, { emitEvent: emitUpdateEvent });
     }
 
