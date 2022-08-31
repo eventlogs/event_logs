@@ -113,7 +113,7 @@ export class EventlogDataService {
                 : attribute.value
                       .toString()
                       .toLowerCase()
-                      .includes(this._filter.filterValue);
+                      .includes(this._filter.filterValue.toLowerCase());
         });
     }
 
