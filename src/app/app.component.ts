@@ -151,6 +151,7 @@ export class AppComponent implements OnDestroy {
                         'The uploaded XES file could not be parsed.\n' +
                         'Check the file for valid XES syntax and try again.';
                 } else {
+                    console.log( reason);
                     message =
                         'Unexpected error occurred when parsing given XES file';
                 }
@@ -160,6 +161,7 @@ export class AppComponent implements OnDestroy {
     }
 
     parseLogFile(fileContent: string) {
+        console.log(fileContent);
         return new Promise<EventLog>((resolve, reject) => {
             if (typeof Worker !== 'undefined') {
                 const worker = new Worker(
@@ -206,6 +208,7 @@ export class AppComponent implements OnDestroy {
                     }
                     const serializer = new TypedJSON(EventLog);
                     const result = serializer.parse(data);
+                    console.log(result);
                     if (result != undefined) {
                         resolve(result);
                     } else {

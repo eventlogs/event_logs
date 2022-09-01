@@ -2,15 +2,17 @@ import 'reflect-metadata';
 import { jsonObject, jsonMember } from 'typedjson';
 
 export abstract class EventLogAttribute {
-    @jsonMember(String)
-    key: string = '';
     abstract value: any;
+    abstract key: string;
 }
 
 @jsonObject
 export class StringAttribute extends EventLogAttribute {
-    @jsonMember(String)
-    value: string;
+    @jsonMember
+    override value: string;
+
+    @jsonMember
+    override key: string = '';
 
     constructor(value: string, key: string) {
         super();
@@ -21,8 +23,12 @@ export class StringAttribute extends EventLogAttribute {
 
 @jsonObject
 export class DateAttribute extends EventLogAttribute {
-    @jsonMember(Date)
-    value: Date;
+    @jsonMember
+    override  value: Date;
+
+    @jsonMember
+    override key: string = '';
+
 
     constructor(value: Date, key: string) {
         super();
@@ -33,8 +39,12 @@ export class DateAttribute extends EventLogAttribute {
 
 @jsonObject
 export class IntAttribute extends EventLogAttribute {
-    @jsonMember(Number)
-    value: number;
+    @jsonMember
+    override value: number;
+
+    @jsonMember
+    override key: string = '';
+
 
     constructor(value: number, key: string) {
         super();
@@ -45,8 +55,12 @@ export class IntAttribute extends EventLogAttribute {
 
 @jsonObject
 export class FloatAttribute extends EventLogAttribute {
-    @jsonMember(Number)
-    value: number;
+    @jsonMember
+    override value: number;
+
+    @jsonMember
+    override key: string = '';
+
 
     constructor(value: number, key: string) {
         super();
@@ -57,8 +71,12 @@ export class FloatAttribute extends EventLogAttribute {
 
 @jsonObject
 export class BooleanAttribute extends EventLogAttribute {
-    @jsonMember(Boolean)
-    value: boolean;
+    @jsonMember
+    override value: boolean;
+
+    @jsonMember
+    override key: string = '';
+
 
     constructor(value: boolean, key: string) {
         super();

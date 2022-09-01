@@ -21,7 +21,7 @@ import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 export class Event {
     @jsonArrayMember(EventLogAttribute)
     private _attributes: Array<EventLogAttribute>;
-    @jsonMember(String)
+    @jsonMember
     private _activity: string;
 
     public get attributes(): Array<EventLogAttribute> {

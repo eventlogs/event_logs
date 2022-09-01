@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { EventLog } from '../../../classes/EventLog/eventlog';
 import { Trace } from '../../../classes/EventLog/trace';
 import { Event } from '../../../classes/EventLog/event';
@@ -10,6 +10,7 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../../../classes/EventLog/eventlogattribute';
+import { ITypedJSONSettings, TypedJSON } from 'typedjson';
 
 @Injectable({
     providedIn: 'root',
@@ -24,28 +25,47 @@ export class LogService {
     private static getAttributeValueAsString(
         attribute: EventLogAttribute | number | string
     ): string {
-        if (typeof attribute === 'string') {
-            return attribute;
-        }
-        if (typeof attribute === 'number') {
-            return String(attribute);
-        }
-        if (attribute instanceof StringAttribute) {
-            return attribute.value;
-        }
-        if (attribute instanceof DateAttribute) {
-            return attribute.value.toISOString();
-        }
-        if (
-            attribute instanceof IntAttribute ||
-            attribute instanceof FloatAttribute
-        ) {
-            return String(attribute.value);
-        }
-        if (attribute instanceof BooleanAttribute) {
-            return attribute.value ? 'true' : 'false';
-        }
+        try {
+            const serializer = new TypedJSON(StringAttribute);
+            const result = serializer.parse(attribute);
+            if (result instanceof StringAttribute) {
+                return result.value;
+            }
+        } catch (e) {}
+
+        try {
+            const serializer = new TypedJSON(DateAttribute);
+            const result = serializer.parse(attribute);
+            if (result instanceof DateAttribute) {
+                return result.value.toISOString();
+            }
+        } catch (e) {}
+
+        try {
+            const serializer = new TypedJSON(IntAttribute);
+            const result = serializer.parse(attribute);
+            if (result instanceof IntAttribute) {
+                return String(result.value);
+            }
+        } catch (e) {}
+
+        try {
+            const serializer = new TypedJSON(FloatAttribute);
+            const result = serializer.parse(attribute);
+            if (result instanceof FloatAttribute) {
+                return String(result.value);
+            }
+        } catch (e) {}
+
+        try {
+            const serializer = new TypedJSON(BooleanAttribute);
+            const result = serializer.parse(attribute);
+            if (result instanceof BooleanAttribute) {
+                return result.value ? 'true' : 'false';
+            }
+        } catch (e) {}
         console.error('unknown attribute type');
+        console.log(attribute);
         return '';
     }
 

@@ -24,7 +24,7 @@ export class Trace {
     private _attributes: Array<EventLogAttribute>;
     @jsonArrayMember(Event)
     private _events: Array<Event>;
-    @jsonMember(Number)
+    @jsonMember
     private _caseId: number;
 
     public get attributes(): Array<EventLogAttribute> {
